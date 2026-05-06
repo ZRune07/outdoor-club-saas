@@ -363,17 +363,17 @@ OVERRIDING SYSTEM VALUE VALUES
 -- 操作日志按钮
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark) 
 OVERRIDING SYSTEM VALUE VALUES
-('1039', '操作查询', '500', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:query',      '#', 'admin', NOW(), ''),
-('1040', '操作删除', '500', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:remove',     '#', 'admin', NOW(), ''),
-('1041', '日志导出', '500', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:export',     '#', 'admin', NOW(), '');
+('1039', '操作查询', '500', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:query',    '#', 'admin', NOW(), ''),
+('1040', '操作删除', '500', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:remove',   '#', 'admin', NOW(), ''),
+('1041', '日志导出', '500', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:operlog:export',   '#', 'admin', NOW(), '');
 
 -- 登录日志按钮
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark) 
 OVERRIDING SYSTEM VALUE VALUES
-('1042', '登录查询', '501', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:query',   '#', 'admin', NOW(), ''),
-('1043', '登录删除', '501', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:remove',  '#', 'admin', NOW(), ''),
-('1044', '日志导出', '501', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:export',  '#', 'admin', NOW(), ''),
-('1045', '账户解锁', '501', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:unlock',  '#', 'admin', NOW(), '');
+('1042', '登录查询', '501', '1', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:query', '#', 'admin', NOW(), ''),
+('1043', '登录删除', '501', '2', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:remove', '#', 'admin', NOW(), ''),
+('1044', '日志导出', '501', '3', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:export', '#', 'admin', NOW(), ''),
+('1045', '账户解锁', '501', '4', '#', '', '', '', 1, 0, 'F', '0', '0', 'monitor:logininfor:unlock', '#', 'admin', NOW(), '');
 
 -- 在线用户按钮
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark) 
@@ -440,23 +440,7 @@ COMMENT ON COLUMN sys_role_menu.menu_id IS '菜单ID';
 -- ----------------------------
 -- 初始化-角色和菜单关联表数据
 -- ----------------------------
-INSERT INTO sys_role_menu VALUES 
-('2', '1'), ('2', '2'), ('2', '3'), ('2', '4'), ('2', '100'), ('2', '101'), ('2', '102'), ('2', '103'), ('2', '104'),
-('2', '105'), ('2', '106'), ('2', '107'), ('2', '108'), ('2', '109'), ('2', '110'), ('2', '111'), ('2', '112'), ('2', '113'),
-('2', '114'), ('2', '115'), ('2', '116'), ('2', '117'), ('2', '500'), ('2', '501'),
-('2', '1000'), ('2', '1001'), ('2', '1002'), ('2', '1003'), ('2', '1004'), ('2', '1005'), ('2', '1006'),
-('2', '1007'), ('2', '1008'), ('2', '1009'), ('2', '1010'), ('2', '1011'),
-('2', '1012'), ('2', '1013'), ('2', '1014'), ('2', '1015'),
-('2', '1016'), ('2', '1017'), ('2', '1018'), ('2', '1019'),
-('2', '1020'), ('2', '1021'), ('2', '1022'), ('2', '1023'), ('2', '1024'),
-('2', '1025'), ('2', '1026'), ('2', '1027'), ('2', '1028'), ('2', '1029'),
-('2', '1030'), ('2', '1031'), ('2', '1032'), ('2', '1033'), ('2', '1034'),
-('2', '1035'), ('2', '1036'), ('2', '1037'), ('2', '1038'),
-('2', '1039'), ('2', '1040'), ('2', '1041'),
-('2', '1042'), ('2', '1043'), ('2', '1044'), ('2', '1045'),
-('2', '1046'), ('2', '1047'), ('2', '1048'),
-('2', '1049'), ('2', '1050'), ('2', '1051'), ('2', '1052'), ('2', '1053'), ('2', '1054'),
-('2', '1055'), ('2', '1056'), ('2', '1057'), ('2', '1058'), ('2', '1059'), ('2', '1060');
+INSERT INTO sys_role_menu SELECT '2', menu_id FROM sys_menu;
 
 
 -- ----------------------------
@@ -725,30 +709,12 @@ COMMENT ON COLUMN sys_notice.update_time IS '更新时间';
 COMMENT ON COLUMN sys_notice.remark IS '备注';
 
 
--- ----------------------------
--- 16、通知公告阅读记录表
--- ----------------------------
-DROP TABLE IF EXISTS sys_notice_read CASCADE;
-CREATE TABLE sys_notice_read (
-  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  notice_id BIGINT NOT NULL,
-  user_id BIGINT NOT NULL,
-  read_time TIMESTAMP
-);
-
-COMMENT ON TABLE sys_notice_read IS '通知公告阅读记录表';
-COMMENT ON COLUMN sys_notice_read.id IS '主键ID';
-COMMENT ON COLUMN sys_notice_read.notice_id IS '公告ID';
-COMMENT ON COLUMN sys_notice_read.user_id IS '用户ID';
-COMMENT ON COLUMN sys_notice_read.read_time IS '阅读时间';
-
-
 -- =============================================
 -- 业务表 - 户外运动俱乐部SaaS
 -- =============================================
 
 -- ----------------------------
--- 17、俱乐部表
+-- 16、俱乐部表
 -- ----------------------------
 DROP TABLE IF EXISTS club CASCADE;
 CREATE TABLE club (
@@ -800,12 +766,12 @@ COMMENT ON COLUMN club.remark IS '备注';
 
 
 -- ----------------------------
--- 18、微信用户表
+-- 17、微信用户表
 -- ----------------------------
 DROP TABLE IF EXISTS wx_user CASCADE;
 CREATE TABLE wx_user (
   wx_user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  club_id BIGINT NOT NULL,
+  club_id BIGINT,
   openid VARCHAR(100) NOT NULL,
   unionid VARCHAR(100),
   nickname VARCHAR(100),
@@ -813,7 +779,7 @@ CREATE TABLE wx_user (
   gender INTEGER DEFAULT 0,
   real_name VARCHAR(50),
   phone VARCHAR(20),
-  id_card VARCHAR(50),
+  id_card VARCHAR(100),
   status CHAR(1) DEFAULT '0',
   del_flag CHAR(1) DEFAULT '0',
   create_by VARCHAR(64) DEFAULT '',
@@ -847,7 +813,7 @@ CREATE INDEX idx_wx_user_openid ON wx_user(openid);
 
 
 -- ----------------------------
--- 19、俱乐部-用户关联表
+-- 18、俱乐部-用户关联表
 -- ----------------------------
 DROP TABLE IF EXISTS club_user CASCADE;
 CREATE TABLE club_user (
@@ -876,7 +842,7 @@ CREATE INDEX idx_club_user_user ON club_user(wx_user_id);
 
 
 -- ----------------------------
--- 20、活动表
+-- 19、活动表
 -- ----------------------------
 DROP TABLE IF EXISTS act_activity CASCADE;
 CREATE TABLE act_activity (
@@ -894,10 +860,86 @@ CREATE TABLE act_activity (
   max_participants INTEGER,
   current_participants INTEGER DEFAULT 0,
   price DECIMAL(10, 2) DEFAULT 0,
+  insurance_price DECIMAL(10, 2) DEFAULT 0,
   status VARCHAR(20) DEFAULT 'draft',
   leader_id BIGINT,
+  content TEXT,
+  notices TEXT,
   create_by VARCHAR(64) DEFAULT '',
   create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   update_by VARCHAR(64) DEFAULT '',
   update_time TIMESTAMP,
-  remark
+  remark VARCHAR(500)
+);
+
+COMMENT ON TABLE act_activity IS '活动表';
+COMMENT ON COLUMN act_activity.activity_id IS '活动ID';
+COMMENT ON COLUMN act_activity.club_id IS '俱乐部ID';
+COMMENT ON COLUMN act_activity.activity_title IS '活动标题';
+COMMENT ON COLUMN act_activity.activity_type IS '活动类型';
+COMMENT ON COLUMN act_activity.cover_image IS '封面图';
+COMMENT ON COLUMN act_activity.images IS '活动图片列表';
+COMMENT ON COLUMN act_activity.description IS '活动描述';
+COMMENT ON COLUMN act_activity.start_time IS '开始时间';
+COMMENT ON COLUMN act_activity.end_time IS '结束时间';
+COMMENT ON COLUMN act_activity.registration_deadline IS '报名截止时间';
+COMMENT ON COLUMN act_activity.location IS '集合地点';
+COMMENT ON COLUMN act_activity.max_participants IS '最大人数';
+COMMENT ON COLUMN act_activity.current_participants IS '当前人数';
+COMMENT ON COLUMN act_activity.price IS '活动费用';
+COMMENT ON COLUMN act_activity.insurance_price IS '保险费用';
+COMMENT ON COLUMN act_activity.status IS '状态（draft草稿 recruiting招募中 full已满员 ongoing进行中 ended已结束）';
+COMMENT ON COLUMN act_activity.leader_id IS '领队ID';
+COMMENT ON COLUMN act_activity.content IS '活动详情';
+COMMENT ON COLUMN act_activity.notices IS '注意事项';
+COMMENT ON COLUMN act_activity.create_by IS '创建者';
+COMMENT ON COLUMN act_activity.create_time IS '创建时间';
+COMMENT ON COLUMN act_activity.update_by IS '更新者';
+COMMENT ON COLUMN act_activity.update_time IS '更新时间';
+COMMENT ON COLUMN act_activity.remark IS '备注';
+
+CREATE INDEX idx_act_activity_club ON act_activity(club_id);
+CREATE INDEX idx_act_activity_status ON act_activity(status);
+CREATE INDEX idx_act_activity_start ON act_activity(start_time);
+
+
+-- ----------------------------
+-- 20、报名表
+-- ----------------------------
+DROP TABLE IF EXISTS reg_registration CASCADE;
+CREATE TABLE reg_registration (
+  registration_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  activity_id BIGINT NOT NULL,
+  wx_user_id BIGINT NOT NULL,
+  real_name VARCHAR(50) NOT NULL,
+  phone VARCHAR(20) NOT NULL,
+  id_card VARCHAR(100),
+  emergency_contact VARCHAR(50),
+  emergency_phone VARCHAR(20),
+  status VARCHAR(20) DEFAULT 'pending',
+  remark VARCHAR(500),
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP
+);
+
+COMMENT ON TABLE reg_registration IS '报名表';
+COMMENT ON COLUMN reg_registration.registration_id IS '报名ID';
+COMMENT ON COLUMN reg_registration.club_id IS '俱乐部ID';
+COMMENT ON COLUMN reg_registration.activity_id IS '活动ID';
+COMMENT ON COLUMN reg_registration.wx_user_id IS '微信用户ID';
+COMMENT ON COLUMN reg_registration.real_name IS '真实姓名';
+COMMENT ON COLUMN reg_registration.phone IS '手机号';
+COMMENT ON COLUMN reg_registration.id_card IS '身份证号';
+COMMENT ON COLUMN reg_registration.emergency_contact IS '紧急联系人';
+COMMENT ON COLUMN reg_registration.emergency_phone IS '紧急联系电话';
+COMMENT ON COLUMN reg_registration.status IS '状态（pending待支付 paid已支付 approved已审核 canceled已取消）';
+COMMENT ON COLUMN reg_registration.remark IS '备注';
+COMMENT ON COLUMN reg_registration.create_by IS '创建者';
+COMMENT ON COLUMN reg_registration.create_time IS '创建时间';
+COMMENT ON COLUMN reg_registration.update_by IS '更新者';
+COMMENT ON COLUMN reg_registration.update_time IS '更新时间';
+
+CREATE INDEX idx_reg_reg_club ON reg_registration(club_id

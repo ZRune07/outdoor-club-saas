@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.club.mapper.ClubMapper">
+    
+    <resultMap type="Club" id="ClubResult">
+    	<id     property="clubId"      column="club_id"      />
+        <result property="clubName"    column="club_name"    />
+        <result property="clubCode"    column="club_code"    />
+        <result property="logo"        column="logo"         />
+        <result property="slogan"      column="slogan"       />
+        <result property="description" column="description"  />
+        <result property="contactName" column="contact_name" />
+        <result property="contactPhone" column="contact_phone" />
+        <result property="contactEmail" column="contact_email" />
+        <result property="address"     column="address"      />
+        <result property="themeConfig" column="theme_config" />
+        <result property="bannerConfig" column="banner_config" />
+        <result property="featuresConfig" column="features_config" />
+        <result property="tabbarConfig" column="tabbar_config" />
+        <result property="status"      column="status"       />
+        <result property="delFlag"     column="del_flag"     />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"  />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"  />
+    </resultMap>
+    
+    <sql id="selectClubVo">
+        select club_id, club_name, club_code, logo, slogan, description, contact_name, contact_phone, contact_email, address, theme_config, banner_config, features_config, tabbar_config, status, del_flag, create_by, create_time, update_by, update_time, remark 
+		from outdoor_club
+    </sql>
+    
+    <select id="selectClubById" parameterType="Long" resultMap="ClubResult">
+        <include refid="selectClubVo"/>
+        where club_id = #{clubId}
+    </select>
+    
+    <select id="selectClubList" parameterType="Club" resultMap="ClubResult">
+        <include refid="selectClubVo"/>
+        <where>
+            del_flag = '0'
+			<if test="clubName != null and clubName != ''">
+				AND club_name like concat('%', #{clubName}, '%')
+			</if>
+			<if test="clubCode != null and clubCode != ''">
+				AND club_code = #{clubCode}
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
+    </select>
+    
+    <insert id="insertClub" parameterType="Club">
+        insert into outdoor_club (
+			<if test="clubName != null and clubName != ''">club_name,</if>
+			<if test="clubCode != null and clubCode != ''">club_code,</if>
+			<if test="logo != null and logo != ''">logo,</if>
+			<if test="slogan != null">slogan,</if>
+			<if test="description != null">description,</if>
+			<if test="contactName != null">contact_name,</if>
+			<if test="contactPhone != null">contact_phone,</if>
+			<if test="contactEmail != null">contact_email,</if>
+			<if test="address != null">address,</if>
+			<if test="themeConfig != null">theme_config,</if>
+			<if test="bannerConfig != null">banner_config,</if>
+			<if test="featuresConfig != null">features_config,</if>
+			<if test="tabbarConfig != null">tabbar_config,</if>
+			<if test="status != null">status,</if>
+			<if test="createBy != null and createBy != ''">create_by,</if>
+			<if test="remark != null">remark,</if>
+ 			create_time
+        )values(
+			<if test="clubName != null and clubName != ''">#{clubName},</if>
+			<if test="clubCode != null and clubCode != ''">#{clubCode},</if>
+			<if test="logo != null and logo != ''">#{logo},</if>
+			<if test="slogan != null">#{slogan},</if>
+			<if test="description != null">#{description},</if>
+			<if test="contactName != null">#{contactName},</if>
+			<if test="contactPhone != null">#{contactPhone},</if>
+			<if test="contactEmail != null">#{contactEmail},</if>
+			<if test="address != null">#{address},</if>
+			<if test="themeConfig != null">#{themeConfig},</if>
+			<if test="bannerConfig != null">#{bannerConfig},</if>
+			<if test="featuresConfig != null">#{featuresConfig},</if>
+			<if test="tabbarConfig != null">#{tabbarConfig},</if>
+			<if test="status != null">#{status},</if>
+			<if test="createBy != null and createBy != ''">#{createBy},</if>
+			<if test="remark != null">#{remark},</if>
+ 			sysdate()
+		)
+    </insert>
+	 
+    <update id="updateClub" parameterType="Club">
+        update outdoor_club 
+        <set>
+            <if test="clubName != null and clubName != ''">club_name = #{clubName},</if>
+            <if test="clubCode != null and clubCode != ''">club_code = #{clubCode},</if>
+            <if test="logo != null">logo = #{logo},</if>
+            <if test="slogan != null">slogan = #{slogan},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="contactName != null">contact_name = #{contactName},</if>
+            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="contactEmail != null">contact_email = #{contactEmail},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="themeConfig != null">theme_config = #{themeConfig},</if>
+            <if test="bannerConfig != null">banner_config = #{bannerConfig},</if>
+            <if test="featuresConfig != null">features_config = #{featuresConfig},</if>
+            <if test="tabbarConfig != null">tabbar_config = #{tabbarConfig},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+ 			update_time = sysdate()
+        </set>
+        where club_id = #{clubId}
+    </update>
+	
+    <update id="deleteClubById" parameterType="Long">
+        update outdoor_club set del_flag = '2' where club_id = #{clubId}
+    </update>
+    
+    <update id="deleteClubByIds" parameterType="Long">
+        update outdoor_club set del_flag = '2' where club_id in 
+        <foreach item="clubId" collection="array" open="(" separator="," close=")">
+        	#{clubId}
+        </foreach>
+    </update>
+    
+</mapper>
