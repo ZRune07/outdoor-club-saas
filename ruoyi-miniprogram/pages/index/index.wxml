@@ -1,0 +1,10 @@
+<view class="container">
+  <view class="header">
+    <text class="title">户外运动俱乐部</text>
+  </view>
+  <view class="content">
+    <navigator url="/pages/webview/webview?url=/h5/activities&clubId=1" class="nav-btn">
+      点击进入活动列表
+    </navigator>
+  </view>
+</view>
