@@ -1,0 +1,412 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" background="#ffffff" math="0" shadow="0">
+  <root>
+    <mxCell id="0" />
+    <mxCell id="1" parent="0" />
+
+    
+    <mxCell id="title" value="户外运动俱乐部小程序系统架构图" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="40" y="20" width="400" height="40" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="lbl_client" value="客户端层" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="30" y="80" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_gateway" value="接入层" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="30" y="280" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_service" value="服务层" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="30" y="450" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_data" value="数据层" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="30" y="820" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="lbl_external" value="外部服务" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="30" y="1020" width="80" height="30" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="layer_client" value="客户端层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="140" y="130" width="1500" height="210" as="geometry" />
+    </mxCell>
+    
+    
+    <mxCell id="client_wxapp" value="微信小程序" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=12;fontStyle=1;" vertex="1" parent="layer_client">
+      <mxGeometry x="40" y="40" width="280" height="140" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="wxapp_module1" value="活动展示/报名" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="20" y="35" width="100" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="wxapp_module2" value="活动缴费支付" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="130" y="35" width="100" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="wxapp_module3" value="免责签署" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="20" y="75" width="100" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="wxapp_module4" value="知识库" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="130" y="75" width="100" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="wxapp_module5" value="个人中心" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="20" y="105" width="100" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="wxapp_module6" value="安全模块" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_wxapp">
+      <mxGeometry x="130" y="105" width="100" height="30" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="client_webview" value="WebView H5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=12;fontStyle=1;" vertex="1" parent="layer_client">
+      <mxGeometry x="360" y="40" width="200" height="140" as="geometry" />
+    </mxCell>
+    <mxCell id="webview_vue" value="Vue3/React" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="client_webview">
+      <mxGeometry x="20" y="35" width="160" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="webview_ui" value="Vant/Ant Mobile" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="client_webview">
+      <mxGeometry x="20" y="70" width="160" height="28" as="geometry" />
+    </mxCell>
+    <mxCell id="webview_theme" value="CSS变量主题注入" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="client_webview">
+      <mxGeometry x="20" y="105" width="160" height="28" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="client_admin" value="PC管理后台" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=12;fontStyle=1;" vertex="1" parent="layer_client">
+      <mxGeometry x="600" y="40" width="840" height="140" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="admin_module1" value="俱乐部管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="30" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_module2" value="活动管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="155" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_module3" value="内容管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="280" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_module4" value="财务管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="405" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_module5" value="用户管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="530" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_module6" value="数据看板" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="655" y="35" width="110" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="admin_tech" value="Vue3 + Element Plus" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="client_admin">
+      <mxGeometry x="30" y="105" width="780" height="28" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="layer_gateway" value="接入层 / 网关层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="140" y="410" width="1500" height="140" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="gw_nginx" value="Nginx&amp;#xa;反向代理/负载均衡" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="layer_gateway">
+      <mxGeometry x="200" y="40" width="150" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="gw_apigw" value="API Gateway&amp;#xa;认证鉴权/限流/路由" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="layer_gateway">
+      <mxGeometry x="450" y="40" width="180" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="gw_protocol" value="协议转换&amp;#xa;HTTP → gRPC" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="layer_gateway">
+      <mxGeometry x="730" y="40" width="150" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="gw_monitor" value="监控/日志&amp;#xa;链路追踪" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="layer_gateway">
+      <mxGeometry x="980" y="40" width="150" height="70" as="geometry" />
+    </mxCell>
+    <mxCell id="gw_cache" value="CDN&amp;#xa;静态资源加速" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;align=center;" vertex="1" parent="layer_gateway">
+      <mxGeometry x="1200" y="40" width="150" height="70" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="layer_service" value="应用服务层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="140" y="620" width="1500" height="390" as="geometry" />
+    </mxCell>
+    
+    
+    <mxCell id="svc_user" value="用户服务&amp;#xa;User Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="50" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user1" value="微信授权登录" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user2" value="Token鉴权" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user3" value="领队认证" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user4" value="会员管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user5" value="积分体系" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_user6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_user">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="svc_activity" value="活动服务&amp;#xa;Activity Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="270" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act1" value="活动CRUD" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act2" value="状态机管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act3" value="报名/候补" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act4" value="名额管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act5" value="退款规则" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_act6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_activity">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="svc_payment" value="支付服务&amp;#xa;Payment Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="490" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay1" value="微信支付接入" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay2" value="统一收款" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay3" value="自动退款" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay4" value="分账结算" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay5" value="账单对账" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_pay6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_payment">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="svc_content" value="内容服务&amp;#xa;Content Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="710" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont1" value="知识文章(PGC)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont2" value="活动回顾" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont3" value="富文本编辑" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont4" value="媒体管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont5" value="标签分类" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_cont6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_content">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="svc_tenant" value="多租户服务&amp;#xa;Tenant Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="930" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten1" value="俱乐部管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten2" value="千人千面配置" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten3" value="主题皮肤注入" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten4" value="club_id路由" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten5" value="数据隔离" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_ten6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_tenant">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="svc_message" value="消息服务&amp;#xa;Message Service" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=11;fontStyle=1;" vertex="1" parent="layer_service">
+      <mxGeometry x="1150" y="40" width="200" height="320" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg1" value="模板消息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="40" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg2" value="订阅消息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="85" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg3" value="短信通知" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="130" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg4" value="站内信" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="175" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg5" value="推送策略" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="220" width="160" height="35" as="geometry" />
+    </mxCell>
+    <mxCell id="svc_msg6" value="Node.js/Go" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=9;" vertex="1" parent="svc_message">
+      <mxGeometry x="20" y="280" width="160" height="25" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="layer_data" value="数据层 / 存储层" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=13;fontStyle=1;dashed=1;dashPattern=8 4;" vertex="1" parent="1">
+      <mxGeometry x="140" y="1285" width="1500" height="170" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="db_postgres" value="PostgreSQL&amp;#xa;核心业务数据&amp;#xa;JSONB配置存储" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=20;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="layer_data">
+      <mxGeometry x="180" y="40" width="140" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="db_redis" value="Redis&amp;#xa;缓存/&amp;#xa;Session/限流" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=20;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="layer_data">
+      <mxGeometry x="450" y="40" width="140" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="db_oss" value="阿里云OSS&amp;#xa;图片/视频存储" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=20;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="layer_data">
+      <mxGeometry x="720" y="40" width="140" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="db_cos" value="腾讯云COS&amp;#xa;图片/视频存储" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=20;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="layer_data">
+      <mxGeometry x="920" y="40" width="140" height="100" as="geometry" />
+    </mxCell>
+    <mxCell id="db_contract" value="合同文件存储&amp;#xa;PDF签署件" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=20;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;align=center;" vertex="1" parent="layer_data">
+      <mxGeometry x="1150" y="40" width="140" height="100" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="layer_external" value="外部服务 / 第三方集成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;strokeWidth=2;verticalAlign=top;align=center;spacingTop=8;fontSize=13;fontStyle=1;" vertex="1" parent="1">
+      <mxGeometry x="140" y="1080" width="1500" height="135" as="geometry" />
+    </mxCell>
+    
+    <mxCell id="ext_wx" value="微信开放平台&amp;#xa;小程序/支付/消息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=center;" vertex="1" parent="layer_external">
+      <mxGeometry x="200" y="40" width="180" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="ext_weather" value="天气API&amp;#xa;活动天气查询" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=center;" vertex="1" parent="layer_external">
+      <mxGeometry x="500" y="40" width="160" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="ext_insurance" value="保险API&amp;#xa;户外运动险" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=center;" vertex="1" parent="layer_external">
+      <mxGeometry x="780" y="40" width="160" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="ext_map" value="地图服务&amp;#xa;位置/导航" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=center;" vertex="1" parent="layer_external">
+      <mxGeometry x="1060" y="40" width="160" height="65" as="geometry" />
+    </mxCell>
+    <mxCell id="ext_sms" value="短信服务&amp;#xa;备用通知" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;fontSize=11;align=center;" vertex="1" parent="layer_external">
+      <mxGeometry x="1280" y="40" width="150" height="65" as="geometry" />
+    </mxCell>
+
+    
+    
+    
+    <mxCell id="flow_qianren" value="① 千人千面流程" style="text;html=1;strokeColor=none;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="100" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="flow_qianren_desc" value="小程序入口 → club_id参数&amp;#xa;→ 多租户服务 → JSONB配置&amp;#xa;→ CSS变量注入 → WebView渲染" style="text;html=1;strokeColor=#6c8ebf;fillColor=#dae8fc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;spacingTop=5;spacingLeft=5;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="140" width="90" height="80" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="flow_pay" value="② 支付流程" style="text;html=1;strokeColor=none;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="250" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="flow_pay_desc" value="报名 → 支付服务&amp;#xa;→ 微信支付 → 回调&amp;#xa;→ 分账结算" style="text;html=1;strokeColor=#82b366;fillColor=#d5e8d4;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;spacingTop=5;spacingLeft=5;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="290" width="90" height="70" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="flow_disclaimer" value="③ 免责签署流程" style="text;html=1;strokeColor=none;fillColor=#f5f5f5;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontSize=11;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="390" width="80" height="30" as="geometry" />
+    </mxCell>
+    <mxCell id="flow_disclaimer_desc" value="报名 → 免责展示&amp;#xa;→ 勾选确认&amp;#xa;→ 签署记录存储" style="text;html=1;strokeColor=#d6b656;fillColor=#fff2cc;align=left;verticalAlign=top;whiteSpace=wrap;rounded=1;fontSize=9;spacingTop=5;spacingLeft=5;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="430" width="90" height="65" as="geometry" />
+    </mxCell>
+
+    
+    
+    
+    <mxCell id="link_client_gateway" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;entryX=0.5;entryY=0;exitX=0.5;exitY=1;" parent="1" source="layer_client" target="layer_gateway" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="link_gw_svc1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;entryX=0.25;entryY=0;exitX=0.2;exitY=1;" parent="1" source="layer_gateway" target="layer_service" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_gw_svc2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;entryX=0.5;entryY=0;exitX=0.5;exitY=1;" parent="1" source="layer_gateway" target="layer_service" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_gw_svc3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#6c8ebf;entryX=0.75;entryY=0;exitX=0.8;exitY=1;" parent="1" source="layer_gateway" target="layer_service" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="link_svc_data1" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;entryX=0.25;entryY=0;exitX=0.25;exitY=1;" parent="1" source="layer_service" target="layer_data" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_svc_data2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;entryX=0.5;entryY=0;exitX=0.5;exitY=1;" parent="1" source="layer_service" target="layer_data" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_svc_data3" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;entryX=0.75;entryY=0;exitX=0.75;exitY=1;" parent="1" source="layer_service" target="layer_data" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="link_data_external" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;entryX=0.3;entryY=0;exitX=0.3;exitY=1;" parent="1" source="layer_data" target="layer_external" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_data_external2" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#9673a6;dashed=1;entryX=0.6;entryY=0;exitX=0.6;exitY=1;" parent="1" source="layer_data" target="layer_external" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="link_svc_call1" value="RPC" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;dashed=1;curved=1;entryX=1;entryY=0.5;exitX=0;exitY=0.5;fontSize=9;" parent="1" source="svc_activity" target="svc_user" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_svc_call2" value="Event" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;dashed=1;curved=1;entryX=1;entryY=0.5;exitX=0;exitY=0.5;fontSize=9;" parent="1" source="svc_payment" target="svc_activity" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+    <mxCell id="link_svc_call3" value="调用" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=1;strokeColor=#82b366;dashed=1;curved=1;entryX=1;entryY=0.5;exitX=0;exitY=0.5;fontSize=9;" parent="1" source="svc_message" target="svc_user" edge="1">
+      <mxGeometry relative="1" as="geometry" />
+    </mxCell>
+
+    
+    <mxCell id="legend" value="图例" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=11;fontStyle=1;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1700" y="550" width="60" height="25" as="geometry" />
+    </mxCell>
+    <mxCell id="legend_line1" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#6c8ebf;" edge="1" parent="1">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <mxPoint x="1700" y="590" as="sourcePoint" />
+        <mxPoint x="1780" y="590" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="legend_line1_text" value="同步调用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1790" y="580" width="60" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="legend_line2" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#82b366;dashed=1;" edge="1" parent="1">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <mxPoint x="1700" y="620" as="sourcePoint" />
+        <mxPoint x="1780" y="620" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="legend_line2_text" value="异步消息/调用" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1790" y="610" width="70" height="20" as="geometry" />
+    </mxCell>
+    <mxCell id="legend_line3" value="" style="endArrow=classic;html=1;strokeWidth=2;strokeColor=#d6b656;dashed=1;" edge="1" parent="1">
+      <mxGeometry width="50" height="50" relative="1" as="geometry">
+        <mxPoint x="1700" y="650" as="sourcePoint" />
+        <mxPoint x="1780" y="650" as="targetPoint" />
+      </mxGeometry>
+    </mxCell>
+    <mxCell id="legend_line3_text" value="数据读写" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=9;fontColor=#333333;" vertex="1" parent="1">
+      <mxGeometry x="1790" y="640" width="60" height="20" as="geometry" />
+    </mxCell>
+
+  </root>
+</mxGraphModel>
