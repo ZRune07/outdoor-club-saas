@@ -10,7 +10,7 @@ const path = require('path');
 const url = require('url');
 
 // 配置
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 8080;
 const DIST_DIR = path.join(__dirname, '../../ruoyi-ui/dist');
 const BACKEND_URL = process.env.VITE_API_BASE_URL || 'http://localhost:9091';
 

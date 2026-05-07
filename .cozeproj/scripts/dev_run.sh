@@ -13,7 +13,7 @@ pkill -f "nginx" 2>/dev/null || true
 
 sleep 1
 
-cd /workspace/projects/outdoor-club-saas
+cd /workspace
 
 # 检查构建产物是否存在
 if [ ! -d "ruoyi-ui/dist" ]; then
@@ -26,7 +26,7 @@ BACKEND_URL=${VITE_API_BASE_URL:-"http://localhost:9091"}
 echo "后端API地址: $BACKEND_URL"
 
 # 启动静态文件服务器 + API代理
-echo "[1/1] 启动前端服务 (端口 80)..."
+echo "[1/1] 启动前端服务 (端口 8080)..."
 nohup node .cozeproj/scripts/server.js > .cozeproj/logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 echo "前端服务 PID: $FRONTEND_PID"

@@ -7,7 +7,7 @@ echo "========================================="
 echo "开始构建户外俱乐部SaaS前端..."
 echo "========================================="
 
-cd /workspace/projects/outdoor-club-saas
+cd /workspace
 
 # 1. 安装依赖
 echo "[1/2] 安装依赖..."
