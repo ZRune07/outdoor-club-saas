@@ -40,3 +40,12 @@ export function createPayment(data) {
     data
   })
 }
+
+// 查询支付状态
+export function queryPaymentStatus(orderNo) {
+  return request({
+    url: '/api/payment/status',
+    method: 'get',
+    params: { orderNo }
+  })
+}

@@ -32,3 +32,12 @@ export function getActivityDetail(id) {
     method: 'get'
   })
 }
+
+// 检查用户是否已报名某活动
+export function checkActivityRegistration(activityId, wxUserId) {
+  return request({
+    url: '/api/activity/check-registration',
+    method: 'get',
+    params: { activityId, wxUserId }
+  })
+}
