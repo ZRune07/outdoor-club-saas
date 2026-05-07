@@ -224,7 +224,7 @@
 </template>
 
 <script setup name="DisclaimerManage">
-import { listDisclaimer, getDisclaimer, addDisclaimer, updateDisclaimer, delDisclaimer, changeDisclaimerStatus, listSignRecord } from '@/api/outdoor/disclaimer'
+import { listDisclaimer, getDisclaimer, addDisclaimer, updateDisclaimer, delDisclaimer, changeDisclaimerStatus, listSignRecords } from '@/api/outdoor/disclaimer'
 import { parseTime } from '@/utils/ruoyi'
 
 const { proxy } = getCurrentInstance()
@@ -417,7 +417,7 @@ function loadSignRecords() {
     params.startDate = recordDateRange.value[0]
     params.endDate = recordDateRange.value[1]
   }
-  listSignRecord(params).then(response => {
+  listSignRecords(params).then(response => {
     signRecordList.value = response.rows
     recordTotal.value = response.total
     recordLoading.value = false
