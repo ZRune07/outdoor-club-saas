@@ -29,6 +29,10 @@ export default defineConfig(({ mode, command }) => {
         }
       }
     },
+    preview: {
+      port: 5000,
+      historyApiFallback: true
+    },
     server: {
       port: 5000,
       host: true,

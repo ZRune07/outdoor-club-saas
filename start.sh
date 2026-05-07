@@ -1,2 +1,2 @@
 #!/bin/sh
-cd ruoyi-ui && npx serve dist -l 5000
+cd ruoyi-ui && npx serve dist -l 5000 -s
