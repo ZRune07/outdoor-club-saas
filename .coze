@@ -4,8 +4,8 @@ description = "户外俱乐部SaaS管理平台"
 
 [dev]
 build = ["cd ruoyi-ui && npm install && npm run build:prod"]
-run = ["npx", "serve", "ruoyi-ui/dist", "-l", "5000"]
+run = ["sh", "start.sh"]
 
 [deploy]
 build = ["cd ruoyi-ui && npm install && npm run build:prod"]
-run = ["npx", "serve", "ruoyi-ui/dist", "-l", "5000"]
+run = ["sh", "start.sh"]
