@@ -6,6 +6,7 @@ import { tansParams, blobValidate } from '@/utils/ruoyi'
 import cache from '@/plugins/cache'
 import { saveAs } from 'file-saver'
 import useUserStore from '@/store/modules/user'
+import { matchMock, isMockEnabled } from '@/mock'
 
 let downloadLoadingInstance
 // 是否显示重新登录
@@ -31,13 +32,32 @@ service.interceptors.request.use(config => {
   if (getToken() && !isToken) {
     config.headers['Authorization'] = 'Bearer ' + getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
   }
-  // get请求映射params参数
+  // get请求映射params参数（必须在 mock 拦截之前，确保 URL 包含 query 参数）
   if (config.method === 'get' && config.params) {
     let url = config.url + '?' + tansParams(config.params)
     url = url.slice(0, -1)
     config.params = {}
     config.url = url
   }
+
+  // ===== Mock 强制模式：直接在请求拦截器中返回 mock 数据 =====
+  if (isMockEnabled) {
+    const mockResult = matchMock(config.url || '', config.method || 'get', { url: config.url || '', body: config.data })
+    if (mockResult) {
+      // 通过适配器模式直接返回 mock 数据，不发出真实请求
+      config.adapter = () => {
+        return Promise.resolve({
+          data: mockResult,
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config
+        })
+      }
+      return config
+    }
+  }
+
   if (!isRepeatSubmit && (config.method === 'post' || config.method === 'put')) {
     const requestObj = {
       url: config.url,
@@ -109,6 +129,22 @@ service.interceptors.response.use(res => {
     }
   },
   error => {
+    // ===== Mock fallback：后端不可达时，尝试用 mock 数据兜底 =====
+    if (error.config) {
+      const mockResult = matchMock(
+        error.config.url || '',
+        error.config.method || 'get',
+        { url: error.config.url || '', body: error.config.data }
+      )
+      if (mockResult) {
+        // 返回格式与正常响应一致（经过响应拦截器的成功分支处理）
+        const code = mockResult.code || 200
+        if (code === 200) {
+          return Promise.resolve(mockResult)
+        }
+      }
+    }
+
     console.log('err' + error)
     let { message } = error
     if (message == "Network Error") {
