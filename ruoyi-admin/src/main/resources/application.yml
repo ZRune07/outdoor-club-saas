@@ -169,3 +169,19 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+# 微信小程序配置
+wx:
+  miniapp:
+    appid: your_appid
+    secret: your_secret
+    token: your_token
+    aesKey: your_aesKey
+    msgDataFormat: JSON
+  # 微信支付配置
+  pay:
+    appId: your_appid
+    mchId: your_mch_id
+    mchKey: your_mch_key
+    keyPath: your_key_path
+    notifyUrl: http://your-domain.com/api/payment/callback

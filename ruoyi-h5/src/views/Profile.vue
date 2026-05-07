@@ -1,71 +1,91 @@
 <template>
   <div class="profile">
-    <van-nav-bar title="我的" />
-    <div class="content">
-      <div class="user-card">
-        <div class="user-avatar">
-          <van-icon name="user-circle-o" size="64" />
-        </div>
-        <div class="user-info">
-          <h3 class="user-name">游客</h3>
-          <p class="user-desc">请登录获取更多功能</p>
-        </div>
+    <van-nav-bar title="个人中心" />
+    
+    <div class="profile-header">
+      <van-image
+        round
+        width="80"
+        height="80"
+        :src="user?.avatar || defaultAvatar"
+      />
+      <div class="user-info">
+        <div class="nickname">{{ user?.nickname || '未登录' }}</div>
       </div>
-      <van-cell-group inset class="menu-group">
-        <van-cell title="我的活动" is-link />
-        <van-cell title="我的收藏" is-link />
-        <van-cell title="设置" is-link />
-        <van-cell title="关于我们" is-link />
-      </van-cell-group>
     </div>
+    
+    <van-cell-group inset>
+      <van-cell title="我的报名" is-link @click="$router.push('/my-registrations')">
+        <template #icon>
+          <van-icon name="orders-o" size="18" />
+        </template>
+      </van-cell>
+      <van-cell title="联系客服" is-link>
+        <template #icon>
+          <van-icon name="service-o" size="18" />
+        </template>
+      </van-cell>
+      <van-cell title="关于我们" is-link>
+        <template #icon>
+          <van-icon name="info-o" size="18" />
+        </template>
+      </van-cell>
+    </van-cell-group>
+    
+    <div class="logout-section">
+      <van-button block plain type="danger" @click="handleLogout" v-if="user">退出登录</van-button>
+    </div>
+    
+    <van-tabbar v-model="activeTabbar">
+      <van-tabbar-item icon="home-o" @click="$router.push('/home')">首页</van-tabbar-item>
+      <van-tabbar-item icon="orders-o" @click="$router.push('/activity')">活动</van-tabbar-item>
+      <van-tabbar-item icon="user-o" @click="$router.push('/profile')">我的</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { getUser, clearAuth } from '@/utils/auth'
+
+const router = useRouter()
+const user = ref(null)
+const activeTabbar = ref(2)
+const defaultAvatar = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
+
+const handleLogout = () => {
+  clearAuth()
+  user.value = null
+  router.push('/login')
+}
+
+onMounted(() => {
+  user.value = getUser()
+})
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .profile {
-  min-height: 100vh;
-  background-color: #f7f8fa;
+  padding-bottom: 50px;
+  background: #f7f8fa;
 }
 
-.content {
-  padding: 16px;
-}
-
-.user-card {
+.profile-header {
+  background: #fff;
+  padding: 30px 16px;
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 24px 16px;
-  background-color: #fff;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
-.user-avatar {
-  color: #1989fa;
-}
-
-.user-info {
-  flex: 1;
-}
-
-.user-name {
-  margin: 0 0 4px 0;
+.nickname {
   font-size: 18px;
   font-weight: bold;
-  color: #191919;
 }
 
-.user-desc {
-  margin: 0;
-  font-size: 14px;
-  color: #969799;
-}
-
-.menu-group {
-  border-radius: 8px;
+.logout-section {
+  padding: 20px 16px;
 }
 </style>

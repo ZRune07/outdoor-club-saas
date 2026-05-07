@@ -3,6 +3,8 @@ package com.ruoyi.outdoor.club.service.impl;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.outdoor.club.mapper.ClubMapper;
 import com.ruoyi.outdoor.club.domain.Club;
 import com.ruoyi.outdoor.club.service.IClubService;

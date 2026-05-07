@@ -1,18 +1,16 @@
 import request from '@/utils/request'
 
-// 获取活动列表
 export function getActivityList(params) {
   return request({
-    url: '/outdoor/activity/list',
+    url: '/activity/list',
     method: 'get',
     params
   })
 }
 
-// 获取活动详情
-export function getActivityDetail(activityId) {
+export function getActivityDetail(id) {
   return request({
-    url: `/outdoor/activity/${activityId}`,
+    url: `/activity/${id}`,
     method: 'get'
   })
 }

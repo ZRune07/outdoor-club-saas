@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.payment.mapper.PaymentMapper">
+    
+    <resultMap type="Payment" id="PaymentResult">
+        <id     property="paymentId"       column="payment_id"       />
+        <result property="clubId"           column="club_id"           />
+        <result property="registrationId"   column="registration_id"   />
+        <result property="wxUserId"         column="wx_user_id"        />
+        <result property="orderNo"          column="order_no"          />
+        <result property="transactionId"    column="transaction_id"    />
+        <result property="amount"           column="amount"            />
+        <result property="paymentMethod"    column="payment_method"    />
+        <result property="status"           column="status"            />
+        <result property="paidTime"         column="paid_time"         />
+        <result property="delFlag"          column="del_flag"          />
+        <result property="createBy"         column="create_by"         />
+        <result property="createTime"       column="create_time"       />
+        <result property="updateBy"         column="update_by"         />
+        <result property="updateTime"       column="update_time"       />
+        <result property="remark"           column="remark"            />
+    </resultMap>
+
+    <sql id="selectPaymentVo">
+        select payment_id, club_id, registration_id, wx_user_id, order_no, transaction_id, amount, payment_method, status, paid_time, del_flag, create_by, create_time, update_by, update_time, remark from outdoor_payment
+    </sql>
+
+    <select id="selectPaymentList" parameterType="Payment" resultMap="PaymentResult">
+        <include refid="selectPaymentVo"/>
+        <where>  
+            del_flag = '0'
+            <if test="clubId != null "> and club_id = #{clubId}</if>
+            <if test="registrationId != null "> and registration_id = #{registrationId}</if>
+            <if test="wxUserId != null "> and wx_user_id = #{wxUserId}</if>
+            <if test="orderNo != null  and orderNo != ''"> and order_no = #{orderNo}</if>
+            <if test="transactionId != null  and transactionId != ''"> and transaction_id = #{transactionId}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectPaymentByPaymentId" parameterType="Long" resultMap="PaymentResult">
+        <include refid="selectPaymentVo"/>
+        where payment_id = #{paymentId}
+    </select>
+        
+    <insert id="insertPayment" parameterType="Payment" useGeneratedKeys="true" keyProperty="paymentId">
+        insert into outdoor_payment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">club_id,</if>
+            <if test="registrationId != null">registration_id,</if>
+            <if test="wxUserId != null">wx_user_id,</if>
+            <if test="orderNo != null and orderNo != ''">order_no,</if>
+            <if test="transactionId != null">transaction_id,</if>
+            <if test="amount != null">amount,</if>
+            <if test="paymentMethod != null">payment_method,</if>
+            <if test="status != null">status,</if>
+            <if test="paidTime != null">paid_time,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">#{clubId},</if>
+            <if test="registrationId != null">#{registrationId},</if>
+            <if test="wxUserId != null">#{wxUserId},</if>
+            <if test="orderNo != null and orderNo != ''">#{orderNo},</if>
+            <if test="transactionId != null">#{transactionId},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="paymentMethod != null">#{paymentMethod},</if>
+            <if test="status != null">#{status},</if>
+            <if test="paidTime != null">#{paidTime},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updatePayment" parameterType="Payment">
+        update outdoor_payment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="clubId != null">club_id = #{clubId},</if>
+            <if test="registrationId != null">registration_id = #{registrationId},</if>
+            <if test="wxUserId != null">wx_user_id = #{wxUserId},</if>
+            <if test="orderNo != null">order_no = #{orderNo},</if>
+            <if test="transactionId != null">transaction_id = #{transactionId},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="paidTime != null">paid_time = #{paidTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where payment_id = #{paymentId}
+    </update>
+
+    <update id="deletePaymentByPaymentId" parameterType="Long">
+        update outdoor_payment set del_flag = '2' where payment_id = #{paymentId}
+    </update>
+
+    <update id="deletePaymentByPaymentIds" parameterType="Long">
+        update outdoor_payment set del_flag = '2' where payment_id in 
+        <foreach item="paymentId" collection="array" open="(" separator="," close=")">
+            #{paymentId}
+        </foreach>
+    </update>
+</mapper>

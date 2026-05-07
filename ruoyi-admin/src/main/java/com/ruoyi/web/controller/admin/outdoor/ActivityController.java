@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.outdoor;
+package com.ruoyi.web.controller.admin.outdoor;
 
 import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,12 +23,12 @@ import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
 /**
- * 活动Controller
+ * 活动管理 Controller
  * 
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/outdoor/activity")
+@RequestMapping("/admin/activity")
 public class ActivityController extends BaseController
 {
     @Autowired

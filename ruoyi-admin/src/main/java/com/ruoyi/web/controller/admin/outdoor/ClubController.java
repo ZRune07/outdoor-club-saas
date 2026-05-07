@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.outdoor;
+package com.ruoyi.web.controller.admin.outdoor;
 
 import java.util.List;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,12 +23,12 @@ import com.ruoyi.outdoor.club.domain.Club;
 import com.ruoyi.outdoor.club.service.IClubService;
 
 /**
- * 俱乐部 信息操作处理
+ * 俱乐部管理 信息操作处理
  * 
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/outdoor/club")
+@RequestMapping("/admin/club")
 public class ClubController extends BaseController
 {
     @Autowired

@@ -1,35 +1,47 @@
 <template>
   <div class="home">
-    <van-nav-bar title="活动列表" />
-    <div class="content">
-      <div v-if="loading" class="loading">
-        <van-loading type="spinner" />
-      </div>
-      <div v-else-if="activityList.length > 0" class="activity-list">
-        <van-cell
-          v-for="activity in activityList"
-          :key="activity.activityId"
-          is-link
-          :title="activity.activityName"
-          :label="activity.location"
-          @click="goToDetail(activity.activityId)"
-        >
-          <template #icon>
-            <img
-              v-if="activity.coverImage"
-              :src="activity.coverImage"
-              class="cover-image"
-            />
-            <div v-else class="cover-placeholder">
-              <van-icon name="photo-o" size="32" />
-            </div>
-          </template>
-        </van-cell>
-      </div>
-      <div v-else class="empty">
-        <van-empty description="暂无活动" />
-      </div>
+    <van-nav-bar title="首页" />
+    
+    <div class="banner">
+      <img src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg" alt="banner" />
     </div>
+    
+    <div class="section-title">热门活动</div>
+    
+    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+      <van-list
+        v-model:loading="loading"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+      >
+        <div
+          v-for="item in list"
+          :key="item.activityId"
+          class="activity-card"
+          @click="goToDetail(item.activityId)"
+        >
+          <img :src="item.coverImage || defaultCover" class="activity-cover" alt="" />
+          <div class="activity-info">
+            <div class="activity-title">{{ item.activityName }}</div>
+            <div class="activity-meta">
+              <span class="activity-type">{{ item.activityType }}</span>
+              <span class="activity-time">{{ formatDate(item.startTime) }}</span>
+            </div>
+            <div class="activity-footer">
+              <span class="activity-price">¥{{ item.fee }}</span>
+              <van-tag type="primary" size="small">{{ getStatusText(item.status) }}</van-tag>
+            </div>
+          </div>
+        </div>
+      </van-list>
+    </van-pull-refresh>
+    
+    <van-tabbar v-model="activeTabbar">
+      <van-tabbar-item icon="home-o" @click="$router.push('/home')">首页</van-tabbar-item>
+      <van-tabbar-item icon="orders-o" @click="$router.push('/activity')">活动</van-tabbar-item>
+      <van-tabbar-item icon="user-o" @click="$router.push('/profile')">我的</van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
@@ -39,71 +51,125 @@ import { useRouter } from 'vue-router'
 import { getActivityList } from '@/api/activity'
 
 const router = useRouter()
+const list = ref([])
 const loading = ref(false)
-const activityList = ref([])
+const finished = ref(false)
+const refreshing = ref(false)
+const activeTabbar = ref(0)
+const defaultCover = 'https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg'
 
-const fetchActivityList = async () => {
-  loading.value = true
-  try {
-    const res = await getActivityList({ pageNum: 1, pageSize: 10 })
-    activityList.value = res.rows || []
-  } catch (error) {
-    console.error(error)
-  } finally {
-    loading.value = false
+const formatDate = (date) => {
+  if (!date) return ''
+  const d = new Date(date)
+  return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+const getStatusText = (status) => {
+  const statusMap = {
+    '0': '未开始',
+    '1': '进行中',
+    '2': '已结束',
+    '3': '已取消'
   }
+  return statusMap[status] || '未知'
 }
 
 const goToDetail = (id) => {
   router.push(`/activity/${id}`)
 }
 
+const onLoad = async () => {
+  try {
+    const res = await getActivityList()
+    if (res.data) {
+      list.value = res.data.rows || res.data
+    }
+    finished.value = true
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loading.value = false
+  }
+}
+
+const onRefresh = async () => {
+  await onLoad()
+  refreshing.value = false
+}
+
 onMounted(() => {
-  fetchActivityList()
+  onLoad()
 })
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .home {
-  min-height: 100vh;
-  background-color: #f7f8fa;
+  padding-bottom: 50px;
 }
 
-.content {
+.banner {
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+}
+
+.section-title {
+  padding: 16px 16px 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.activity-card {
+  display: flex;
   padding: 12px;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 40px 0;
-}
-
-.activity-list {
-  background-color: #fff;
+  background: #fff;
+  margin: 0 10px 10px;
   border-radius: 8px;
-}
-
-.cover-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.cover-placeholder {
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f2f3f5;
-  border-radius: 4px;
-  color: #969799;
-}
-
-.empty {
-  padding: 40px 0;
+  
+  .activity-cover {
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  
+  .activity-info {
+    flex: 1;
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .activity-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .activity-meta {
+    display: flex;
+    gap: 10px;
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .activity-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .activity-price {
+    font-size: 18px;
+    color: #ff4d4f;
+    font-weight: bold;
+  }
 }
 </style>
