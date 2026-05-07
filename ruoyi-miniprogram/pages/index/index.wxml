@@ -1,0 +1,38 @@
+<view class="container">
+  <view class="header">
+    <text class="title">活动列表</text>
+  </view>
+
+  <view class="activity-list" wx:if="{{activityList.length > 0 && !loading}}">
+    <view 
+      class="activity-item" 
+      wx:for="{{activityList}}" 
+      wx:key="activityId"
+      bindtap="goToActivityDetail"
+      data-id="{{item.activityId}}"
+    >
+      <image 
+        class="activity-cover" 
+        src="{{item.coverImage || '/assets/images/default-cover.png'}}" 
+        mode="aspectFill"
+      />
+      <view class="activity-info">
+        <view class="activity-name">{{item.activityName}}</view>
+        <view class="activity-meta">
+          <text class="activity-location">{{item.location}}</text>
+          <text class="activity-time">{{item.startTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="loading" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text>加载中...</text>
+  </view>
+
+  <view class="empty" wx:if="{{!loading && activityList.length === 0}}">
+    <image class="empty-icon" src="/assets/images/empty.png" mode="aspectFit" />
+    <text class="empty-text">暂无活动</text>
+  </view>
+</view>
