@@ -1,11 +1,11 @@
 # Coze Code 项目配置文件
-# 户外俱乐部SaaS - Spring Boot + Vue3
+# 户外俱乐部SaaS - 纯前端 (Vue3 + Element Plus)
 
 [project]
 # 项目入口配置
-entrypoint = "ruoyi-admin/src/main/java/com/ruoyi/RuoYiApplication.java"
-requires = ["nodejs-18", "java-17"]
-description = "户外俱乐部SaaS管理平台"
+entrypoint = "ruoyi-ui/index.html"
+requires = ["nodejs-18"]
+description = "户外俱乐部SaaS管理平台 - 前端"
 
 [dev]
 # 开发环境构建命令
@@ -19,11 +19,8 @@ run = [
 
 [ports]
 # 端口映射
-# 后端API: 9091
-# 前端管理端: 5000
-# H5前端: 3000
+# 前端管理端: 80
 
 [env]
 # 环境变量
-NODE_ENV = "development"
-SPRING_PROFILES_ACTIVE = "dev"
+NODE_ENV = "production"

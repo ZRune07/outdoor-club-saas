@@ -2,7 +2,8 @@ import { defineConfig, loadEnv } from 'vite'
 import path from 'path'
 import createVitePlugins from './vite/plugins'
 
-const baseUrl = 'http://localhost:8080' // 后端接口
+// TODO: 部署时请将此地址修改为实际的后端API地址
+const baseUrl = process.env.VITE_API_BASE_URL || 'https://your-backend-api.com'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -46,14 +47,20 @@ export default defineConfig(({ mode, command }) => {
       host: true,
       open: true,
       proxy: {
-        // https://cn.vitejs.dev/config/#server-proxy
+        // 开发环境代理
         '/dev-api': {
           target: baseUrl,
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, '')
         },
-         // springdoc proxy
-         '^/v3/api-docs/(.*)': {
+        // 生产环境代理 - API请求
+        '/prod-api': {
+          target: baseUrl,
+          changeOrigin: true,
+          rewrite: (p) => p.replace(/^\/prod-api/, '')
+        },
+        // springdoc proxy
+        '^/v3/api-docs/(.*)': {
           target: baseUrl,
           changeOrigin: true,
         }

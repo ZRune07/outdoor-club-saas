@@ -37,6 +37,15 @@ nbdist/
 .nb-gradle/
 
 ######################################################################
+# Node.js
+node_modules/
+dist/
+*/node_modules/
+*.lock
+package-lock.json
+yarn.lock
+
+######################################################################
 # Others
 *.log
 *.xml.versionsBackup
