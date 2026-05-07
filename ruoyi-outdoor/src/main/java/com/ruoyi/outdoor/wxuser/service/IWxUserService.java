@@ -13,10 +13,10 @@ public interface IWxUserService
     /**
      * 查询微信用户
      * 
-     * @param userId 微信用户主键
+     * @param wxUserId 微信用户ID
      * @return 微信用户
      */
-    public WxUser selectWxUserByUserId(Long userId);
+    public WxUser selectWxUserByWxUserId(Long wxUserId);
 
     /**
      * 通过 openid 查询微信用户
@@ -27,10 +27,18 @@ public interface IWxUserService
     public WxUser selectWxUserByOpenid(String openid);
 
     /**
+     * 根据俱乐部ID查询微信用户列表
+     * 
+     * @param clubId 俱乐部ID
+     * @return 微信用户列表
+     */
+    public List<WxUser> selectWxUserByClubId(Long clubId);
+
+    /**
      * 查询微信用户列表
      * 
      * @param wxUser 微信用户
-     * @return 微信用户集合
+     * @return 微信用户列表
      */
     public List<WxUser> selectWxUserList(WxUser wxUser);
 
@@ -53,16 +61,16 @@ public interface IWxUserService
     /**
      * 批量删除微信用户
      * 
-     * @param userIds 需要删除的微信用户主键集合
+     * @param wxUserIds 需要删除的微信用户ID集合
      * @return 结果
      */
-    public int deleteWxUserByUserIds(Long[] userIds);
+    public int deleteWxUserByWxUserIds(Long[] wxUserIds);
 
     /**
      * 删除微信用户信息
      * 
-     * @param userId 微信用户主键
+     * @param wxUserId 微信用户ID
      * @return 结果
      */
-    public int deleteWxUserByUserId(Long userId);
+    public int deleteWxUserByWxUserId(Long wxUserId);
 }

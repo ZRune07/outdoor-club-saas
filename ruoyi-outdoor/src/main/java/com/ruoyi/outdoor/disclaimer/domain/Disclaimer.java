@@ -1,184 +1,137 @@
 package com.ruoyi.outdoor.disclaimer.domain;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.util.Date;
 
 /**
- * 免责签署对象 outdoor_disclaimer
- * 
- * @author ruoyi
+ * 免责声明表
  */
-public class Disclaimer extends BaseEntity
-{
+public class Disclaimer extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 签署ID */
+    /** 免责声明ID */
+    @Excel(name = "免责声明ID")
     private Long disclaimerId;
 
     /** 俱乐部ID */
-    @NotNull(message = "俱乐部ID不能为空")
     @Excel(name = "俱乐部ID")
     private Long clubId;
 
-    /** 活动ID */
-    @NotNull(message = "活动ID不能为空")
-    @Excel(name = "活动ID")
-    private Long activityId;
+    /** 免责标题 */
+    @Excel(name = "免责标题")
+    private String disclaimerTitle;
 
-    /** 微信用户ID */
-    @Excel(name = "微信用户ID")
-    private Long wxUserId;
+    /** 免责类型 */
+    @Excel(name = "免责类型")
+    private String disclaimerType;
 
-    /** 签署人姓名 */
-    @NotBlank(message = "签署人姓名不能为空")
-    @Size(min = 0, max = 50, message = "签署人姓名长度不能超过50个字符")
-    @Excel(name = "签署人姓名")
-    private String signerName;
+    /** 免责内容 */
+    @Excel(name = "免责内容")
+    private String content;
 
-    /** 身份证号 */
-    @Size(min = 0, max = 50, message = "身份证号长度不能超过50个字符")
-    @Excel(name = "身份证号")
-    private String idCard;
+    /** 版本号 */
+    @Excel(name = "版本号")
+    private String version;
 
-    /** 联系电话 */
-    @Size(min = 0, max = 20, message = "联系电话长度不能超过20个字符")
-    @Excel(name = "联系电话")
-    private String phone;
-
-    /** 签署状态：0-未签署，1-已签署 */
-    @Excel(name = "签署状态")
+    /** 状态 */
+    @Excel(name = "状态")
     private String status;
 
-    /** 签署时间 */
-    @Excel(name = "签署时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date signTime;
+    /** 生效时间 */
+    @Excel(name = "生效时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    private Date effectiveTime;
 
-    /** 删除标志（0存在 2删除） */
-    private String delFlag;
+    // 关联查询字段
+    private String clubName;
 
-    public void setDisclaimerId(Long disclaimerId) 
-    {
-        this.disclaimerId = disclaimerId;
-    }
-
-    public Long getDisclaimerId() 
-    {
+    public Long getDisclaimerId() {
         return disclaimerId;
     }
 
-    public void setClubId(Long clubId) 
-    {
-        this.clubId = clubId;
+    public void setDisclaimerId(Long disclaimerId) {
+        this.disclaimerId = disclaimerId;
     }
 
-    public Long getClubId() 
-    {
+    public Long getClubId() {
         return clubId;
     }
 
-    public void setActivityId(Long activityId) 
-    {
-        this.activityId = activityId;
+    public void setClubId(Long clubId) {
+        this.clubId = clubId;
     }
 
-    public Long getActivityId() 
-    {
-        return activityId;
+    public String getDisclaimerTitle() {
+        return disclaimerTitle;
     }
 
-    public void setWxUserId(Long wxUserId) 
-    {
-        this.wxUserId = wxUserId;
+    public void setDisclaimerTitle(String disclaimerTitle) {
+        this.disclaimerTitle = disclaimerTitle;
     }
 
-    public Long getWxUserId() 
-    {
-        return wxUserId;
+    public String getDisclaimerType() {
+        return disclaimerType;
     }
 
-    public void setSignerName(String signerName) 
-    {
-        this.signerName = signerName;
+    public void setDisclaimerType(String disclaimerType) {
+        this.disclaimerType = disclaimerType;
     }
 
-    public String getSignerName() 
-    {
-        return signerName;
+    public String getContent() {
+        return content;
     }
 
-    public void setIdCard(String idCard) 
-    {
-        this.idCard = idCard;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public String getIdCard() 
-    {
-        return idCard;
+    public String getVersion() {
+        return version;
     }
 
-    public void setPhone(String phone) 
-    {
-        this.phone = phone;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
-    public String getPhone() 
-    {
-        return phone;
-    }
-
-    public void setStatus(String status) 
-    {
-        this.status = status;
-    }
-
-    public String getStatus() 
-    {
+    public String getStatus() {
         return status;
     }
 
-    public void setSignTime(java.util.Date signTime) 
-    {
-        this.signTime = signTime;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    public java.util.Date getSignTime() 
-    {
-        return signTime;
+    public Date getEffectiveTime() {
+        return effectiveTime;
     }
 
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
+    public void setEffectiveTime(Date effectiveTime) {
+        this.effectiveTime = effectiveTime;
     }
 
-    public String getDelFlag() 
-    {
-        return delFlag;
+    public String getClubName() {
+        return clubName;
+    }
+
+    public void setClubName(String clubName) {
+        this.clubName = clubName;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("disclaimerId", getDisclaimerId())
             .append("clubId", getClubId())
-            .append("activityId", getActivityId())
-            .append("wxUserId", getWxUserId())
-            .append("signerName", getSignerName())
-            .append("idCard", getIdCard())
-            .append("phone", getPhone())
+            .append("disclaimerTitle", getDisclaimerTitle())
+            .append("disclaimerType", getDisclaimerType())
+            .append("content", getContent())
+            .append("version", getVersion())
             .append("status", getStatus())
-            .append("signTime", getSignTime())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
+            .append("effectiveTime", getEffectiveTime())
             .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
             .toString();
     }
 }

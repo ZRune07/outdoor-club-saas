@@ -1,68 +1,54 @@
 package com.ruoyi.outdoor.payment.mapper;
 
-import java.util.List;
 import com.ruoyi.outdoor.payment.domain.Payment;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
- * 支付Mapper接口
- * 
- * @author ruoyi
+ * 订单Mapper接口
  */
-public interface PaymentMapper 
-{
+@Mapper
+public interface PaymentMapper {
+    
     /**
-     * 查询支付
-     * 
-     * @param paymentId 支付主键
-     * @return 支付
+     * 根据订单ID查询
      */
-    public Payment selectPaymentByPaymentId(String paymentId);
-
+    Payment selectPaymentByOrderId(@Param("orderId") Long orderId);
+    
     /**
-     * 根据订单号查询支付
-     * 
-     * @param orderNo 订单号
-     * @return 支付
+     * 根据订单号查询
      */
-    public Payment selectPaymentByOrderNo(String orderNo);
-
+    Payment selectPaymentByOrderNo(@Param("orderNo") String orderNo);
+    
     /**
-     * 查询支付列表
-     * 
-     * @param payment 支付
-     * @return 支付集合
+     * 根据报名ID查询订单
      */
-    public List<Payment> selectPaymentList(Payment payment);
-
+    Payment selectPaymentByRegistrationId(@Param("registrationId") Long registrationId);
+    
     /**
-     * 新增支付
-     * 
-     * @param payment 支付
-     * @return 结果
+     * 查询用户的订单列表
      */
-    public int insertPayment(Payment payment);
-
+    List<Payment> selectPaymentListByUserId(@Param("wxUserId") Long wxUserId);
+    
     /**
-     * 修改支付
-     * 
-     * @param payment 支付
-     * @return 结果
+     * 查询俱乐部订单列表
      */
-    public int updatePayment(Payment payment);
-
+    List<Payment> selectPaymentList(Payment payment);
+    
     /**
-     * 删除支付
-     * 
-     * @param paymentId 支付主键
-     * @return 结果
+     * 新增订单
      */
-    public int deletePaymentByPaymentId(String paymentId);
-
+    int insertPayment(Payment payment);
+    
     /**
-     * 批量删除支付
-     * 
-     * @param paymentIds 需要删除的数据主键集合
-     * @return 结果
+     * 修改订单
      */
-    public int deletePaymentByPaymentIds(String[] paymentIds);
+    int updatePayment(Payment payment);
+    
+    /**
+     * 删除订单
+     */
+    int deletePaymentByOrderId(@Param("orderId") Long orderId);
 }

@@ -1,60 +1,87 @@
 package com.ruoyi.outdoor.disclaimer.mapper;
 
-import java.util.List;
 import com.ruoyi.outdoor.disclaimer.domain.Disclaimer;
+import com.ruoyi.outdoor.disclaimer.domain.SignRecord;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
- * 免责签署Mapper接口
- * 
- * @author ruoyi
+ * 免责声明Mapper接口
  */
-public interface DisclaimerMapper 
-{
+@Mapper
+public interface DisclaimerMapper {
+    
     /**
-     * 查询免责签署
-     * 
-     * @param disclaimerId 免责签署主键
-     * @return 免责签署
+     * 根据ID查询
      */
-    public Disclaimer selectDisclaimerByDisclaimerId(Long disclaimerId);
+    Disclaimer selectDisclaimerByDisclaimerId(@Param("disclaimerId") Long disclaimerId);
+    
+    /**
+     * 根据俱乐部ID查询有效的免责声明
+     */
+    Disclaimer selectActiveDisclaimerByClubId(@Param("clubId") Long clubId);
+    
+    /**
+     * 查询免责声明列表
+     */
+    List<Disclaimer> selectDisclaimerList(Disclaimer disclaimer);
+    
+    /**
+     * 新增免责声明
+     */
+    int insertDisclaimer(Disclaimer disclaimer);
+    
+    /**
+     * 更新免责声明
+     */
+    int updateDisclaimer(Disclaimer disclaimer);
+    
+    /**
+     * 删除免责声明
+     */
+    int deleteDisclaimerByDisclaimerId(@Param("disclaimerId") Long disclaimerId);
+}
 
+/**
+ * 签署记录Mapper接口
+ */
+@Mapper
+public interface SignRecordMapper {
+    
     /**
-     * 查询免责签署列表
-     * 
-     * @param disclaimer 免责签署
-     * @return 免责签署集合
+     * 根据ID查询
      */
-    public List<Disclaimer> selectDisclaimerList(Disclaimer disclaimer);
-
+    SignRecord selectSignRecordBySignId(@Param("signId") Long signId);
+    
     /**
-     * 新增免责签署
-     * 
-     * @param disclaimer 免责签署
-     * @return 结果
+     * 根据报名ID查询签署记录
      */
-    public int insertDisclaimer(Disclaimer disclaimer);
-
+    SignRecord selectSignRecordByRegistrationId(@Param("registrationId") Long registrationId);
+    
     /**
-     * 修改免责签署
-     * 
-     * @param disclaimer 免责签署
-     * @return 结果
+     * 根据用户ID查询签署记录
      */
-    public int updateDisclaimer(Disclaimer disclaimer);
-
+    List<SignRecord> selectSignRecordListByUserId(@Param("wxUserId") Long wxUserId);
+    
     /**
-     * 删除免责签署
-     * 
-     * @param disclaimerId 免责签署主键
-     * @return 结果
+     * 查询签署记录列表
      */
-    public int deleteDisclaimerByDisclaimerId(Long disclaimerId);
-
+    List<SignRecord> selectSignRecordList(SignRecord signRecord);
+    
     /**
-     * 批量删除免责签署
-     * 
-     * @param disclaimerIds 需要删除的数据主键集合
-     * @return 结果
+     * 新增签署记录
      */
-    public int deleteDisclaimerByDisclaimerIds(Long[] disclaimerIds);
+    int insertSignRecord(SignRecord signRecord);
+    
+    /**
+     * 更新签署记录
+     */
+    int updateSignRecord(SignRecord signRecord);
+    
+    /**
+     * 删除签署记录
+     */
+    int deleteSignRecordBySignId(@Param("signId") Long signId);
 }

@@ -25,16 +25,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="createTime"  column="create_time"  />
         <result property="updateBy"    column="update_by"    />
         <result property="updateTime"  column="update_time"  />
+        <result property="remark"      column="remark"       />
     </resultMap>
     
     <sql id="selectClubVo">
-        select club_id, club_name, club_code, logo, slogan, description, contact_name, contact_phone, contact_email, address, theme_config, banner_config, features_config, tabbar_config, status, del_flag, create_by, create_time, update_by, update_time, remark 
-		from outdoor_club
+        select club_id, club_name, club_code, logo, slogan, description, contact_name, 
+               contact_phone, contact_email, address, theme_config, banner_config, 
+               features_config, tabbar_config, status, del_flag, create_by, create_time, 
+               update_by, update_time, remark 
+		from club
     </sql>
     
     <select id="selectClubById" parameterType="Long" resultMap="ClubResult">
         <include refid="selectClubVo"/>
         where club_id = #{clubId}
+    </select>
+    
+    <select id="selectClubByCode" parameterType="String" resultMap="ClubResult">
+        <include refid="selectClubVo"/>
+        where club_code = #{clubCode}
     </select>
     
     <select id="selectClubList" parameterType="Club" resultMap="ClubResult">
@@ -50,14 +59,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="status != null and status != ''">
 				AND status = #{status}
 			</if>
-		</where>
+        </where>
     </select>
     
-    <insert id="insertClub" parameterType="Club">
-        insert into outdoor_club (
+    <insert id="insertClub" parameterType="Club" useGeneratedKeys="true" keyProperty="clubId">
+        insert into club (
 			<if test="clubName != null and clubName != ''">club_name,</if>
 			<if test="clubCode != null and clubCode != ''">club_code,</if>
-			<if test="logo != null and logo != ''">logo,</if>
+			<if test="logo != null">logo,</if>
 			<if test="slogan != null">slogan,</if>
 			<if test="description != null">description,</if>
 			<if test="contactName != null">contact_name,</if>
@@ -71,11 +80,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="status != null">status,</if>
 			<if test="createBy != null and createBy != ''">create_by,</if>
 			<if test="remark != null">remark,</if>
- 			create_time
+			create_time
         )values(
 			<if test="clubName != null and clubName != ''">#{clubName},</if>
 			<if test="clubCode != null and clubCode != ''">#{clubCode},</if>
-			<if test="logo != null and logo != ''">#{logo},</if>
+			<if test="logo != null">#{logo},</if>
 			<if test="slogan != null">#{slogan},</if>
 			<if test="description != null">#{description},</if>
 			<if test="contactName != null">#{contactName},</if>
@@ -89,12 +98,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="status != null">#{status},</if>
 			<if test="createBy != null and createBy != ''">#{createBy},</if>
 			<if test="remark != null">#{remark},</if>
- 			sysdate()
+			CURRENT_TIMESTAMP
 		)
     </insert>
 	 
     <update id="updateClub" parameterType="Club">
-        update outdoor_club 
+        update club 
         <set>
             <if test="clubName != null and clubName != ''">club_name = #{clubName},</if>
             <if test="clubCode != null and clubCode != ''">club_code = #{clubCode},</if>
@@ -112,17 +121,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
             <if test="remark != null">remark = #{remark},</if>
- 			update_time = sysdate()
+			update_time = CURRENT_TIMESTAMP
         </set>
         where club_id = #{clubId}
     </update>
 	
     <update id="deleteClubById" parameterType="Long">
-        update outdoor_club set del_flag = '2' where club_id = #{clubId}
+        update club set del_flag = '2' where club_id = #{clubId}
     </update>
     
     <update id="deleteClubByIds" parameterType="Long">
-        update outdoor_club set del_flag = '2' where club_id in 
+        update club set del_flag = '2' where club_id in 
         <foreach item="clubId" collection="array" open="(" separator="," close=")">
         	#{clubId}
         </foreach>

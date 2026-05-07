@@ -21,13 +21,13 @@ public class WxUserServiceImpl implements IWxUserService
     /**
      * 查询微信用户
      * 
-     * @param userId 微信用户主键
+     * @param wxUserId 微信用户ID
      * @return 微信用户
      */
     @Override
-    public WxUser selectWxUserByUserId(Long userId)
+    public WxUser selectWxUserByWxUserId(Long wxUserId)
     {
-        return wxUserMapper.selectWxUserByUserId(userId);
+        return wxUserMapper.selectWxUserByWxUserId(wxUserId);
     }
 
     /**
@@ -43,10 +43,22 @@ public class WxUserServiceImpl implements IWxUserService
     }
 
     /**
+     * 根据俱乐部ID查询微信用户列表
+     * 
+     * @param clubId 俱乐部ID
+     * @return 微信用户列表
+     */
+    @Override
+    public List<WxUser> selectWxUserByClubId(Long clubId)
+    {
+        return wxUserMapper.selectWxUserByClubId(clubId);
+    }
+
+    /**
      * 查询微信用户列表
      * 
      * @param wxUser 微信用户
-     * @return 微信用户
+     * @return 微信用户列表
      */
     @Override
     public List<WxUser> selectWxUserList(WxUser wxUser)
@@ -81,24 +93,24 @@ public class WxUserServiceImpl implements IWxUserService
     /**
      * 批量删除微信用户
      * 
-     * @param userIds 需要删除的微信用户主键
+     * @param wxUserIds 需要删除的微信用户ID
      * @return 结果
      */
     @Override
-    public int deleteWxUserByUserIds(Long[] userIds)
+    public int deleteWxUserByWxUserIds(Long[] wxUserIds)
     {
-        return wxUserMapper.deleteWxUserByUserIds(userIds);
+        return wxUserMapper.deleteWxUserByWxUserIds(wxUserIds);
     }
 
     /**
      * 删除微信用户信息
      * 
-     * @param userId 微信用户主键
+     * @param wxUserId 微信用户ID
      * @return 结果
      */
     @Override
-    public int deleteWxUserByUserId(Long userId)
+    public int deleteWxUserByWxUserId(Long wxUserId)
     {
-        return wxUserMapper.deleteWxUserByUserId(userId);
+        return wxUserMapper.deleteWxUserByWxUserId(wxUserId);
     }
 }

@@ -4,23 +4,17 @@ import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.http.UserAgentUtils;
+import com.ruoyi.common.utils.uuid.IdUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.common.utils.ip.IpUtils;
-import com.ruoyi.common.utils.uuid.IdUtils;
-import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.outdoor.wxuser.domain.WxUser;
 import com.ruoyi.outdoor.wxuser.dto.WxLoginRequest;
 import com.ruoyi.outdoor.wxuser.dto.WxLoginResponse;
 import com.ruoyi.outdoor.wxuser.mapper.WxUserMapper;
 import com.ruoyi.outdoor.wxuser.service.IWxLoginService;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -73,7 +67,7 @@ public class WxLoginServiceImpl implements IWxLoginService {
             response.setToken(token);
 
             WxLoginResponse.WxUserInfo userInfo = new WxLoginResponse.WxUserInfo();
-            userInfo.setUserId(wxUser.getUserId());
+            userInfo.setUserId(wxUser.getWxUserId());
             userInfo.setNickname(wxUser.getNickname());
             userInfo.setAvatar(wxUser.getAvatar());
             userInfo.setPhone(wxUser.getPhone());
@@ -89,6 +83,7 @@ public class WxLoginServiceImpl implements IWxLoginService {
         WxUser wxUser = wxUserMapper.selectWxUserByOpenid(openid);
 
         if (wxUser != null) {
+            // 更新用户信息
             if (request.getNickname() != null || request.getAvatar() != null) {
                 if (request.getNickname() != null) {
                     wxUser.setNickname(request.getNickname());
@@ -101,13 +96,16 @@ public class WxLoginServiceImpl implements IWxLoginService {
             }
             return wxUser;
         } else {
+            // 创建新用户
             wxUser = new WxUser();
             wxUser.setOpenid(openid);
             wxUser.setUnionid(unionid);
             wxUser.setNickname(request.getNickname() != null ? request.getNickname() : "微信用户");
             wxUser.setAvatar(request.getAvatar());
-            wxUser.setGender(request.getGender());
-            wxUser.setClubId(request.getClubId());
+            if (request.getGender() != null && !"".equals(request.getGender())) {
+                wxUser.setGender(Integer.parseInt(request.getGender()));
+            }
+            wxUser.setClubId(request.getClubId() != null ? request.getClubId() : 1L);
             wxUser.setStatus("0");
             wxUser.setDelFlag("0");
             wxUser.setCreateTime(DateUtils.getNowDate());
@@ -120,13 +118,13 @@ public class WxLoginServiceImpl implements IWxLoginService {
         String uuid = IdUtils.fastUUID();
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, uuid);
-        claims.put("userId", wxUser.getUserId());
+        claims.put("userId", wxUser.getWxUserId());
         claims.put("openid", wxUser.getOpenid());
         claims.put("clubId", wxUser.getClubId());
 
         String userKey = CacheConstants.LOGIN_TOKEN_KEY + uuid;
         Map<String, Object> userCache = new HashMap<>();
-        userCache.put("userId", wxUser.getUserId());
+        userCache.put("userId", wxUser.getWxUserId());
         userCache.put("openid", wxUser.getOpenid());
         userCache.put("nickname", wxUser.getNickname());
         userCache.put("avatar", wxUser.getAvatar());

@@ -5,52 +5,63 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.outdoor.wxuser.mapper.WxUserMapper">
     
     <resultMap type="WxUser" id="WxUserResult">
-        <id     property="userId"         column="user_id"         />
-        <result property="clubId"         column="club_id"         />
-        <result property="openid"         column="openid"         />
-        <result property="unionid"         column="unionid"         />
-        <result property="nickname"         column="nickname"         />
-        <result property="avatar"         column="avatar"         />
-        <result property="gender"         column="gender"         />
-        <result property="phone"         column="phone"         />
-        <result property="status"         column="status"         />
-        <result property="delFlag"         column="del_flag"         />
-        <result property="createBy"         column="create_by"         />
-        <result property="createTime"         column="create_time"         />
-        <result property="updateBy"         column="update_by"         />
-        <result property="updateTime"         column="update_time"         />
-        <result property="remark"         column="remark"         />
+        <id     property="wxUserId"    column="wx_user_id"    />
+        <result property="clubId"      column="club_id"      />
+        <result property="openid"      column="openid"       />
+        <result property="unionid"    column="unionid"      />
+        <result property="nickname"   column="nickname"     />
+        <result property="avatar"     column="avatar"       />
+        <result property="gender"     column="gender"       />
+        <result property="realName"   column="real_name"    />
+        <result property="phone"      column="phone"        />
+        <result property="idCard"    column="id_card"      />
+        <result property="status"     column="status"       />
+        <result property="delFlag"    column="del_flag"     />
+        <result property="createBy"   column="create_by"    />
+        <result property="createTime" column="create_time"  />
+        <result property="updateBy"   column="update_by"    />
+        <result property="updateTime" column="update_time"  />
+        <result property="remark"     column="remark"       />
     </resultMap>
 
     <sql id="selectWxUserVo">
-        select user_id, club_id, openid, unionid, nickname, avatar, gender, phone, status, del_flag, create_by, create_time, update_by, update_time, remark from outdoor_wx_user
+        select wx_user_id, club_id, openid, unionid, nickname, avatar, gender, 
+               real_name, phone, id_card, status, del_flag, 
+               create_by, create_time, update_by, update_time, remark 
+        from wx_user
     </sql>
 
     <select id="selectWxUserList" parameterType="WxUser" resultMap="WxUserResult">
         <include refid="selectWxUserVo"/>
         <where>  
             del_flag = '0'
-            <if test="clubId != null "> and club_id = #{clubId}</if>
-            <if test="openid != null  and openid != ''"> and openid = #{openid}</if>
-            <if test="nickname != null  and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
-            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="clubId != null"> and club_id = #{clubId}</if>
+            <if test="openid != null and openid != ''"> and openid = #{openid}</if>
+            <if test="nickname != null and nickname != ''"> and nickname like concat('%', #{nickname}, '%')</if>
+            <if test="phone != null and phone != ''"> and phone = #{phone}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
         </where>
         order by create_time desc
     </select>
     
-    <select id="selectWxUserByUserId" parameterType="Long" resultMap="WxUserResult">
+    <select id="selectWxUserByWxUserId" parameterType="Long" resultMap="WxUserResult">
         <include refid="selectWxUserVo"/>
-        where user_id = #{userId}
+        where wx_user_id = #{wxUserId}
     </select>
 
     <select id="selectWxUserByOpenid" parameterType="String" resultMap="WxUserResult">
         <include refid="selectWxUserVo"/>
         where openid = #{openid}
     </select>
+
+    <select id="selectWxUserByClubId" parameterType="Long" resultMap="WxUserResult">
+        <include refid="selectWxUserVo"/>
+        where club_id = #{clubId}
+        order by create_time desc
+    </select>
         
-    <insert id="insertWxUser" parameterType="WxUser" useGeneratedKeys="true" keyProperty="userId">
-        insert into outdoor_wx_user
+    <insert id="insertWxUser" parameterType="WxUser" useGeneratedKeys="true" keyProperty="wxUserId">
+        insert into wx_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="clubId != null">club_id,</if>
             <if test="openid != null and openid != ''">openid,</if>
@@ -58,7 +69,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nickname != null">nickname,</if>
             <if test="avatar != null">avatar,</if>
             <if test="gender != null">gender,</if>
+            <if test="realName != null">real_name,</if>
             <if test="phone != null">phone,</if>
+            <if test="idCard != null">id_card,</if>
             <if test="status != null">status,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
@@ -74,7 +87,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nickname != null">#{nickname},</if>
             <if test="avatar != null">#{avatar},</if>
             <if test="gender != null">#{gender},</if>
+            <if test="realName != null">#{realName},</if>
             <if test="phone != null">#{phone},</if>
+            <if test="idCard != null">#{idCard},</if>
             <if test="status != null">#{status},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
@@ -86,7 +101,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateWxUser" parameterType="WxUser">
-        update outdoor_wx_user
+        update wx_user
         <trim prefix="SET" suffixOverrides=",">
             <if test="clubId != null">club_id = #{clubId},</if>
             <if test="openid != null">openid = #{openid},</if>
@@ -94,23 +109,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="nickname != null">nickname = #{nickname},</if>
             <if test="avatar != null">avatar = #{avatar},</if>
             <if test="gender != null">gender = #{gender},</if>
+            <if test="realName != null">real_name = #{realName},</if>
             <if test="phone != null">phone = #{phone},</if>
+            <if test="idCard != null">id_card = #{idCard},</if>
             <if test="status != null">status = #{status},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
         </trim>
-        where user_id = #{userId}
+        where wx_user_id = #{wxUserId}
     </update>
 
-    <update id="deleteWxUserByUserId" parameterType="Long">
-        update outdoor_wx_user set del_flag = '2' where user_id = #{userId}
+    <update id="deleteWxUserByWxUserId" parameterType="Long">
+        update wx_user set del_flag = '2' where wx_user_id = #{wxUserId}
     </update>
 
-    <update id="deleteWxUserByUserIds" parameterType="Long">
-        update outdoor_wx_user set del_flag = '2' where user_id in 
-        <foreach item="userId" collection="array" open="(" separator="," close=")">
-            #{userId}
+    <update id="deleteWxUserByWxUserIds" parameterType="Long">
+        update wx_user set del_flag = '2' where wx_user_id in 
+        <foreach item="wxUserId" collection="array" open="(" separator="," close=")">
+            #{wxUserId}
         </foreach>
     </update>
 </mapper>

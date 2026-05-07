@@ -13,10 +13,25 @@ public interface IActivityService
     /**
      * 查询活动
      * 
-     * @param activityId 活动主键
+     * @param activityId 活动ID
      * @return 活动
      */
     public Activity selectActivityByActivityId(Long activityId);
+
+    /**
+     * 查询招募中的活动列表
+     * 
+     * @return 招募中的活动列表
+     */
+    public List<Activity> selectRecruitingActivities();
+
+    /**
+     * 根据俱乐部ID查询活动列表
+     * 
+     * @param clubId 俱乐部ID
+     * @return 活动列表
+     */
+    public List<Activity> selectActivityByClubId(Long clubId);
 
     /**
      * 查询活动列表
@@ -43,9 +58,18 @@ public interface IActivityService
     public int updateActivity(Activity activity);
 
     /**
+     * 更新活动人数
+     * 
+     * @param activityId 活动ID
+     * @param increment 增减人数
+     * @return 结果
+     */
+    public int updateActivityParticipants(Long activityId, int increment);
+
+    /**
      * 批量删除活动
      * 
-     * @param activityIds 需要删除的活动主键集合
+     * @param activityIds 需要删除的活动ID集合
      * @return 结果
      */
     public int deleteActivityByActivityIds(Long[] activityIds);
@@ -53,7 +77,7 @@ public interface IActivityService
     /**
      * 删除活动信息
      * 
-     * @param activityId 活动主键
+     * @param activityId 活动ID
      * @return 结果
      */
     public int deleteActivityByActivityId(Long activityId);

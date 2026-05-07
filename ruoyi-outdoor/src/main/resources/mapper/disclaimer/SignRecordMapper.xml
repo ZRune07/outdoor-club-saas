@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.disclaimer.mapper.SignRecordMapper">
+    
+    <resultMap type="com.ruoyi.outdoor.disclaimer.domain.SignRecord" id="SignRecordResult">
+        <id property="signId" column="sign_id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="disclaimerId" column="disclaimer_id"/>
+        <result property="registrationId" column="registration_id"/>
+        <result property="wxUserId" column="wx_user_id"/>
+        <result property="signName" column="sign_name"/>
+        <result property="signTime" column="sign_time"/>
+        <result property="signIp" column="sign_ip"/>
+        <result property="signDevice" column="sign_device"/>
+        <result property="signStatus" column="sign_status"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="disclaimerTitle" column="disclaimer_title"/>
+        <result property="activityTitle" column="activity_title"/>
+        <result property="phone" column="phone"/>
+    </resultMap>
+
+    <sql id="selectSignRecordVo">
+        SELECT s.sign_id, s.club_id, s.disclaimer_id, s.registration_id, s.wx_user_id,
+               s.sign_name, s.sign_time, s.sign_ip, s.sign_device, s.sign_status,
+               s.create_by, s.create_time,
+               d.disclaimer_title, a.activity_title, r.phone
+        FROM dis_sign_record s
+        LEFT JOIN dis_disclaimer d ON s.disclaimer_id = d.disclaimer_id
+        LEFT JOIN reg_registration r ON s.registration_id = r.registration_id
+        LEFT JOIN act_activity a ON r.activity_id = a.activity_id
+    </sql>
+
+    <select id="selectSignRecordBySignId" parameterType="Long" resultMap="SignRecordResult">
+        <include refid="selectSignRecordVo"/>
+        WHERE s.sign_id = #{signId}
+    </select>
+
+    <select id="selectSignRecordByRegistrationId" parameterType="Long" resultMap="SignRecordResult">
+        <include refid="selectSignRecordVo"/>
+        WHERE s.registration_id = #{registrationId}
+        ORDER BY s.sign_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectSignRecordListByUserId" parameterType="Long" resultMap="SignRecordResult">
+        <include refid="selectSignRecordVo"/>
+        WHERE s.wx_user_id = #{wxUserId}
+        ORDER BY s.sign_time DESC
+    </select>
+
+    <select id="selectSignRecordList" parameterType="com.ruoyi.outdoor.disclaimer.domain.SignRecord" resultMap="SignRecordResult">
+        <include refid="selectSignRecordVo"/>
+        <where>
+            <if test="clubId != null">
+                AND s.club_id = #{clubId}
+            </if>
+            <if test="wxUserId != null">
+                AND s.wx_user_id = #{wxUserId}
+            </if>
+            <if test="disclaimerId != null">
+                AND s.disclaimer_id = #{disclaimerId}
+            </if>
+            <if test="registrationId != null">
+                AND s.registration_id = #{registrationId}
+            </if>
+            <if test="signStatus != null and signStatus != ''">
+                AND s.sign_status = #{signStatus}
+            </if>
+        </where>
+        ORDER BY s.sign_time DESC
+    </select>
+
+    <insert id="insertSignRecord" parameterType="com.ruoyi.outdoor.disclaimer.domain.SignRecord" useGeneratedKeys="true" keyProperty="signId">
+        INSERT INTO dis_sign_record (
+            <if test="clubId != null">club_id,</if>
+            <if test="disclaimerId != null">disclaimer_id,</if>
+            <if test="registrationId != null">registration_id,</if>
+            <if test="wxUserId != null">wx_user_id,</if>
+            <if test="signName != null">sign_name,</if>
+            <if test="signTime != null">sign_time,</if>
+            <if test="signIp != null">sign_ip,</if>
+            <if test="signDevice != null">sign_device,</if>
+            <if test="signStatus != null">sign_status,</if>
+            <if test="createBy != null">create_by</if>
+        ) VALUES (
+            <if test="clubId != null">#{clubId},</if>
+            <if test="disclaimerId != null">#{disclaimerId},</if>
+            <if test="registrationId != null">#{registrationId},</if>
+            <if test="wxUserId != null">#{wxUserId},</if>
+            <if test="signName != null">#{signName},</if>
+            <if test="signTime != null">#{signTime},</if>
+            <if test="signIp != null">#{signIp},</if>
+            <if test="signDevice != null">#{signDevice},</if>
+            <if test="signStatus != null">#{signStatus},</if>
+            <if test="createBy != null">#{createBy}</if>
+        )
+    </insert>
+
+    <update id="updateSignRecord" parameterType="com.ruoyi.outdoor.disclaimer.domain.SignRecord">
+        UPDATE dis_sign_record
+        <set>
+            <if test="signStatus != null">sign_status = #{signStatus},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        WHERE sign_id = #{signId}
+    </update>
+
+    <delete id="deleteSignRecordBySignId" parameterType="Long">
+        DELETE FROM dis_sign_record WHERE sign_id = #{signId}
+    </delete>
+</mapper>

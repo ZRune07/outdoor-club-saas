@@ -1,60 +1,62 @@
 package com.ruoyi.outdoor.payment.service;
 
-import java.util.List;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.outdoor.payment.domain.Payment;
 
+import java.util.List;
+
 /**
- * 支付Service接口
- * 
- * @author ruoyi
+ * 订单Service接口
  */
-public interface IPaymentService 
-{
+public interface IPaymentService {
+    
     /**
-     * 查询支付
-     * 
-     * @param paymentId 支付主键
-     * @return 支付
+     * 根据订单ID查询
      */
-    public Payment selectPaymentByPaymentId(Long paymentId);
-
+    Payment selectPaymentByOrderId(Long orderId);
+    
     /**
-     * 查询支付列表
-     * 
-     * @param payment 支付
-     * @return 支付集合
+     * 根据订单号查询
      */
-    public List<Payment> selectPaymentList(Payment payment);
-
+    Payment selectPaymentByOrderNo(String orderNo);
+    
     /**
-     * 新增支付
-     * 
-     * @param payment 支付
-     * @return 结果
+     * 根据报名ID查询订单
      */
-    public int insertPayment(Payment payment);
-
+    Payment selectPaymentByRegistrationId(Long registrationId);
+    
     /**
-     * 修改支付
-     * 
-     * @param payment 支付
-     * @return 结果
+     * 查询用户的订单列表
      */
-    public int updatePayment(Payment payment);
-
+    List<Payment> selectPaymentListByUserId(Long wxUserId);
+    
     /**
-     * 批量删除支付
-     * 
-     * @param paymentIds 需要删除的支付主键集合
-     * @return 结果
+     * 查询俱乐部订单列表
      */
-    public int deletePaymentByPaymentIds(Long[] paymentIds);
-
+    List<Payment> selectPaymentList(Payment payment);
+    
     /**
-     * 删除支付信息
-     * 
-     * @param paymentId 支付主键
-     * @return 结果
+     * 创建订单
      */
-    public int deletePaymentByPaymentId(Long paymentId);
+    Long createPayment(Payment payment);
+    
+    /**
+     * 更新订单状态
+     */
+    int updatePaymentStatus(Long orderId, String status, String transactionId);
+    
+    /**
+     * 删除订单
+     */
+    int deletePaymentByOrderId(Long orderId);
+    
+    /**
+     * 发起微信支付
+     */
+    AjaxResult createWxPayOrder(Payment payment);
+    
+    /**
+     * 微信支付回调处理
+     */
+    AjaxResult handleWxPayCallback(String xmlData);
 }

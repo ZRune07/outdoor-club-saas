@@ -1,6 +1,5 @@
 package com.ruoyi.outdoor.wxuser.domain;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -8,7 +7,7 @@ import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
 /**
- * 微信用户对象 outdoor_wx_user
+ * 微信用户对象 wx_user
  * 
  * @author ruoyi
  */
@@ -16,15 +15,15 @@ public class WxUser extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 用户ID */
-    private Long userId;
+    /** 微信用户ID */
+    @Excel(name = "微信用户ID")
+    private Long wxUserId;
 
     /** 俱乐部ID */
     @Excel(name = "俱乐部ID")
     private Long clubId;
 
     /** 微信 openid */
-    @NotBlank(message = "微信 openid 不能为空")
     @Size(min = 0, max = 100, message = "微信 openid 长度不能超过100个字符")
     @Excel(name = "微信 openid")
     private String openid;
@@ -46,12 +45,22 @@ public class WxUser extends BaseEntity
 
     /** 性别：0-未知，1-男，2-女 */
     @Excel(name = "性别")
-    private String gender;
+    private Integer gender;
+
+    /** 真实姓名 */
+    @Size(min = 0, max = 50, message = "真实姓名长度不能超过50个字符")
+    @Excel(name = "真实姓名")
+    private String realName;
 
     /** 手机号 */
     @Size(min = 0, max = 20, message = "手机号长度不能超过20个字符")
     @Excel(name = "手机号")
     private String phone;
+
+    /** 身份证号 */
+    @Size(min = 0, max = 100, message = "身份证号长度不能超过100个字符")
+    @Excel(name = "身份证号")
+    private String idCard;
 
     /** 状态：0-正常，1-禁用 */
     @Excel(name = "状态")
@@ -60,14 +69,14 @@ public class WxUser extends BaseEntity
     /** 删除标志（0存在 2删除） */
     private String delFlag;
 
-    public void setUserId(Long userId) 
+    public void setWxUserId(Long wxUserId) 
     {
-        this.userId = userId;
+        this.wxUserId = wxUserId;
     }
 
-    public Long getUserId() 
+    public Long getWxUserId() 
     {
-        return userId;
+        return wxUserId;
     }
 
     public void setClubId(Long clubId) 
@@ -120,14 +129,24 @@ public class WxUser extends BaseEntity
         return avatar;
     }
 
-    public void setGender(String gender) 
+    public void setGender(Integer gender) 
     {
         this.gender = gender;
     }
 
-    public String getGender() 
+    public Integer getGender() 
     {
         return gender;
+    }
+
+    public void setRealName(String realName) 
+    {
+        this.realName = realName;
+    }
+
+    public String getRealName() 
+    {
+        return realName;
     }
 
     public void setPhone(String phone) 
@@ -138,6 +157,16 @@ public class WxUser extends BaseEntity
     public String getPhone() 
     {
         return phone;
+    }
+
+    public void setIdCard(String idCard) 
+    {
+        this.idCard = idCard;
+    }
+
+    public String getIdCard() 
+    {
+        return idCard;
     }
 
     public void setStatus(String status) 
@@ -162,15 +191,17 @@ public class WxUser extends BaseEntity
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("userId", getUserId())
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+            .append("wxUserId", getWxUserId())
             .append("clubId", getClubId())
             .append("openid", getOpenid())
             .append("unionid", getUnionid())
             .append("nickname", getNickname())
             .append("avatar", getAvatar())
             .append("gender", getGender())
+            .append("realName", getRealName())
             .append("phone", getPhone())
+            .append("idCard", getIdCard())
             .append("status", getStatus())
             .append("delFlag", getDelFlag())
             .append("createBy", getCreateBy())

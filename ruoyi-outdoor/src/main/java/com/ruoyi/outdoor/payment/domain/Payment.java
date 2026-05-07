@@ -1,37 +1,31 @@
 package com.ruoyi.outdoor.payment.domain;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import java.math.BigDecimal;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
- * 支付对象 outdoor_payment
- * 
- * @author ruoyi
+ * 订单对象 pay_order
  */
-public class Payment extends BaseEntity
-{
+public class Payment extends BaseEntity {
     private static final long serialVersionUID = 1L;
 
-    /** 支付ID */
-    private String paymentId;
+    /** 订单ID */
+    private Long orderId;
+
+    /** 订单号 */
+    @Excel(name = "订单号")
+    private String orderNo;
 
     /** 俱乐部ID */
-    @NotNull(message = "俱乐部ID不能为空")
     @Excel(name = "俱乐部ID")
     private Long clubId;
 
-    /** 活动ID */
-    @Excel(name = "活动ID")
-    private Long activityId;
-
     /** 报名ID */
-    @NotNull(message = "报名ID不能为空")
     @Excel(name = "报名ID")
     private Long registrationId;
 
@@ -39,177 +33,174 @@ public class Payment extends BaseEntity
     @Excel(name = "微信用户ID")
     private Long wxUserId;
 
-    /** 支付订单号 */
-    @NotBlank(message = "支付订单号不能为空")
-    @Size(min = 0, max = 64, message = "支付订单号长度不能超过64个字符")
-    @Excel(name = "支付订单号")
-    private String orderNo;
+    /** 订单类型 */
+    @Excel(name = "订单类型")
+    private String orderType;
 
-    /** 第三方支付流水号 */
-    @Size(min = 0, max = 64, message = "第三方支付流水号长度不能超过64个字符")
-    @Excel(name = "第三方支付流水号")
-    private String transactionId;
-
-    /** 支付金额 */
-    @Excel(name = "支付金额")
+    /** 订单总金额 */
+    @Excel(name = "订单总金额")
     private BigDecimal totalAmount;
 
-    /** 支付方式：wechat-微信支付 */
-    @Size(min = 0, max = 20, message = "支付方式长度不能超过20个字符")
-    @Excel(name = "支付方式")
-    private String paymentMethod;
+    /** 优惠金额 */
+    @Excel(name = "优惠金额")
+    private BigDecimal discountAmount;
 
-    /** 支付状态：0-待支付，1-已支付，2-已取消，3-已退款 */
+    /** 实际支付金额 */
+    @Excel(name = "实际支付金额")
+    private BigDecimal payAmount;
+
+    /** 支付状态 */
     @Excel(name = "支付状态")
-    private String status;
+    private String payStatus;
 
     /** 支付时间 */
     @Excel(name = "支付时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
-    private java.util.Date payTime;
+    private Date payTime;
 
-    /** 删除标志（0存在 2删除） */
-    private String delFlag;
+    /** 微信交易号 */
+    @Excel(name = "微信交易号")
+    private String transactionId;
 
-    public void setPaymentId(String paymentId) 
-    {
-        this.paymentId = paymentId;
+    // 关联查询字段（非数据库字段）
+    private String activityTitle;
+    private String realName;
+    private String phone;
+
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public String getPaymentId() 
-    {
-        return paymentId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
-    public void setClubId(Long clubId) 
-    {
-        this.clubId = clubId;
-    }
-
-    public Long getClubId() 
-    {
-        return clubId;
-    }
-
-    public void setActivityId(Long activityId) 
-    {
-        this.activityId = activityId;
-    }
-
-    public Long getActivityId() 
-    {
-        return activityId;
-    }
-
-    public void setRegistrationId(Long registrationId) 
-    {
-        this.registrationId = registrationId;
-    }
-
-    public Long getRegistrationId() 
-    {
-        return registrationId;
-    }
-
-    public void setWxUserId(Long wxUserId) 
-    {
-        this.wxUserId = wxUserId;
-    }
-
-    public Long getWxUserId() 
-    {
-        return wxUserId;
-    }
-
-    public void setOrderNo(String orderNo) 
-    {
-        this.orderNo = orderNo;
-    }
-
-    public String getOrderNo() 
-    {
+    public String getOrderNo() {
         return orderNo;
     }
 
-    public void setTransactionId(String transactionId) 
-    {
-        this.transactionId = transactionId;
+    public void setOrderNo(String orderNo) {
+        this.orderNo = orderNo;
     }
 
-    public String getTransactionId() 
-    {
-        return transactionId;
+    public Long getClubId() {
+        return clubId;
     }
 
-    public void setTotalAmount(BigDecimal totalAmount) 
-    {
-        this.totalAmount = totalAmount;
+    public void setClubId(Long clubId) {
+        this.clubId = clubId;
     }
 
-    public BigDecimal getTotalAmount() 
-    {
+    public Long getRegistrationId() {
+        return registrationId;
+    }
+
+    public void setRegistrationId(Long registrationId) {
+        this.registrationId = registrationId;
+    }
+
+    public Long getWxUserId() {
+        return wxUserId;
+    }
+
+    public void setWxUserId(Long wxUserId) {
+        this.wxUserId = wxUserId;
+    }
+
+    public String getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(String orderType) {
+        this.orderType = orderType;
+    }
+
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setPaymentMethod(String paymentMethod) 
-    {
-        this.paymentMethod = paymentMethod;
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
     }
 
-    public String getPaymentMethod() 
-    {
-        return paymentMethod;
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
     }
 
-    public void setStatus(String status) 
-    {
-        this.status = status;
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
     }
 
-    public String getStatus() 
-    {
-        return status;
+    public BigDecimal getPayAmount() {
+        return payAmount;
     }
 
-    public void setPayTime(java.util.Date payTime) 
-    {
-        this.payTime = payTime;
+    public void setPayAmount(BigDecimal payAmount) {
+        this.payAmount = payAmount;
     }
 
-    public java.util.Date getPayTime() 
-    {
+    public String getPayStatus() {
+        return payStatus;
+    }
+
+    public void setPayStatus(String payStatus) {
+        this.payStatus = payStatus;
+    }
+
+    public Date getPayTime() {
         return payTime;
     }
 
-    public void setDelFlag(String delFlag) 
-    {
-        this.delFlag = delFlag;
+    public void setPayTime(Date payTime) {
+        this.payTime = payTime;
     }
 
-    public String getDelFlag() 
-    {
-        return delFlag;
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getActivityTitle() {
+        return activityTitle;
+    }
+
+    public void setActivityTitle(String activityTitle) {
+        this.activityTitle = activityTitle;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this,ToStringStyle.MULTI_LINE_STYLE)
-            .append("paymentId", getPaymentId())
+        return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+            .append("orderId", getOrderId())
+            .append("orderNo", getOrderNo())
             .append("clubId", getClubId())
-            .append("activityId", getActivityId())
             .append("registrationId", getRegistrationId())
             .append("wxUserId", getWxUserId())
-            .append("orderNo", getOrderNo())
-            .append("transactionId", getTransactionId())
+            .append("orderType", getOrderType())
             .append("totalAmount", getTotalAmount())
-            .append("paymentMethod", getPaymentMethod())
-            .append("status", getStatus())
+            .append("payAmount", getPayAmount())
+            .append("payStatus", getPayStatus())
             .append("payTime", getPayTime())
-            .append("delFlag", getDelFlag())
-            .append("createBy", getCreateBy())
+            .append("transactionId", getTransactionId())
             .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
             .toString();
     }
 }

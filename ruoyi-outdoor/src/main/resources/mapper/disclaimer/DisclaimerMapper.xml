@@ -4,108 +4,103 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.outdoor.disclaimer.mapper.DisclaimerMapper">
     
-    <resultMap type="Disclaimer" id="DisclaimerResult">
-        <id     property="disclaimerId"     column="disclaimer_id"     />
-        <result property="clubId"           column="club_id"           />
-        <result property="activityId"       column="activity_id"       />
-        <result property="wxUserId"         column="wx_user_id"        />
-        <result property="signerName"       column="signer_name"       />
-        <result property="idCard"           column="id_card"           />
-        <result property="phone"            column="phone"             />
-        <result property="status"           column="status"            />
-        <result property="signTime"         column="sign_time"         />
-        <result property="delFlag"          column="del_flag"          />
-        <result property="createBy"         column="create_by"         />
-        <result property="createTime"       column="create_time"       />
-        <result property="updateBy"         column="update_by"         />
-        <result property="updateTime"       column="update_time"       />
-        <result property="remark"           column="remark"            />
+    <resultMap type="com.ruoyi.outdoor.disclaimer.domain.Disclaimer" id="DisclaimerResult">
+        <id property="disclaimerId" column="disclaimer_id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="disclaimerTitle" column="disclaimer_title"/>
+        <result property="disclaimerType" column="disclaimer_type"/>
+        <result property="content" column="content"/>
+        <result property="version" column="version"/>
+        <result property="status" column="status"/>
+        <result property="effectiveTime" column="effective_time"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="clubName" column="club_name"/>
     </resultMap>
 
     <sql id="selectDisclaimerVo">
-        select disclaimer_id, club_id, activity_id, wx_user_id, signer_name, id_card, phone, status, sign_time, del_flag, create_by, create_time, update_by, update_time, remark from outdoor_disclaimer
+        SELECT d.disclaimer_id, d.club_id, d.disclaimer_title, d.disclaimer_type, 
+               d.content, d.version, d.status, d.effective_time,
+               d.create_by, d.create_time, d.update_by, d.update_time, d.remark,
+               c.club_name
+        FROM dis_disclaimer d
+        LEFT JOIN club c ON d.club_id = c.club_id
     </sql>
 
-    <select id="selectDisclaimerList" parameterType="Disclaimer" resultMap="DisclaimerResult">
-        <include refid="selectDisclaimerVo"/>
-        <where>  
-            del_flag = '0'
-            <if test="clubId != null "> and club_id = #{clubId}</if>
-            <if test="activityId != null "> and activity_id = #{activityId}</if>
-            <if test="wxUserId != null "> and wx_user_id = #{wxUserId}</if>
-            <if test="signerName != null  and signerName != ''"> and signer_name like concat('%', #{signerName}, '%')</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-        </where>
-        order by create_time desc
-    </select>
-    
     <select id="selectDisclaimerByDisclaimerId" parameterType="Long" resultMap="DisclaimerResult">
         <include refid="selectDisclaimerVo"/>
-        where disclaimer_id = #{disclaimerId}
+        WHERE d.disclaimer_id = #{disclaimerId}
     </select>
-        
-    <insert id="insertDisclaimer" parameterType="Disclaimer" useGeneratedKeys="true" keyProperty="disclaimerId">
-        insert into outdoor_disclaimer
-        <trim prefix="(" suffix=")" suffixOverrides=",">
+
+    <select id="selectActiveDisclaimerByClubId" parameterType="Long" resultMap="DisclaimerResult">
+        <include refid="selectDisclaimerVo"/>
+        WHERE d.club_id = #{clubId}
+          AND d.status = 'active'
+          AND (d.effective_time IS NULL OR d.effective_time &lt;= CURRENT_TIMESTAMP)
+        ORDER BY d.effective_time DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectDisclaimerList" parameterType="com.ruoyi.outdoor.disclaimer.domain.Disclaimer" resultMap="DisclaimerResult">
+        <include refid="selectDisclaimerVo"/>
+        <where>
+            <if test="clubId != null">
+                AND d.club_id = #{clubId}
+            </if>
+            <if test="disclaimerType != null and disclaimerType != ''">
+                AND d.disclaimer_type = #{disclaimerType}
+            </if>
+            <if test="status != null and status != ''">
+                AND d.status = #{status}
+            </if>
+        </where>
+        ORDER BY d.create_time DESC
+    </select>
+
+    <insert id="insertDisclaimer" parameterType="com.ruoyi.outdoor.disclaimer.domain.Disclaimer" useGeneratedKeys="true" keyProperty="disclaimerId">
+        INSERT INTO dis_disclaimer (
             <if test="clubId != null">club_id,</if>
-            <if test="activityId != null">activity_id,</if>
-            <if test="wxUserId != null">wx_user_id,</if>
-            <if test="signerName != null and signerName != ''">signer_name,</if>
-            <if test="idCard != null">id_card,</if>
-            <if test="phone != null">phone,</if>
+            <if test="disclaimerTitle != null">disclaimer_title,</if>
+            <if test="disclaimerType != null">disclaimer_type,</if>
+            <if test="content != null">content,</if>
+            <if test="version != null">version,</if>
             <if test="status != null">status,</if>
-            <if test="signTime != null">sign_time,</if>
-            <if test="delFlag != null">del_flag,</if>
+            <if test="effectiveTime != null">effective_time,</if>
             <if test="createBy != null">create_by,</if>
-            <if test="createTime != null">create_time,</if>
-            <if test="updateBy != null">update_by,</if>
-            <if test="updateTime != null">update_time,</if>
-            <if test="remark != null">remark,</if>
-         </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="remark != null">remark</if>
+        ) VALUES (
             <if test="clubId != null">#{clubId},</if>
-            <if test="activityId != null">#{activityId},</if>
-            <if test="wxUserId != null">#{wxUserId},</if>
-            <if test="signerName != null and signerName != ''">#{signerName},</if>
-            <if test="idCard != null">#{idCard},</if>
-            <if test="phone != null">#{phone},</if>
+            <if test="disclaimerTitle != null">#{disclaimerTitle},</if>
+            <if test="disclaimerType != null">#{disclaimerType},</if>
+            <if test="content != null">#{content},</if>
+            <if test="version != null">#{version},</if>
             <if test="status != null">#{status},</if>
-            <if test="signTime != null">#{signTime},</if>
-            <if test="delFlag != null">#{delFlag},</if>
+            <if test="effectiveTime != null">#{effectiveTime},</if>
             <if test="createBy != null">#{createBy},</if>
-            <if test="createTime != null">#{createTime},</if>
-            <if test="updateBy != null">#{updateBy},</if>
-            <if test="updateTime != null">#{updateTime},</if>
-            <if test="remark != null">#{remark},</if>
-         </trim>
+            <if test="remark != null">#{remark}</if>
+        )
     </insert>
 
-    <update id="updateDisclaimer" parameterType="Disclaimer">
-        update outdoor_disclaimer
-        <trim prefix="SET" suffixOverrides=",">
-            <if test="clubId != null">club_id = #{clubId},</if>
-            <if test="activityId != null">activity_id = #{activityId},</if>
-            <if test="wxUserId != null">wx_user_id = #{wxUserId},</if>
-            <if test="signerName != null">signer_name = #{signerName},</if>
-            <if test="idCard != null">id_card = #{idCard},</if>
-            <if test="phone != null">phone = #{phone},</if>
+    <update id="updateDisclaimer" parameterType="com.ruoyi.outdoor.disclaimer.domain.Disclaimer">
+        UPDATE dis_disclaimer
+        <set>
+            <if test="disclaimerTitle != null">disclaimer_title = #{disclaimerTitle},</if>
+            <if test="disclaimerType != null">disclaimer_type = #{disclaimerType},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="version != null">version = #{version},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="signTime != null">sign_time = #{signTime},</if>
+            <if test="effectiveTime != null">effective_time = #{effectiveTime},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
-            <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
-        </trim>
-        where disclaimer_id = #{disclaimerId}
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        WHERE disclaimer_id = #{disclaimerId}
     </update>
 
-    <update id="deleteDisclaimerByDisclaimerId" parameterType="Long">
-        update outdoor_disclaimer set del_flag = '2' where disclaimer_id = #{disclaimerId}
-    </update>
-
-    <update id="deleteDisclaimerByDisclaimerIds" parameterType="Long">
-        update outdoor_disclaimer set del_flag = '2' where disclaimer_id in 
-        <foreach item="disclaimerId" collection="array" open="(" separator="," close=")">
-            #{disclaimerId}
-        </foreach>
-    </update>
+    <delete id="deleteDisclaimerByDisclaimerId" parameterType="Long">
+        DELETE FROM dis_disclaimer WHERE disclaimer_id = #{disclaimerId}
+    </delete>
 </mapper>

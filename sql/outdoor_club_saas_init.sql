@@ -943,3 +943,244 @@ COMMENT ON COLUMN reg_registration.update_by IS '更新者';
 COMMENT ON COLUMN reg_registration.update_time IS '更新时间';
 
 CREATE INDEX idx_reg_reg_club ON reg_registration(club_id
+
+-- ----------------------------
+-- 21、订单表
+-- ----------------------------
+DROP TABLE IF EXISTS pay_order CASCADE;
+CREATE TABLE pay_order (
+  order_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  order_no VARCHAR(64) NOT NULL UNIQUE,
+  club_id BIGINT NOT NULL,
+  registration_id BIGINT NOT NULL,
+  wx_user_id BIGINT NOT NULL,
+  order_type VARCHAR(20) DEFAULT 'activity',
+  total_amount DECIMAL(10, 2) NOT NULL,
+  discount_amount DECIMAL(10, 2) DEFAULT 0,
+  pay_amount DECIMAL(10, 2) NOT NULL,
+  pay_status VARCHAR(20) DEFAULT 'pending',
+  pay_time TIMESTAMP,
+  transaction_id VARCHAR(128),
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP,
+  remark VARCHAR(500)
+);
+
+COMMENT ON TABLE pay_order IS '订单表';
+COMMENT ON COLUMN pay_order.order_id IS '订单ID';
+COMMENT ON COLUMN pay_order.order_no IS '订单号';
+COMMENT ON COLUMN pay_order.club_id IS '俱乐部ID';
+COMMENT ON COLUMN pay_order.registration_id IS '报名ID';
+COMMENT ON COLUMN pay_order.wx_user_id IS '微信用户ID';
+COMMENT ON COLUMN pay_order.order_type IS '订单类型（activity活动 insurance保险）';
+COMMENT ON COLUMN pay_order.total_amount IS '订单总金额';
+COMMENT ON COLUMN pay_order.discount_amount IS '优惠金额';
+COMMENT ON COLUMN pay_order.pay_amount IS '实际支付金额';
+COMMENT ON COLUMN pay_order.pay_status IS '支付状态（pending待支付 paid已支付 refunded已退款）';
+COMMENT ON COLUMN pay_order.pay_time IS '支付时间';
+COMMENT ON COLUMN pay_order.transaction_id IS '微信交易号';
+COMMENT ON COLUMN pay_order.create_by IS '创建者';
+COMMENT ON COLUMN pay_order.create_time IS '创建时间';
+COMMENT ON COLUMN pay_order.update_by IS '更新者';
+COMMENT ON COLUMN pay_order.update_time IS '更新时间';
+COMMENT ON COLUMN pay_order.remark IS '备注';
+
+CREATE INDEX idx_pay_order_club ON pay_order(club_id);
+CREATE INDEX idx_pay_order_reg ON pay_order(registration_id);
+CREATE INDEX idx_pay_order_user ON pay_order(wx_user_id);
+CREATE INDEX idx_pay_order_no ON pay_order(order_no);
+
+
+-- ----------------------------
+-- 22、免责声明表
+-- ----------------------------
+DROP TABLE IF EXISTS dis_disclaimer CASCADE;
+CREATE TABLE dis_disclaimer (
+  disclaimer_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  disclaimer_title VARCHAR(200) NOT NULL,
+  disclaimer_type VARCHAR(50) DEFAULT 'general',
+  content TEXT NOT NULL,
+  version VARCHAR(20) DEFAULT '1.0',
+  status VARCHAR(20) DEFAULT 'active',
+  effective_time TIMESTAMP,
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP,
+  remark VARCHAR(500)
+);
+
+COMMENT ON TABLE dis_disclaimer IS '免责声明表';
+COMMENT ON COLUMN dis_disclaimer.disclaimer_id IS '免责声明ID';
+COMMENT ON COLUMN dis_disclaimer.club_id IS '俱乐部ID';
+COMMENT ON COLUMN dis_disclaimer.disclaimer_title IS '免责标题';
+COMMENT ON COLUMN dis_disclaimer.disclaimer_type IS '免责类型（general通用 activity活动）';
+COMMENT ON COLUMN dis_disclaimer.content IS '免责内容';
+COMMENT ON COLUMN dis_disclaimer.version IS '版本号';
+COMMENT ON COLUMN dis_disclaimer.status IS '状态（active生效 inactive失效）';
+COMMENT ON COLUMN dis_disclaimer.effective_time IS '生效时间';
+COMMENT ON COLUMN dis_disclaimer.create_by IS '创建者';
+COMMENT ON COLUMN dis_disclaimer.create_time IS '创建时间';
+COMMENT ON COLUMN dis_disclaimer.update_by IS '更新者';
+COMMENT ON COLUMN dis_disclaimer.update_time IS '更新时间';
+COMMENT ON COLUMN dis_disclaimer.remark IS '备注';
+
+CREATE INDEX idx_disclaimer_club ON dis_disclaimer(club_id);
+CREATE INDEX idx_disclaimer_type ON dis_disclaimer(disclaimer_type);
+
+
+-- ----------------------------
+-- 23、免责签署记录表
+-- ----------------------------
+DROP TABLE IF EXISTS dis_sign_record CASCADE;
+CREATE TABLE dis_sign_record (
+  sign_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  disclaimer_id BIGINT NOT NULL,
+  registration_id BIGINT,
+  wx_user_id BIGINT NOT NULL,
+  sign_name VARCHAR(50) NOT NULL,
+  sign_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  sign_ip VARCHAR(128),
+  sign_device VARCHAR(200),
+  sign_status VARCHAR(20) DEFAULT 'signed',
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE dis_sign_record IS '免责签署记录表';
+COMMENT ON COLUMN dis_sign_record.sign_id IS '签署ID';
+COMMENT ON COLUMN dis_sign_record.club_id IS '俱乐部ID';
+COMMENT ON COLUMN dis_sign_record.disclaimer_id IS '免责声明ID';
+COMMENT ON COLUMN dis_sign_record.registration_id IS '报名ID';
+COMMENT ON COLUMN dis_sign_record.wx_user_id IS '微信用户ID';
+COMMENT ON COLUMN dis_sign_record.sign_name IS '签署人姓名';
+COMMENT ON COLUMN dis_sign_record.sign_time IS '签署时间';
+COMMENT ON COLUMN dis_sign_record.sign_ip IS '签署IP地址';
+COMMENT ON COLUMN dis_sign_record.sign_device IS '签署设备';
+COMMENT ON COLUMN dis_sign_record.sign_status IS '签署状态（signed已签署 withdrawn已撤回）';
+COMMENT ON COLUMN dis_sign_record.create_by IS '创建者';
+COMMENT ON COLUMN dis_sign_record.create_time IS '创建时间';
+
+CREATE INDEX idx_sign_club ON dis_sign_record(club_id);
+CREATE INDEX idx_sign_disclaimer ON dis_sign_record(disclaimer_id);
+CREATE INDEX idx_sign_reg ON dis_sign_record(registration_id);
+CREATE INDEX idx_sign_user ON dis_sign_record(wx_user_id);
+
+
+-- ----------------------------
+-- 24、俱乐部Banner表
+-- ----------------------------
+DROP TABLE IF EXISTS club_banner CASCADE;
+CREATE TABLE club_banner (
+  banner_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  banner_title VARCHAR(100),
+  banner_url VARCHAR(500) NOT NULL,
+  link_type VARCHAR(20) DEFAULT 'none',
+  link_value VARCHAR(200),
+  sort_order INTEGER DEFAULT 0,
+  status VARCHAR(20) DEFAULT 'active',
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP,
+  remark VARCHAR(500)
+);
+
+COMMENT ON TABLE club_banner IS '俱乐部Banner表';
+COMMENT ON COLUMN club_banner.banner_id IS 'BannerID';
+COMMENT ON COLUMN club_banner.club_id IS '俱乐部ID';
+COMMENT ON COLUMN club_banner.banner_title IS 'Banner标题';
+COMMENT ON COLUMN club_banner.banner_url IS 'Banner图片URL';
+COMMENT ON COLUMN club_banner.link_type IS '链接类型（none无链接 activity活动 web网页）';
+COMMENT ON COLUMN club_banner.link_value IS '链接值（活动ID或网页URL）';
+COMMENT ON COLUMN club_banner.sort_order IS '排序';
+COMMENT ON COLUMN club_banner.status IS '状态（active生效 inactive失效）';
+COMMENT ON COLUMN club_banner.create_by IS '创建者';
+COMMENT ON COLUMN club_banner.create_time IS '创建时间';
+COMMENT ON COLUMN club_banner.update_by IS '更新者';
+COMMENT ON COLUMN club_banner.update_time IS '更新时间';
+COMMENT ON COLUMN club_banner.remark IS '备注';
+
+CREATE INDEX idx_banner_club ON club_banner(club_id);
+
+
+-- ----------------------------
+-- 25、俱乐部公告表
+-- ----------------------------
+DROP TABLE IF EXISTS club_notice CASCADE;
+CREATE TABLE club_notice (
+  notice_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  club_id BIGINT NOT NULL,
+  notice_title VARCHAR(200) NOT NULL,
+  notice_type VARCHAR(20) DEFAULT 'normal',
+  notice_content TEXT,
+  publisher VARCHAR(100),
+  publish_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status VARCHAR(20) DEFAULT 'published',
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP,
+  remark VARCHAR(500)
+);
+
+COMMENT ON TABLE club_notice IS '俱乐部公告表';
+COMMENT ON COLUMN club_notice.notice_id IS '公告ID';
+COMMENT ON COLUMN club_notice.club_id IS '俱乐部ID';
+COMMENT ON COLUMN club_notice.notice_title IS '公告标题';
+COMMENT ON COLUMN club_notice.notice_type IS '公告类型（normal普通 urgent紧急 activity活动）';
+COMMENT ON COLUMN club_notice.notice_content IS '公告内容';
+COMMENT ON COLUMN club_notice.publisher IS '发布人';
+COMMENT ON COLUMN club_notice.publish_time IS '发布时间';
+COMMENT ON COLUMN club_notice.status IS '状态（published已发布 draft草稿）';
+COMMENT ON COLUMN club_notice.create_by IS '创建者';
+COMMENT ON COLUMN club_notice.create_time IS '创建时间';
+COMMENT ON COLUMN club_notice.update_by IS '更新者';
+COMMENT ON COLUMN club_notice.update_time IS '更新时间';
+COMMENT ON COLUMN club_notice.remark IS '备注';
+
+CREATE INDEX idx_notice_club ON club_notice(club_id);
+
+
+-- ----------------------------
+-- 初始化俱乐部数据
+-- ----------------------------
+INSERT INTO club (club_id, club_name, club_code, logo, slogan, description, contact_name, contact_phone, status) 
+VALUES (1, '示例户外俱乐部', 'demo', 'https://example.com/logo.png', '探索自然，畅享户外', '专注于户外运动和探险的俱乐部', '管理员', '400-888-8888', '0');
+
+-- ----------------------------
+-- 初始化示例活动数据
+-- ----------------------------
+INSERT INTO act_activity (club_id, activity_title, activity_type, cover_image, description, start_time, end_time, registration_deadline, location, max_participants, price, insurance_price, status)
+VALUES 
+(1, '周末徒步穿越', 'hiking', 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800', '轻松愉快的周末徒步活动，适合新手参与', CURRENT_TIMESTAMP + INTERVAL '7 days', CURRENT_TIMESTAMP + INTERVAL '7 days' + INTERVAL '8 hours', CURRENT_TIMESTAMP + INTERVAL '5 days', '北京市朝阳区奥林匹克森林公园南门', 30, 0, 5, 'recruiting'),
+(1, '山地自行车挑战', 'cycling', 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=800', '专业山地自行车路线，适合有经验的骑行者', CURRENT_TIMESTAMP + INTERVAL '14 days', CURRENT_TIMESTAMP + INTERVAL '14 days' + INTERVAL '10 hours', CURRENT_TIMESTAMP + INTERVAL '10 days', '北京市昌平区十三陵水库', 20, 50, 10, 'recruiting'),
+(1, '露营烧烤派对', 'camping', 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=800', '户外露营+烧烤，适合家庭和朋友聚会', CURRENT_TIMESTAMP + INTERVAL '21 days', CURRENT_TIMESTAMP + INTERVAL '22 days', CURRENT_TIMESTAMP + INTERVAL '18 days', '北京市怀柔区慕田峪长城脚下', 50, 100, 5, 'draft');
+
+-- ----------------------------
+-- 初始化示例免责协议
+-- ----------------------------
+INSERT INTO dis_disclaimer (club_id, disclaimer_title, disclaimer_type, content, version, status, effective_time)
+VALUES 
+(1, '户外活动免责协议', 'general', 
+'【免责协议】
+
+1. 本人自愿报名参加户外活动，并确认已了解活动的风险性和可能对身体造成的影响。
+
+2. 本人承诺身体健康，无心脏病、高血压、呼吸系统疾病等不适合户外运动的疾病史。如有隐瞒，后果自负。
+
+3. 活动期间，严格遵守领队指挥，不得擅自行动。因违反规定导致自身或他人人身伤害、财产损失，由本人承担全部责任。
+
+4. 如遇天气、交通等不可抗力因素导致活动取消或变更，组织方不承担违约责任，但会尽力协调解决。
+
+5. 活动期间发生的意外伤害，组织方仅在能力范围内协助救治，不承担医疗费用。
+
+6. 本人同意活动组织方使用活动中的照片、视频等影像资料用于宣传。
+
+7. 本协议自签署之日起生效，最终解释权归活动组织方所有。', 
+'1.0', 'active', CURRENT_TIMESTAMP);

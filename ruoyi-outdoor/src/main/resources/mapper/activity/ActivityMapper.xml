@@ -5,80 +5,91 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.outdoor.activity.mapper.ActivityMapper">
     
     <resultMap type="Activity" id="ActivityResult">
-        <id     property="activityId"       column="activity_id"       />
-        <result property="clubId"           column="club_id"           />
-        <result property="activityName"     column="activity_name"     />
-        <result property="activityType"     column="activity_type"     />
-        <result property="coverImage"       column="cover_image"       />
-        <result property="summary"          column="summary"           />
-        <result property="content"          column="content"           />
-        <result property="startTime"      column="start_time"        />
-        <result property="endTime"        column="end_time"          />
-        <result property="deadline"        column="deadline"          />
-        <result property="location"         column="location"          />
-        <result property="longitude"        column="longitude"         />
-        <result property="latitude"         column="latitude"          />
-        <result property="maxParticipants" column="max_participants"  />
-        <result property="participantCount" column="participant_count" />
-        <result property="fee"            column="fee"               />
-        <result property="feeNote"         column="fee_note"          />
-        <result property="contactName"    column="contact_name"      />
-        <result property="contactPhone"   column="contact_phone"     />
-        <result property="status"           column="status"            />
-        <result property="isTop"           column="is_top"            />
-        <result property="delFlag"         column="del_flag"          />
-        <result property="createBy"       column="create_by"         />
-        <result property="createTime"     column="create_time"       />
-        <result property="updateBy"       column="update_by"         />
-        <result property="updateTime"     column="update_time"       />
-        <result property="remark"         column="remark"            />
+        <id     property="activityId"               column="activity_id"               />
+        <result property="clubId"                   column="club_id"                   />
+        <result property="activityTitle"            column="activity_title"            />
+        <result property="activityType"             column="activity_type"             />
+        <result property="coverImage"               column="cover_image"              />
+        <result property="images"                   column="images"                    />
+        <result property="description"             column="description"              />
+        <result property="startTime"               column="start_time"                />
+        <result property="endTime"                 column="end_time"                  />
+        <result property="registrationDeadline"    column="registration_deadline"    />
+        <result property="location"                 column="location"                  />
+        <result property="maxParticipants"         column="max_participants"          />
+        <result property="currentParticipants"     column="current_participants"     />
+        <result property="price"                   column="price"                      />
+        <result property="insurancePrice"          column="insurance_price"           />
+        <result property="status"                   column="status"                    />
+        <result property="leaderId"                column="leader_id"                 />
+        <result property="content"                 column="content"                   />
+        <result property="notices"                 column="notices"                   />
+        <result property="delFlag"                 column="del_flag"                  />
+        <result property="createBy"               column="create_by"                 />
+        <result property="createTime"             column="create_time"                />
+        <result property="updateBy"               column="update_by"                 />
+        <result property="updateTime"             column="update_time"                />
+        <result property="remark"                 column="remark"                     />
     </resultMap>
 
     <sql id="selectActivityVo">
-        select activity_id, club_id, activity_name, activity_type, cover_image, summary, content, start_time, end_time, deadline, location, longitude, latitude, max_participants, participant_count, fee, fee_note, contact_name, contact_phone, status, is_top, del_flag, create_by, create_time, update_by, update_time, remark from outdoor_activity
+        select activity_id, club_id, activity_title, activity_type, cover_image, images, 
+               description, start_time, end_time, registration_deadline, location, 
+               max_participants, current_participants, price, insurance_price, 
+               status, leader_id, content, notices, del_flag, 
+               create_by, create_time, update_by, update_time, remark 
+        from act_activity
     </sql>
 
     <select id="selectActivityList" parameterType="Activity" resultMap="ActivityResult">
         <include refid="selectActivityVo"/>
         <where>  
-            del_flag = '0'
-            <if test="clubId != null "> and club_id = #{clubId}</if>
-            <if test="activityName != null  and activityName != ''"> and activity_name like concat('%', #{activityName}, '%')</if>
-            <if test="activityType != null  and activityType != ''"> and activity_type = #{activityType}</if>
-            <if test="status != null  and status != ''"> and status = #{status}</if>
-            <if test="isTop != null  and isTop != ''"> and is_top = #{isTop}</if>
+            <if test="clubId != null"> and club_id = #{clubId}</if>
+            <if test="activityTitle != null and activityTitle != ''"> and activity_title like concat('%', #{activityTitle}, '%')</if>
+            <if test="activityType != null and activityType != ''"> and activity_type = #{activityType}</if>
+            <if test="status != null and status != ''"> and status = #{status}</if>
         </where>
-        order by is_top desc, create_time desc
+        order by start_time desc
     </select>
     
     <select id="selectActivityByActivityId" parameterType="Long" resultMap="ActivityResult">
         <include refid="selectActivityVo"/>
         where activity_id = #{activityId}
     </select>
-        
+    
+    <select id="selectActivityByClubId" parameterType="Long" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where club_id = #{clubId}
+        order by start_time desc
+    </select>
+    
+    <select id="selectRecruitingActivities" resultMap="ActivityResult">
+        <include refid="selectActivityVo"/>
+        where status = 'recruiting' and (registration_deadline is null or registration_deadline > now())
+        order by start_time asc
+    </select>
+
     <insert id="insertActivity" parameterType="Activity" useGeneratedKeys="true" keyProperty="activityId">
-        insert into outdoor_activity
+        insert into act_activity
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="clubId != null">club_id,</if>
-            <if test="activityName != null and activityName != ''">activity_name,</if>
+            <if test="activityTitle != null and activityTitle != ''">activity_title,</if>
             <if test="activityType != null">activity_type,</if>
             <if test="coverImage != null">cover_image,</if>
-            <if test="summary != null">summary,</if>
-            <if test="content != null">content,</if>
+            <if test="images != null">images,</if>
+            <if test="description != null">description,</if>
             <if test="startTime != null">start_time,</if>
             <if test="endTime != null">end_time,</if>
-            <if test="deadline != null">deadline,</if>
+            <if test="registrationDeadline != null">registration_deadline,</if>
             <if test="location != null">location,</if>
-            <if test="longitude != null">longitude,</if>
-            <if test="latitude != null">latitude,</if>
             <if test="maxParticipants != null">max_participants,</if>
-            <if test="participantCount != null">participant_count,</if>
-            <if test="fee != null">fee,</if>
-            <if test="feeNote != null">fee_note,</if>
-            <if test="contactName != null">contact_name,</if>
-            <if test="contactPhone != null">contact_phone,</if>
+            <if test="currentParticipants != null">current_participants,</if>
+            <if test="price != null">price,</if>
+            <if test="insurancePrice != null">insurance_price,</if>
             <if test="status != null">status,</if>
-            <if test="isTop != null">is_top,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="content != null">content,</if>
+            <if test="notices != null">notices,</if>
             <if test="delFlag != null">del_flag,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
@@ -88,25 +99,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="clubId != null">#{clubId},</if>
-            <if test="activityName != null and activityName != ''">#{activityName},</if>
+            <if test="activityTitle != null and activityTitle != ''">#{activityTitle},</if>
             <if test="activityType != null">#{activityType},</if>
             <if test="coverImage != null">#{coverImage},</if>
-            <if test="summary != null">#{summary},</if>
-            <if test="content != null">#{content},</if>
+            <if test="images != null">#{images},</if>
+            <if test="description != null">#{description},</if>
             <if test="startTime != null">#{startTime},</if>
             <if test="endTime != null">#{endTime},</if>
-            <if test="deadline != null">#{deadline},</if>
+            <if test="registrationDeadline != null">#{registrationDeadline},</if>
             <if test="location != null">#{location},</if>
-            <if test="longitude != null">#{longitude},</if>
-            <if test="latitude != null">#{latitude},</if>
             <if test="maxParticipants != null">#{maxParticipants},</if>
-            <if test="participantCount != null">#{participantCount},</if>
-            <if test="fee != null">#{fee},</if>
-            <if test="feeNote != null">#{feeNote},</if>
-            <if test="contactName != null">#{contactName},</if>
-            <if test="contactPhone != null">#{contactPhone},</if>
+            <if test="currentParticipants != null">#{currentParticipants},</if>
+            <if test="price != null">#{price},</if>
+            <if test="insurancePrice != null">#{insurancePrice},</if>
             <if test="status != null">#{status},</if>
-            <if test="isTop != null">#{isTop},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="notices != null">#{notices},</if>
             <if test="delFlag != null">#{delFlag},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
@@ -117,28 +126,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </insert>
 
     <update id="updateActivity" parameterType="Activity">
-        update outdoor_activity
+        update act_activity
         <trim prefix="SET" suffixOverrides=",">
             <if test="clubId != null">club_id = #{clubId},</if>
-            <if test="activityName != null and activityName != ''">activity_name = #{activityName},</if>
+            <if test="activityTitle != null and activityTitle != ''">activity_title = #{activityTitle},</if>
             <if test="activityType != null">activity_type = #{activityType},</if>
             <if test="coverImage != null">cover_image = #{coverImage},</if>
-            <if test="summary != null">summary = #{summary},</if>
-            <if test="content != null">content = #{content},</if>
+            <if test="images != null">images = #{images},</if>
+            <if test="description != null">description = #{description},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
-            <if test="deadline != null">deadline = #{deadline},</if>
+            <if test="registrationDeadline != null">registration_deadline = #{registrationDeadline},</if>
             <if test="location != null">location = #{location},</if>
-            <if test="longitude != null">longitude = #{longitude},</if>
-            <if test="latitude != null">latitude = #{latitude},</if>
             <if test="maxParticipants != null">max_participants = #{maxParticipants},</if>
-            <if test="participantCount != null">participant_count = #{participantCount},</if>
-            <if test="fee != null">fee = #{fee},</if>
-            <if test="feeNote != null">fee_note = #{feeNote},</if>
-            <if test="contactName != null">contact_name = #{contactName},</if>
-            <if test="contactPhone != null">contact_phone = #{contactPhone},</if>
+            <if test="currentParticipants != null">current_participants = #{currentParticipants},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="insurancePrice != null">insurance_price = #{insurancePrice},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="isTop != null">is_top = #{isTop},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="notices != null">notices = #{notices},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>
@@ -146,14 +153,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where activity_id = #{activityId}
     </update>
 
-    <update id="deleteActivityByActivityId" parameterType="Long">
-        update outdoor_activity set del_flag = '2' where activity_id = #{activityId}
+    <update id="updateActivityParticipants" parameterType="Map">
+        update act_activity set current_participants = current_participants + #{increment}
+        where activity_id = #{activityId}
     </update>
 
-    <update id="deleteActivityByActivityIds" parameterType="Long">
-        update outdoor_activity set del_flag = '2' where activity_id in 
+    <update id="deleteActivityByActivityId" parameterType="Long">
+        delete from act_activity where activity_id = #{activityId}
+    </update>
+
+    <delete id="deleteActivityByActivityIds" parameterType="Long">
+        delete from act_activity where activity_id in 
         <foreach item="activityId" collection="array" open="(" separator="," close=")">
             #{activityId}
         </foreach>
-    </update>
+    </delete>
 </mapper>
