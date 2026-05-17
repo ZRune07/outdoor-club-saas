@@ -1,0 +1,10 @@
+{
+  "name": "exportTenantEnrollments",
+  "version": "1.0.0",
+  "description": "导出俱乐部报名Excel",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest",
+    "xlsx": "^0.18.5"
+  }
+}

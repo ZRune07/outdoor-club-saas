@@ -1,0 +1,173 @@
+/* pages/products/products.wxss */
+
+.page-products {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-color);
+}
+
+/* 搜索区域 */
+.search-section {
+  padding: 20rpx 30rpx;
+  background: var(--white);
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: var(--bg-color);
+  border-radius: 40rpx;
+  padding: 16rpx 24rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+}
+
+.search-btn {
+  color: var(--primary-color);
+  font-size: 28rpx;
+  font-weight: 500;
+  padding-left: 20rpx;
+}
+
+/* 分类标签 */
+.category-scroll {
+  background: var(--white);
+  border-bottom: 1rpx solid var(--border-color);
+  white-space: nowrap;
+}
+
+.category-tabs {
+  display: inline-flex;
+  padding: 20rpx 30rpx;
+}
+
+.category-tab {
+  padding: 12rpx 32rpx;
+  margin-right: 16rpx;
+  font-size: 28rpx;
+  color: var(--text-secondary);
+  background: var(--bg-color);
+  border-radius: 30rpx;
+  transition: all 0.3s;
+}
+
+.category-tab.active {
+  color: var(--white);
+  background: var(--primary-color);
+}
+
+/* 产品列表 */
+.product-list {
+  flex: 1;
+  padding: 20rpx 30rpx;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.product-item {
+  display: flex;
+  margin-bottom: 20rpx;
+  padding: 20rpx;
+}
+
+.product-image {
+  width: 220rpx;
+  height: 160rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.product-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20rpx;
+  justify-content: space-between;
+}
+
+.product-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.product-excerpt {
+  font-size: 24rpx;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-top: 8rpx;
+}
+
+.product-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12rpx;
+}
+
+.product-action {
+  font-size: 26rpx;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+/* 加载状态 */
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40rpx 0;
+}
+
+.loading-spinner {
+  width: 50rpx;
+  height: 50rpx;
+  border: 4rpx solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 12rpx;
+  color: var(--text-light);
+  font-size: 24rpx;
+}
+
+.no-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: var(--text-light);
+  font-size: 24rpx;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  color: var(--text-light);
+  font-size: 28rpx;
+}

@@ -1,0 +1,155 @@
+
+// ==========================================
+// 文章复制功能 - 添加到 functions.php
+// ==========================================
+
+/**
+ * 添加文章复制功能
+ * 允许租户复制管理员的文章到自己账号下
+ */
+class Tenant_Post_Duplicate {
+    
+    public function __construct() {
+        // 在文章列表添加"复制"链接
+        add_filter('post_row_actions', array($this, 'add_duplicate_link'), 10, 2);
+        
+        // 处理复制请求
+        add_action('admin_action_duplicate_post', array($this, 'duplicate_post'));
+        
+        // 添加管理员通知
+        add_action('admin_notices', array($this, 'duplicate_admin_notice'));
+    }
+    
+    /**
+     * 在文章列表添加"复制"链接
+     */
+    public function add_duplicate_link($actions, $post) {
+        // 只在文章类型显示
+        if ($post->post_type !== 'post') {
+            return $actions;
+        }
+        
+        // 管理员不需要复制功能
+        if (current_user_can('manage_options')) {
+            return $actions;
+        }
+        
+        // 检查当前用户是否可以编辑这篇文章
+        $can_edit = current_user_can('edit_post', $post->ID);
+        
+        // 如果不能编辑（说明是管理员的文章），显示"复制"链接
+        if (!$can_edit) {
+            $duplicate_url = wp_nonce_url(
+                admin_url('admin.php?action=duplicate_post&post=' . $post->ID),
+                'duplicate_post_' . $post->ID
+            );
+            
+            $actions['duplicate'] = '<a href="' . $duplicate_url . '" title="复制这篇文章到我的账号下">复制到我的账号</a>';
+        }
+        
+        return $actions;
+    }
+    
+    /**
+     * 处理文章复制
+     */
+    public function duplicate_post() {
+        // 检查是否有post参数
+        if (empty($_GET['post'])) {
+            wp_die('没有指定要复制的文章！');
+        }
+        
+        $post_id = absint($_GET['post']);
+        
+        // 验证nonce
+        if (!isset($_GET['_wpnonce']) || !wp_verify_nonce($_GET['_wpnonce'], 'duplicate_post_' . $post_id)) {
+            wp_die('安全验证失败！');
+        }
+        
+        // 获取原文章
+        $post = get_post($post_id);
+        
+        if (!$post) {
+            wp_die('文章不存在！');
+        }
+        
+        // 检查权限：只能复制管理员的文章
+        $post_author = get_userdata($post->post_author);
+        if (!user_can($post_author->ID, 'manage_options')) {
+            wp_die('您只能复制管理员的文章！');
+        }
+        
+        // 获取当前用户
+        global $user_ID;
+        
+        // 创建新文章数据
+        $new_post = array(
+            'post_title'     => $post->post_title . ' (副本)',
+            'post_content'   => $post->post_content,
+            'post_excerpt'   => $post->post_excerpt,
+            'post_status'    => 'draft', // 复制后为草稿状态
+            'post_type'      => $post->post_type,
+            'post_author'    => $user_ID, // 设置为当前用户
+            'comment_status' => $post->comment_status,
+            'ping_status'    => $post->ping_status,
+        );
+        
+        // 插入新文章
+        $new_post_id = wp_insert_post($new_post);
+        
+        if (is_wp_error($new_post_id)) {
+            wp_die('复制失败：' . $new_post_id->get_error_message());
+        }
+        
+        // 复制分类和标签
+        $taxonomies = get_object_taxonomies($post->post_type);
+        foreach ($taxonomies as $taxonomy) {
+            $terms = wp_get_object_terms($post_id, $taxonomy, array('fields' => 'slugs'));
+            wp_set_object_terms($new_post_id, $terms, $taxonomy);
+        }
+        
+        // 复制自定义字段
+        $post_meta = get_post_meta($post_id);
+        foreach ($post_meta as $meta_key => $meta_values) {
+            // 跳过一些不需要复制的字段
+            if (in_array($meta_key, array('_edit_lock', '_edit_last'))) {
+                continue;
+            }
+            
+            foreach ($meta_values as $meta_value) {
+                add_post_meta($new_post_id, $meta_key, maybe_unserialize($meta_value));
+            }
+        }
+        
+        // 复制特色图片
+        $thumbnail_id = get_post_thumbnail_id($post_id);
+        if ($thumbnail_id) {
+            set_post_thumbnail($new_post_id, $thumbnail_id);
+        }
+        
+        // 重定向到编辑页面
+        wp_redirect(admin_url('post.php?action=edit&post=' . $new_post_id . '&duplicated=1'));
+        exit;
+    }
+    
+    /**
+     * 显示复制成功通知
+     */
+    public function duplicate_admin_notice() {
+        if (isset($_GET['duplicated']) && $_GET['duplicated'] == '1') {
+            ?>
+            <div class="notice notice-success is-dismissible">
+                <p><strong>文章复制成功！</strong>您现在可以编辑这篇文章了。文章已保存为草稿状态。</p>
+            </div>
+            <?php
+        }
+    }
+}
+
+// 初始化文章复制功能
+new Tenant_Post_Duplicate();
+
+// ==========================================
+// 文章复制功能结束
+// ==========================================
+

@@ -1,0 +1,105 @@
+<view class="mine-page">
+  <view class="top-nav"></view>
+
+  <view class="profile-wrap">
+    <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="handleChooseAvatar" aria-label="选择头像">
+      <image class="avatar-image" src="{{userProfile.avatarUrl}}" mode="aspectFill"></image>
+      <view class="avatar-edit-dot">换</view>
+    </button>
+
+    <text class="profile-name">{{userProfile.nickName || '微信用户'}}</text>
+    <text class="profile-sub">{{userRoleText}} · {{brand.appName}}</text>
+
+    <button class="login-btn" bindtap="handleProfileAction">{{profileActionLabel}}</button>
+
+    <view class="profile-editor" wx:if="{{isEditingProfile}}">
+      <view class="profile-editor-row">
+        <text class="profile-editor-label">昵称</text>
+        <input
+          class="nickname-input"
+          type="nickname"
+          value="{{draftNickName}}"
+          placeholder="请输入微信昵称"
+          bindinput="handleNicknameInput"
+          bindblur="handleNicknameBlur"
+        />
+      </view>
+      <view class="profile-editor-actions">
+        <button class="profile-secondary-btn" bindtap="handleCancelProfileEdit">取消</button>
+        <button class="profile-primary-btn" bindtap="handleSaveProfile">保存</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="metrics-row">
+    <view class="metric-item" wx:for="{{metrics}}" wx:key="key">
+      <view class="metric-top">
+        <text class="metric-value">{{item.value}}</text>
+        <text class="metric-unit" wx:if="{{item.unit}}">{{item.unit}}</text>
+      </view>
+      <text class="metric-label">{{item.label}}</text>
+    </view>
+  </view>
+
+  <view class="menu-card">
+    <view class="menu-item {{item.highlight ? 'menu-item-highlight' : ''}}" wx:for="{{primaryMenus}}" wx:key="key" bindtap="handleMenuItemTap" data-key="{{item.key}}">
+      <view class="menu-left">
+        <text class="menu-icon">{{item.icon}}</text>
+        <text class="menu-title">{{item.title}}</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-badge {{item.highlight ? 'menu-badge-highlight' : ''}}" wx:if="{{item.badge}}">{{item.badge}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="menu-card" wx:if="{{serviceMenus.length > 0}}">
+    <view class="menu-item" wx:for="{{serviceMenus}}" wx:key="key" bindtap="handleMenuItemTap" data-key="{{item.key}}">
+      <view class="menu-left">
+        <text class="menu-icon">{{item.icon}}</text>
+        <text class="menu-title">{{item.title}}</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-badge" wx:if="{{item.badge}}">{{item.badge}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section-caption" wx:if="{{otherMenus.length > 0}}">其他功能</view>
+
+  <view class="menu-card" wx:if="{{otherMenus.length > 0}}">
+    <view class="menu-item" wx:for="{{otherMenus}}" wx:key="key" bindtap="handleMenuItemTap" data-key="{{item.key}}">
+      <view class="menu-left">
+        <text class="menu-icon">{{item.icon}}</text>
+        <text class="menu-title">{{item.title}}</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-badge" wx:if="{{item.badge}}">{{item.badge}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="bottom-nav-placeholder"></view>
+  <view class="bottom-nav">
+    <view class="bottom-tabbar">
+      <view class="tabbar-item {{item.isActive ? 'tabbar-item-active' : ''}}" wx:for="{{bottomNavItems}}" wx:key="key" bindtap="handleBottomNavTap" data-index="{{index}}">
+        <image class="tabbar-icon" src="{{item.currentIcon || item.icon}}" mode="aspectFit"></image>
+        <text class="tabbar-label">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="floating-admin-group" wx:if="{{showSuperAdminBtn || showClubAdminBtn}}">
+    <view class="floating-admin-btn super-admin-btn" wx:if="{{showSuperAdminBtn}}" bindtap="goToSuperAdmin">
+      <text class="admin-btn-icon">管</text>
+      <text class="admin-btn-text">超级管理</text>
+    </view>
+    <view class="floating-admin-btn club-admin-btn" wx:if="{{showClubAdminBtn}}" bindtap="goToClubAdmin">
+      <text class="admin-btn-icon">店</text>
+      <text class="admin-btn-text">俱乐部管理</text>
+    </view>
+  </view>
+</view>

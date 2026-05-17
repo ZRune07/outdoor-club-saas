@@ -19,6 +19,8 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.outdoor.activity.domain.Activity;
 import com.ruoyi.outdoor.activity.service.IActivityService;
+import com.ruoyi.outdoor.registration.domain.Registration;
+import com.ruoyi.outdoor.registration.service.IRegistrationService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
 
@@ -28,11 +30,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/admin/activity")
+@RequestMapping("/admin/outdoor/activity")
 public class ActivityController extends BaseController
 {
     @Autowired
     private IActivityService activityService;
+
+    @Autowired
+    private IRegistrationService registrationService;
 
     /**
      * 查询活动列表
@@ -91,6 +96,29 @@ public class ActivityController extends BaseController
     {
         activity.setUpdateBy(getUsername());
         return toAjax(activityService.updateActivity(activity));
+    }
+
+    /**
+     * 修改活动状态
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:activity:edit')")
+    @Log(title = "活动", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody Activity activity)
+    {
+        activity.setUpdateBy(getUsername());
+        return toAjax(activityService.updateActivity(activity));
+    }
+
+    /**
+     * 查询活动报名列表
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:activity:query')")
+    @GetMapping("/registrations/{activityId}")
+    public AjaxResult registrations(@PathVariable("activityId") Long activityId)
+    {
+        List<Registration> list = registrationService.selectRegistrationByActivityId(activityId);
+        return success(list);
     }
 
     /**

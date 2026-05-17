@@ -28,7 +28,7 @@ import com.ruoyi.outdoor.club.service.IClubService;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/admin/club")
+@RequestMapping("/admin/outdoor/club")
 public class ClubController extends BaseController
 {
     @Autowired
@@ -67,6 +67,16 @@ public class ClubController extends BaseController
     }
 
     /**
+     * 获取俱乐部配置
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:club:query')")
+    @GetMapping("/config/{clubId}")
+    public AjaxResult getConfig(@PathVariable Long clubId)
+    {
+        return success(clubService.selectClubById(clubId));
+    }
+
+    /**
      * 新增俱乐部
      */
     @PreAuthorize("@ss.hasPermi('outdoor:club:add')")
@@ -86,6 +96,33 @@ public class ClubController extends BaseController
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody Club club)
     {
+        club.setUpdateBy(getUsername());
+        return toAjax(clubService.updateClub(club));
+    }
+
+    /**
+     * 保存俱乐部配置
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:club:edit')")
+    @Log(title = "俱乐部管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/config")
+    public AjaxResult saveConfig(@RequestBody Club club)
+    {
+        club.setUpdateBy(getUsername());
+        return toAjax(clubService.updateClub(club));
+    }
+
+    /**
+     * 修改俱乐部状态
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:club:edit')")
+    @Log(title = "俱乐部管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(Long clubId, String status)
+    {
+        Club club = new Club();
+        club.setClubId(clubId);
+        club.setStatus(status);
         club.setUpdateBy(getUsername());
         return toAjax(clubService.updateClub(club));
     }

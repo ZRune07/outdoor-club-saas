@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/wx-payment")
 public class WxPaymentController extends BaseController {
 
     @Autowired

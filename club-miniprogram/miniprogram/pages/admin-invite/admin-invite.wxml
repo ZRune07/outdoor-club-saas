@@ -1,0 +1,47 @@
+<view class="admin-invite-page">
+  <view class="hero">
+    <view class="hero-badge">管理员邀请</view>
+    <text class="hero-title">已生成一次性邀请页</text>
+    <text class="hero-subtitle">请在这个页面点击转发按钮，把邀请发送给对应管理员，绑定成功一次后链接会自动失效。</text>
+    <view class="hero-tenant">
+      <text class="hero-tenant-label">目标俱乐部</text>
+      <text class="hero-tenant-value">{{tenantId}}</text>
+    </view>
+  </view>
+
+  <view class="content">
+    <view class="panel-card">
+      <text class="section-title">转发方式</text>
+      <text class="section-desc">微信分享必须从当前页面发起。点击下方按钮即可按微信标准流程转发。</text>
+      <button class="share-btn" open-type="share">立即转发邀请</button>
+    </view>
+
+    <view class="panel-card">
+      <text class="section-title">邀请链接</text>
+      <text class="section-desc">如需备用，也可以复制这条路径。</text>
+      <view class="link-box">
+        <text class="link-text" selectable>{{bindLink}}</text>
+      </view>
+      <view class="action-row">
+        <button class="secondary-btn" bindtap="copyInviteLink">复制链接</button>
+        <button class="ghost-btn" bindtap="backToSource">返回上一页</button>
+      </view>
+    </view>
+
+    <view class="panel-card tips-card">
+      <text class="section-title">使用规则</text>
+      <view class="tip-item">
+        <text class="tip-index">1</text>
+        <text class="tip-text">这是一条单次有效邀请，成功绑定一次后自动失效。</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-index">2</text>
+        <text class="tip-text">如果你重新生成邀请链接，上一条未使用链接也会立即失效。</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-index">3</text>
+        <text class="tip-text">如果还要邀请其他管理员，请返回后台重新生成。</text>
+      </view>
+    </view>
+  </view>
+</view>

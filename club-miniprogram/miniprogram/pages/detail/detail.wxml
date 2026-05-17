@@ -1,0 +1,169 @@
+<!--pages/detail/detail.wxml-->
+<view class="page-detail" style="{{themeStyleVars}}">
+  <!-- 加载中 -->
+  <view class="loading-wrap" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <block wx:if="{{!loading && post}}">
+    <!-- 头图 -->
+    <view class="detail-header">
+      <image class="header-image" src="{{post.image}}" mode="aspectFill" bindtap="previewImage" data-src="{{post.image}}"></image>
+    </view>
+
+    <!-- 标题信息 -->
+    <view class="detail-info card">
+      <text class="detail-title">{{post.title}}</text>
+      <view class="detail-meta">
+        <view class="meta-tags" wx:if="{{post.categories.length > 0}}">
+          <text class="meta-tag" wx:for="{{post.categories}}" wx:key="id">{{item.name}}</text>
+        </view>
+        <text class="meta-date">{{post.date}}</text>
+      </view>
+    </view>
+
+    <!-- 内容区域 -->
+    <view class="detail-content card">
+      <!-- 已拆分的富文本内容 -->
+      <block wx:for="{{post.content}}" wx:key="index">
+        <!-- 视频 (Local MP4) -->
+        <view class="video-section" wx:if="{{item.type === 'video'}}">
+          <video 
+            src="{{item.src}}" 
+            poster="{{item.poster}}"
+            class="detail-video"
+            show-center-play-btn="{{true}}" 
+            enable-play-gesture="{{true}}"
+            picture-in-picture-mode="{{['push', 'pop', 'os']}}" 
+            show-mute-btn="{{true}}"
+          ></video>
+        </view>
+
+        <!-- 外部视频按钮 (External iframe) -->
+        <view class="external-video-section" wx:if="{{item.type === 'external-video'}}">
+          <view 
+            class="external-video-btn"
+            bindtap="openExternalVideo"
+            data-url="{{item.url}}"
+          >
+            <text class="video-icon">🎥</text>
+            <text class="video-text">点击观看精彩视频</text>
+            <text class="arrow-icon">></text>
+          </view>
+        </view>
+
+        <!-- HTML 文本内容 -->
+        <rich-text 
+          wx:if="{{item.type === 'html'}}" 
+          nodes="{{item.content}}" 
+          class="rich-content"
+        ></rich-text>
+      </block>
+    </view>
+    
+    <!-- 版权信息 -->
+    <view class="copyright-section">
+      <view class="copyright-line"></view>
+      <text class="copyright-text">{{brandName}}</text>
+      <view class="copyright-line"></view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <!-- 底部固定导航条 -->
+    <view class="bottom-nav-placeholder"></view>
+    <view class="bottom-nav">
+      <!-- 左侧：首页入口 -->
+      <view class="nav-home" bindtap="goHome">
+        <image wx:if="{{homeIcon}}" class="nav-home-icon" src="{{homeIcon}}" mode="aspectFit"></image>
+        <text wx:else class="nav-home-emoji">🏠</text>
+        <text class="nav-home-text">首页</text>
+      </view>
+      
+      <!-- 右侧：按钮区域 -->
+      <view class="nav-buttons">
+        <view class="nav-btn btn-call-green" bindtap="callConsultant">
+          <text class="emoji-icon">☏</text>
+          <text>电话咨询</text>
+        </view>
+        <view wx:if="{{enableEnrollment}}" class="nav-btn btn-enroll-orange" bindtap="openEnrollmentModal">
+          <text class="emoji-icon">📝</text>
+          <text>立即报名</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </block>
+
+  <!-- 报名弹窗 -->
+  <view class="modal-overlay" wx:if="{{showEnrollmentModal}}" catchtap="closeEnrollmentModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">活动报名</text>
+        <text class="modal-close" bindtap="closeEnrollmentModal">×</text>
+      </view>
+      <view class="modal-body">
+        <form bindsubmit="submitEnrollment">
+          <block wx:for="{{enrollmentFields}}" wx:key="key">
+            <view class="form-item">
+              <text class="form-label">
+                {{item.label}}
+                <text wx:if="{{item.required}}" class="required-mark">*</text>
+              </text>
+              
+              <!-- 文本输入框 -->
+              <input 
+                wx:if="{{item.type === 'text' || item.type === 'tel' || item.type === 'email' || item.type === 'number'}}"
+                class="form-input" 
+                name="{{item.key}}" 
+                placeholder="{{item.placeholder}}" 
+                type="{{item.type}}"
+                value="{{item.defaultValue || ''}}"
+                required="{{item.required}}"
+              />
+              
+              <!-- 多行文本输入框 -->
+              <textarea 
+                wx:if="{{item.type === 'textarea'}}"
+                class="form-textarea" 
+                name="{{item.key}}" 
+                placeholder="{{item.placeholder}}"
+              />
+            </view>
+          </block>
+          <button class="submit-btn" form-type="submit" loading="{{isSubmittingEnrollment}}" disabled="{{isSubmittingEnrollment}}">
+            {{isSubmittingEnrollment ? '提交中...' : '提交报名'}}
+          </button>
+        </form>
+      </view>
+    </view>
+  </view>
+
+  <!-- 电子协议弹窗 -->
+  <view class="modal-overlay" wx:if="{{showAgreementModal}}" catchtap="closeAgreementModal">
+    <view class="modal-content agreement-modal" catchtap="preventBubble">
+      <view class="modal-header">
+        <text class="modal-title">电子协议</text>
+        <text class="modal-close" bindtap="closeAgreementModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="agreement-content">
+          <rich-text nodes="{{agreementContent}}"></rich-text>
+        </view>
+        <view class="signature-section">
+          <text class="form-label">请签名</text>
+          <view class="signature-canvas" bindtouchstart="startSignature" bindtouchmove="moveSignature" bindtouchend="endSignature">
+            <canvas canvas-id="signatureCanvas" class="signature-area"></canvas>
+            <button class="clear-signature" bindtap="clearSignature">清除签名</button>
+          </view>
+        </view>
+        <button class="submit-btn" bindtap="submitAgreement" loading="{{isSubmittingAgreement}}" disabled="{{isSubmittingAgreement}}">
+          {{isSubmittingAgreement ? '提交中...' : '确认签署'}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

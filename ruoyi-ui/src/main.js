@@ -2,6 +2,11 @@ import { createApp } from 'vue'
 
 import Cookies from 'js-cookie'
 
+// vConsole 移动端调试工具（仅开发环境）
+import.meta.env.DEV && import('vconsole').then(({ default: VConsole }) => {
+  new VConsole()
+})
+
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'

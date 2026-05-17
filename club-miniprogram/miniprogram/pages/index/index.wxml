@@ -1,0 +1,281 @@
+<!--pages/index/index.wxml-->
+<view class="page-index">
+  <!-- 顶部背景区域 -->
+  <view class="header-bg-wrapper {{pageMode === 'function' ? 'header-bg-wrapper-function' : ''}}">
+    <view class="header-bg-default"></view>
+    <image wx:if="{{headerBgImage}}" class="header-bg-image" src="{{headerBgImage}}" mode="aspectFill"></image>
+    
+    <!-- 占位 Header (保持原有布局高度) -->
+    <view class="header" style="padding-top: {{headerTop}}px; min-height: 80rpx;"></view>
+
+    <!-- 顶部 Logo (与胶囊对齐) -->
+    <view wx:if="{{pageMode !== 'function' && brand.logo}}" class="header-logo-container" style="top: {{navBarTop}}px; height: {{navBarHeight}}px; left: {{navBarRight}}px; padding-left: 22rpx;">
+      <image class="header-logo" src="{{brand.logo}}" mode="heightFix" style="height: 170%;"></image>
+    </view>
+  </view>
+
+  <!-- 动态渲染板块 -->
+  <block wx:for="{{homeLayout}}" wx:key="type">
+    
+    <!-- 轮播图 -->
+    <view wx:if="{{item.type === 'banner' && pageMode === 'home'}}" class="banner-section {{pageMode === 'function' ? 'banner-section-function' : ''}}">
+      <swiper class="banner-swiper {{pageMode === 'function' ? 'banner-swiper-function' : ''}}" 
+              indicator-dots="{{true}}" 
+              autoplay="{{false}}" 
+              interval="{{4000}}" 
+              circular="{{true}}"
+              indicator-color="rgba(255,255,255,0.5)"
+              indicator-active-color="#ffffff"
+              current="{{currentBannerIndex}}"
+              bindchange="onBannerChange">
+        <block wx:if="{{sections.banners && sections.banners.length > 0}}">
+          <swiper-item wx:for="{{sections.banners}}" wx:key="id" wx:for-item="banner">
+            <image class="banner-image" src="{{banner.image}}" mode="aspectFill"></image>
+          </swiper-item>
+        </block>
+        <block wx:else>
+          <swiper-item>
+            <view class="banner-default">
+              <text class="brand-slogan">{{brand.slogan}}</text>
+              <text class="brand-desc">{{brand.description}}</text>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+
+    <!-- 快捷分类 -->
+    <view wx:if="{{item.type === 'categories' && pageMode === 'home'}}" class="content-with-reflection">
+      <view id="homeCategories" class="category-section card">
+        <view class="category-grid">
+          <view class="category-item" 
+                wx:for="{{categories}}" 
+                wx:key="id"
+                wx:for-item="cat"
+                bindtap="navigateToCategory"
+                data-url="{{cat.url}}">
+            <view class="category-icon-wrap">
+              <image class="category-icon" src="{{cat.icon}}" mode="aspectFit"></image>
+            </view>
+            <text class="category-name">{{cat.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+  </block>
+
+  <view class="recent-activity-banner-wrap" wx:if="{{pageMode === 'home'}}">
+    <image class="recent-activity-banner" wx:if="{{recentActivityImage}}" src="{{recentActivityImage}}" mode="aspectFit" binderror="handleRecentActivityImageError"></image>
+    <text class="recent-activity-banner-fallback" wx:if="{{!recentActivityImage && !recentActivityImageError}}">近期活动图加载中...</text>
+    <text class="recent-activity-banner-fallback" wx:if="{{recentActivityImageError}}">近期活动图加载失败</text>
+  </view>
+
+  <view class="activity-feed-section" wx:if="{{pageMode === 'home'}}">
+    <scroll-view class="activity-tab-scroll" scroll-x="true" enable-flex="true" show-scrollbar="false">
+      <view class="activity-tab-row">
+        <view class="activity-tab-item {{item.id === activeActivityTabId ? 'activity-tab-item-active' : ''}}"
+              wx:for="{{activityTabs}}"
+              wx:key="id"
+              bindtap="switchActivityTab"
+              data-id="{{item.id}}">
+          <text class="activity-tab-text">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view class="activity-loading" wx:if="{{activityLoading}}">活动加载中...</view>
+
+    <block wx:elif="{{activityCards.length > 0}}">
+      <view class="activity-card" wx:for="{{activityCards}}" wx:key="id" bindtap="navigateToDetail" data-id="{{item.id}}">
+        <text class="activity-title">{{item.dateRange}}｜{{item.title}}</text>
+        <view class="activity-meta-row">
+          <text class="activity-tag activity-tag-{{item.statusKey}}">{{item.statusText}}</text>
+          <text class="activity-meta">{{item.metaText}}</text>
+        </view>
+
+        <view class="activity-image-single-wrap">
+          <image class="activity-image-single" src="{{item.images[0]}}" mode="aspectFill"></image>
+        </view>
+
+        <view class="activity-bottom-row">
+          <view class="activity-signup">
+            <view class="signup-avatar-stack">
+              <image class="signup-avatar" wx:for="{{item.avatarList}}" wx:key="*this" src="{{item}}" mode="aspectFill"></image>
+            </view>
+            <text class="signup-count">{{item.signupText}}</text>
+          </view>
+          <view class="activity-signup-btn activity-signup-btn-{{item.statusKey}} {{item.isEnrolled ? 'activity-signup-btn-enrolled' : ''}}">{{item.actionText}}</view>
+        </view>
+      </view>
+    </block>
+
+    <view class="activity-empty" wx:else>该分类暂无活动</view>
+  </view>
+
+  <block wx:if="{{pageMode === 'function'}}">
+    <block wx:for="{{homeLayout}}" wx:key="type">
+      <view wx:if="{{item.type === 'plans' && sections.hotPlans}}" class="hot-plans-section">
+        <view class="section-header">
+          <view class="section-title-wrap">
+            <text class="section-title">{{item.title || '热门方案'}}</text>
+            <text class="section-scroll-hint">向左滑动，查看更多</text>
+          </view>
+          <text class="section-action" bindtap="goToSectionList" data-section="plans">查看全部</text>
+        </view>
+        <view class="scroll-wrapper">
+          <view class="scroll-mask-left"></view>
+          <view class="scroll-mask-right"></view>
+          <scroll-view class="section-scroll-container" scroll-x="true" enable-flex="true">
+            <view class="grid-2-rows-vertical">
+              <view class="plan-card" wx:for="{{sections.hotPlans}}" wx:key="id" wx:for-item="plan" bindtap="navigateToDetail" data-id="{{plan.id}}">
+                <view class="plan-image-wrap">
+                  <image class="plan-image" src="{{plan.image}}" mode="aspectFill"></image>
+                </view>
+                <view class="plan-info">
+                  <text class="plan-title text-ellipsis-2">{{plan.title}}</text>
+                </view>
+              </view>
+              <view class="plan-card-spacer"></view>
+              <view class="plan-card-spacer"></view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view wx:if="{{item.type === 'topics' && sections.hotTopics}}" class="hot-topics-section">
+        <view class="section-header">
+          <view class="section-title-wrap">
+            <text class="section-title">{{item.title || '热门专题'}}</text>
+            <text class="section-scroll-hint">向左滑动，查看更多</text>
+          </view>
+          <text class="section-action" bindtap="goToSectionList" data-section="topics">查看全部</text>
+        </view>
+        <view class="scroll-wrapper">
+          <view class="scroll-mask-left"></view>
+          <view class="scroll-mask-right"></view>
+          <scroll-view class="topic-scroll-container" scroll-x="true" enable-flex="true">
+            <view class="topic-list">
+              <view class="topic-card card" wx:for="{{sections.hotTopics}}" wx:key="id" wx:for-item="topic" bindtap="navigateToDetail" data-id="{{topic.id}}">
+                <image class="topic-image" src="{{topic.image}}" mode="aspectFill"></image>
+                <view class="topic-info">
+                  <text class="topic-title text-ellipsis-2">{{topic.title}}</text>
+                </view>
+              </view>
+              <view class="topic-card-spacer"></view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view wx:if="{{item.type === 'destinations' && sections.hotDestinations}}" class="hot-destinations-section">
+        <view class="section-header">
+          <view class="section-title-wrap">
+            <text class="section-title">{{item.title || '热门目的地'}}</text>
+            <text class="section-scroll-hint">向左滑动，查看更多</text>
+          </view>
+          <text class="section-action" bindtap="goToSectionList" data-section="destinations">查看全部</text>
+        </view>
+        <view class="scroll-wrapper">
+          <view class="scroll-mask-left"></view>
+          <view class="scroll-mask-right"></view>
+          <scroll-view class="section-scroll-container" scroll-x="true" enable-flex="true">
+            <view class="grid-2-rows">
+              <view class="destination-card" wx:for="{{sections.hotDestinations}}" wx:key="id" wx:for-item="dest" bindtap="navigateToDetail" data-id="{{dest.id}}">
+                <image class="destination-image" src="{{dest.image}}" mode="aspectFill"></image>
+                <text class="destination-name">{{dest.title}}</text>
+              </view>
+              <view class="destination-card-spacer"></view>
+              <view class="destination-card-spacer"></view>
+            </view>
+          </scroll-view>
+        </view>
+      </view>
+
+      <view wx:if="{{item.type === 'cases' && sections.wonderfulCases}}" class="wonderful-cases-section">
+        <view class="section-header">
+          <view class="section-title-wrap">
+            <text class="section-title">{{item.title || '客户案例'}}</text>
+            <text class="section-scroll-hint">向左滑动，查看更多</text>
+          </view>
+          <text class="section-action" bindtap="goToSectionList" data-section="cases">查看全部</text>
+        </view>
+        <swiper class="cases-swiper" indicator-dots="{{true}}" autoplay="{{false}}" interval="{{5000}}" circular="{{true}}" indicator-color="#cccccc" indicator-active-color="#FF6B00">
+          <swiper-item wx:for="{{sections.wonderfulCases}}" wx:key="id" wx:for-item="case">
+            <view class="case-card card" bindtap="navigateToDetail" data-id="{{case.id}}">
+              <image class="case-image" src="{{case.image}}" mode="aspectFill"></image>
+            </view>
+          </swiper-item>
+        </swiper>
+      </view>
+    </block>
+  </block>
+</view>
+
+<!-- 底部固定导航条 -->
+<view class="bottom-nav-placeholder"></view>
+<view class="bottom-nav">
+  <view class="bottom-tabbar">
+    <view class="tabbar-item {{item.isActive ? 'tabbar-item-active' : ''}}"
+          wx:for="{{bottomNavItems}}"
+          wx:key="key"
+          bindtap="handleBottomNavTap"
+          data-index="{{index}}">
+      <image class="tabbar-icon" src="{{item.currentIcon || item.icon}}" mode="aspectFit"></image>
+      <text class="tabbar-label">{{item.name}}</text>
+    </view>
+  </view>
+</view>
+
+<view class="floating-consultant" wx:if="{{showConsultantFloating && pageMode !== 'home'}}" bindtap="callConsultant">
+  <image class="floating-consultant-avatar" src="{{consultant.avatar || 'https://tuanjiansaas-1256002767.cos.ap-chengdu.myqcloud.com/wp-content/uploads/2026/01/touxiang.png'}}" mode="aspectFill" catchlongpress="showEmployeeSelector"></image>
+  <view class="floating-consultant-info">
+    <text class="floating-consultant-name">{{consultant.name || '管理员'}}</text>
+    <view class="floating-consultant-call-icon">☎</view>
+  </view>
+  <view class="employee-badge" wx:if="{{isEmployee}}">我</view>
+</view>
+
+<!-- 员工选择弹窗 -->
+<view class="employee-selector-mask" wx:if="{{showEmployeeSelector}}" bindtap="hideEmployeeSelector">
+  <view class="employee-selector-popup" catchtap="preventBubble">
+    <view class="popup-header">
+      <text class="popup-title">选择您的身份</text>
+      <view class="popup-close" bindtap="hideEmployeeSelector">✕</view>
+    </view>
+    
+    <view class="popup-content">
+      <!-- 员工列表 -->
+      <view class="employee-list" wx:if="{{employeeList.length > 0}}">
+        <view class="employee-item {{consultant.id == item.id ? 'active' : ''}}" 
+              wx:for="{{employeeList}}" 
+              wx:key="id"
+              bindtap="selectEmployee"
+              data-id="{{item.id}}">
+          <image class="employee-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <view class="employee-info">
+            <text class="employee-name">{{item.name}}</text>
+            <text class="employee-title">{{item.title}}</text>
+          </view>
+          <view class="employee-check" wx:if="{{consultant.id == item.id}}">✓</view>
+        </view>
+      </view>
+      
+      <!-- 无员工时显示 -->
+      <view class="no-employee" wx:else>
+        <text>暂无员工信息</text>
+        <text class="no-employee-hint">请在WordPress后台添加员工</text>
+      </view>
+    </view>
+    
+    <!-- 底部按钮 -->
+    <view class="popup-footer">
+      <view class="popup-btn btn-reset" bindtap="clearEmployeeBinding" wx:if="{{isEmployee}}">
+        恢复默认顾问
+      </view>
+      <view class="popup-btn btn-cancel" bindtap="hideEmployeeSelector">
+        取消
+      </view>
+    </view>
+  </view>
+</view>

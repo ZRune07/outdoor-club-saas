@@ -1,0 +1,37 @@
+<view class="enrollments-page">
+  <view class="list-loading" wx:if="{{loading}}">加载中...</view>
+
+  <block wx:elif="{{enrollments.length > 0}}">
+    <view class="enrollment-card" wx:for="{{enrollments}}" wx:key="_id" bindtap="goToEnrollmentDetail" data-post-id="{{item.postId}}">
+      <view class="card-top">
+        <text class="card-title">{{item.postTitle}}</text>
+        <text class="card-status">{{item.statusText}}</text>
+      </view>
+      <view class="card-line">
+        <text class="line-label">报名时间</text>
+        <text class="line-value">{{item.createdAtText}}</text>
+      </view>
+      <view class="card-line">
+        <text class="line-label">报名姓名</text>
+        <text class="line-value">{{item.applicantName}}</text>
+      </view>
+      <view class="card-line">
+        <text class="line-label">手机号</text>
+        <text class="line-value">{{item.applicantPhone}}</text>
+      </view>
+      <view class="card-line">
+        <text class="line-label">参与人数</text>
+        <text class="line-value">{{item.participantCountText}} 人</text>
+      </view>
+      <view class="card-footer">
+        <text class="footer-link">查看活动详情</text>
+        <text class="footer-arrow">›</text>
+      </view>
+    </view>
+  </block>
+
+  <view class="list-empty" wx:else>
+    <text class="empty-title">暂无报名记录</text>
+    <text class="empty-sub">报名后会在这里展示你的活动和个人报名信息</text>
+  </view>
+</view>

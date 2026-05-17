@@ -1,0 +1,320 @@
+<!--pages/tenant-admin/tenant-admin.wxml-->
+<view class="tenant-admin-page">
+  <view class="top-band">
+    <view class="hero-row">
+      <view>
+        <text class="eyebrow">俱乐部管理</text>
+        <text class="hero-title">今日运营工作台</text>
+        <text class="hero-subtitle">先处理报名和协议，再维护会员与配置。</text>
+      </view>
+      <button class="hero-action" bindtap="loadEnrollments">刷新</button>
+    </view>
+    <view class="tenant-pill">
+      <text class="tenant-label">当前俱乐部</text>
+      <text class="tenant-value">{{tenantId}}</text>
+    </view>
+  </view>
+
+  <view class="tab-shell">
+    <view class="tab-item {{activeTab === item.key ? 'tab-item-active' : ''}}" wx:for="{{tabs}}" wx:key="key" data-key="{{item.key}}" bindtap="switchTab">
+      {{item.label}}
+    </view>
+  </view>
+
+  <view class="content">
+    <block wx:if="{{activeTab === 'workbench'}}">
+      <view class="metric-grid">
+        <view class="metric-card">
+          <text class="metric-label">总报名</text>
+          <text class="metric-value">{{stats.total}}</text>
+          <text class="metric-desc">全部活动报名</text>
+        </view>
+        <view class="metric-card warn">
+          <text class="metric-label">待跟进</text>
+          <text class="metric-value">{{stats.pending}}</text>
+          <text class="metric-desc">需要确认</text>
+        </view>
+        <view class="metric-card amber">
+          <text class="metric-label">待签协议</text>
+          <text class="metric-value">{{stats.waitingSignature}}</text>
+          <text class="metric-desc">报名后未签</text>
+        </view>
+        <view class="metric-card blue">
+          <text class="metric-label">今日新增</text>
+          <text class="metric-value">{{stats.today}}</text>
+          <text class="metric-desc">{{stats.latestTime}}</text>
+        </view>
+      </view>
+
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">优先处理</text>
+            <text class="panel-desc">这里应该只放今天真正要看的事。</text>
+          </view>
+        </view>
+        <view class="todo-list">
+          <view class="todo-item" wx:for="{{todoItems}}" wx:key="key" data-item="{{item}}" bindtap="openTodo">
+            <view>
+              <text class="todo-title">{{item.title}}</text>
+              <text class="todo-desc">{{item.desc}}</text>
+            </view>
+            <view class="todo-count">{{item.value}}</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">最近报名</text>
+            <text class="panel-desc">快速判断是否需要马上联系。</text>
+          </view>
+          <button class="text-btn" data-key="enrollments" bindtap="switchTab">查看全部</button>
+        </view>
+        <view class="compact-list" wx:if="{{recentEnrollments.length > 0}}">
+          <view class="compact-item" wx:for="{{recentEnrollments}}" wx:key="_id" data-item="{{item}}" bindtap="viewDetail">
+            <view class="compact-main">
+              <text class="compact-title">{{item.applicantName}}</text>
+              <text class="compact-sub">{{item.postTitle}} · {{item.createTimeStr}}</text>
+            </view>
+            <text class="status-tag status-{{item.status}}">{{item.statusText}}</text>
+          </view>
+        </view>
+        <view class="empty-inline" wx:else>暂无报名记录</view>
+      </view>
+    </block>
+
+    <block wx:elif="{{activeTab === 'enrollments'}}">
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">报名管理</text>
+            <text class="panel-desc">按活动分组，先看待跟进和待签署。</text>
+          </view>
+          <button class="text-btn" bindtap="loadEnrollments">刷新</button>
+        </view>
+        <view class="filter-row">
+          <view class="filter-chip {{enrollmentFilter === item.key ? 'filter-chip-active' : ''}}" wx:for="{{enrollmentFilters}}" wx:key="key" data-filter="{{item.key}}" bindtap="changeEnrollmentFilter">{{item.label}}</view>
+        </view>
+        <view class="search-row">
+          <input class="search-input" value="{{enrollmentKeyword}}" placeholder="搜索姓名、手机号或活动" bindinput="onEnrollmentKeywordInput" />
+          <button class="small-btn" wx:if="{{enrollmentKeyword}}" bindtap="clearEnrollmentKeyword">清空</button>
+        </view>
+      </view>
+
+      <block wx:if="{{visibleEnrollmentGroups.length > 0}}">
+        <view class="activity-panel" wx:for="{{visibleEnrollmentGroups}}" wx:key="groupKey">
+          <view class="activity-head" bindtap="toggleEnrollmentGroup" data-group-key="{{item.groupKey}}">
+            <view class="activity-copy">
+              <text class="activity-title">{{item.postTitle}}</text>
+              <text class="activity-meta">{{item.categoryName || '未分类'}} · {{item.visibleCount}} 条报名 · 待跟进 {{item.pendingCount}} · 待签 {{item.waitingSignatureCount}}</text>
+            </view>
+            <view class="activity-actions">
+              <button class="export-btn" catchtap="exportEnrollments" data-group="{{item}}" loading="{{exportingGroupKey === item.groupKey}}">导出</button>
+              <text class="toggle-text">{{item.expanded ? '收起' : '展开'}}</text>
+            </view>
+          </view>
+
+          <view class="enrollment-list" wx:if="{{item.expanded}}">
+            <view class="enrollment-card" wx:for="{{item.enrollments}}" wx:for-item="enrollment" wx:key="_id">
+              <view class="enrollment-main" bindtap="viewDetail" data-item="{{enrollment}}">
+                <view>
+                  <text class="enrollment-name">{{enrollment.applicantName}}</text>
+                  <text class="enrollment-time">{{enrollment.createTimeStr}}</text>
+                </view>
+                <view class="status-stack">
+                  <text class="status-tag status-{{enrollment.status}}">{{enrollment.statusText}}</text>
+                  <text class="agreement-tag agreement-{{enrollment.agreementStatus || 'none'}}">{{enrollment.agreementText}}</text>
+                </view>
+              </view>
+              <view class="info-row">
+                <text class="info-chip" wx:if="{{enrollment.phone}}">{{enrollment.phone}}</text>
+                <text class="info-chip">人数 {{enrollment.participantCount}}</text>
+              </view>
+              <view class="field-preview">
+                <view class="field-line" wx:for="{{enrollment.displayFields}}" wx:for-item="field" wx:key="key" wx:if="{{index < 3}}">
+                  <text class="field-label">{{field.label}}</text>
+                  <text class="field-value">{{field.value}}</text>
+                </view>
+              </view>
+              <view class="card-actions">
+                <button class="secondary-btn" bindtap="viewDetail" data-item="{{enrollment}}">详情</button>
+                <button class="secondary-btn" catchtap="viewAgreement" data-item="{{enrollment}}">协议</button>
+                <button class="secondary-btn" catchtap="updateEnrollmentStatus" data-id="{{enrollment._id}}" data-status="approved" wx:if="{{enrollment.status === 'pending'}}">确认</button>
+                <button class="secondary-btn" catchtap="updateEnrollmentStatus" data-id="{{enrollment._id}}" data-status="completed" wx:if="{{enrollment.status === 'approved'}}">完成</button>
+                <button class="danger-btn" catchtap="updateEnrollmentStatus" data-id="{{enrollment._id}}" data-status="cancelled" wx:if="{{enrollment.status !== 'cancelled' && enrollment.status !== 'completed'}}">取消</button>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="empty-card" wx:else>
+        <text class="empty-title">没有符合条件的报名</text>
+        <text class="empty-desc">切换筛选条件或刷新后再看。</text>
+      </view>
+    </block>
+
+    <block wx:elif="{{activeTab === 'members'}}">
+      <view class="metric-grid">
+        <view class="metric-card">
+          <text class="metric-label">会员总数</text>
+          <text class="metric-value">{{membershipStats.total}}</text>
+          <text class="metric-desc">当前俱乐部</text>
+        </view>
+        <view class="metric-card green">
+          <text class="metric-label">有效</text>
+          <text class="metric-value">{{membershipStats.active}}</text>
+          <text class="metric-desc">权益可用</text>
+        </view>
+        <view class="metric-card amber">
+          <text class="metric-label">将到期</text>
+          <text class="metric-value">{{membershipStats.expiring}}</text>
+          <text class="metric-desc">建议续期</text>
+        </view>
+        <view class="metric-card warn">
+          <text class="metric-label">已过期</text>
+          <text class="metric-value">{{membershipStats.expired}}</text>
+          <text class="metric-desc">需要唤醒</text>
+        </view>
+      </view>
+
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">会员列表</text>
+            <text class="panel-desc">按状态筛选，快速续期或失效。</text>
+          </view>
+          <button class="text-btn" bindtap="loadMemberships">刷新</button>
+        </view>
+        <view class="filter-row">
+          <view class="filter-chip {{memberFilter === item.key ? 'filter-chip-active' : ''}}" wx:for="{{memberFilterOptions}}" wx:key="key" data-filter="{{item.key}}" bindtap="changeMemberFilter">{{item.label}}</view>
+        </view>
+        <view class="search-row">
+          <input class="search-input" value="{{memberKeyword}}" placeholder="搜索姓名、手机号、活动或账号" bindinput="onMemberKeywordInput" />
+          <button class="small-btn" wx:if="{{memberKeyword}}" bindtap="clearMemberKeyword">清空</button>
+        </view>
+      </view>
+
+      <view class="member-list" wx:if="{{memberships.length > 0}}">
+        <view class="member-card" wx:for="{{memberships}}" wx:key="_id">
+          <view class="member-head">
+            <view>
+              <text class="member-name">{{item.displayName}}</text>
+              <text class="member-meta">{{item.openIdText}}</text>
+            </view>
+            <text class="member-status member-status-{{item.status}}">{{item.statusText}}</text>
+          </view>
+          <view class="info-row">
+            <text class="info-chip" wx:if="{{item.levelName}}">{{item.levelName}}</text>
+            <text class="info-chip" wx:if="{{item.displayPhone}}">{{item.displayPhone}}</text>
+            <text class="info-chip" wx:if="{{item.latestPostTitle}}">{{item.latestPostTitle}}</text>
+          </view>
+          <view class="member-dates">
+            <text>开通 {{item.activatedAtText || '--'}}</text>
+            <text>到期 {{item.expiresAtText || '--'}}</text>
+          </view>
+          <view class="card-actions">
+            <button class="secondary-btn" data-id="{{item._id}}" data-action="renew" data-item="{{item}}" bindtap="manageMembership">续期</button>
+            <button class="danger-btn" data-id="{{item._id}}" data-action="expire" data-item="{{item}}" bindtap="manageMembership">失效</button>
+          </view>
+        </view>
+      </view>
+      <view class="empty-card" wx:else>
+        <text class="empty-title">暂无会员</text>
+        <text class="empty-desc">用户在“我的”页开通后会出现在这里。</text>
+      </view>
+    </block>
+
+    <block wx:else>
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">运营配置</text>
+            <text class="panel-desc">把表单、协议、会员规则放到一个清晰入口。</text>
+          </view>
+          <button class="primary-btn" bindtap="goToFieldConfig">进入配置</button>
+        </view>
+        <view class="setting-grid">
+          <view class="setting-item">
+            <text class="setting-title">报名表单</text>
+            <text class="setting-desc">当前 {{stats.fields}} 个字段，影响所有开启报名的活动。</text>
+          </view>
+          <view class="setting-item">
+            <text class="setting-title">电子协议</text>
+            <text class="setting-desc">统一维护默认协议，活动可按文章单独覆盖。</text>
+          </view>
+          <view class="setting-item">
+            <text class="setting-title">管理员邀请</text>
+            <text class="setting-desc">生成一次性绑定链接，交给新的俱乐部管理员。</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="panel">
+        <view class="panel-head">
+          <view>
+            <text class="panel-title">邀请管理员</text>
+            <text class="panel-desc">每次生成都会让上一条未使用链接失效。</text>
+          </view>
+          <button class="primary-btn" bindtap="generateInviteLink">生成邀请</button>
+        </view>
+        <view class="invite-box" wx:if="{{inviteReady}}">
+          <text class="invite-label">当前邀请链接</text>
+          <text class="invite-link" selectable>{{inviteLink}}</text>
+          <view class="card-actions">
+            <button class="secondary-btn" bindtap="copyInviteLink">复制</button>
+            <button class="secondary-btn" bindtap="clearInviteLink">清除</button>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showDetailModal}}" catchtap="closeDetailModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-head">
+        <view>
+          <text class="modal-title">报名详情</text>
+          <text class="modal-subtitle">{{currentEnrollment.postTitle || '活动报名'}}</text>
+        </view>
+        <text class="modal-close" bindtap="closeDetailModal">×</text>
+      </view>
+      <view class="modal-body" wx:if="{{currentEnrollment}}">
+        <view class="summary-card">
+          <text class="summary-name">{{currentEnrollment.applicantName}}</text>
+          <text class="summary-desc">{{currentEnrollment.statusText}} · {{currentEnrollment.agreementText}}</text>
+        </view>
+        <view class="detail-line"><text>报名时间</text><text>{{currentEnrollment.createTimeStr}}</text></view>
+        <view class="detail-line" wx:if="{{currentEnrollment.phone}}"><text>手机号</text><text>{{currentEnrollment.phone}}</text></view>
+        <view class="detail-line"><text>参与人数</text><text>{{currentEnrollment.participantCount}}</text></view>
+        <view class="detail-section">
+          <text class="section-mini-title">表单内容</text>
+          <view class="detail-line" wx:for="{{currentEnrollment.displayFields}}" wx:key="key">
+            <text>{{item.label}}</text>
+            <text>{{item.value}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showAgreementModal}}" catchtap="closeAgreementModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-head">
+        <view>
+          <text class="modal-title">电子协议</text>
+          <text class="modal-subtitle">{{currentAgreement.signerName || '签署记录'}}</text>
+        </view>
+        <text class="modal-close" bindtap="closeAgreementModal">×</text>
+      </view>
+      <view class="modal-body" wx:if="{{currentAgreement}}">
+        <view class="detail-line"><text>签署人</text><text>{{currentAgreement.signerName}}</text></view>
+        <view class="detail-line"><text>联系电话</text><text>{{currentAgreement.signerPhone}}</text></view>
+        <view class="detail-line"><text>签署时间</text><text>{{currentAgreement.signedAt}}</text></view>
+        <view class="agreement-content">{{currentAgreement.content}}</view>
+        <image class="signature-image" wx:if="{{currentAgreement.signatureTempUrl || currentAgreement.signature}}" src="{{currentAgreement.signatureTempUrl || currentAgreement.signature}}" mode="widthFix"></image>
+      </view>
+    </view>
+  </view>
+</view>

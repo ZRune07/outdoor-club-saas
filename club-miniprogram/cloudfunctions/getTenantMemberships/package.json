@@ -1,0 +1,9 @@
+{
+  "name": "getTenantMemberships",
+  "version": "1.0.0",
+  "description": "Get tenant memberships",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

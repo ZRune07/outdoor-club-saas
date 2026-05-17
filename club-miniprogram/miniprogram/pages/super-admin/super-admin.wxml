@@ -1,0 +1,85 @@
+<!--pages/super-admin/super-admin.wxml-->
+<view class="super-admin-page">
+  <view class="hero">
+    <view class="hero-badge">Super Admin</view>
+    <text class="hero-title">俱乐部管理员授权中心</text>
+    <text class="hero-subtitle">集中生成绑定路径，把管理权限发给指定俱乐部负责人</text>
+  </view>
+
+  <view class="content">
+    <view class="summary-grid">
+      <view class="summary-card">
+        <text class="summary-label">当前能力</text>
+        <text class="summary-value">授权绑定</text>
+        <text class="summary-desc">快速生成俱乐部管理员的一次性邀请入口</text>
+      </view>
+      <view class="summary-card">
+        <text class="summary-label">链接规则</text>
+        <text class="summary-value">单次有效</text>
+        <text class="summary-desc">完成一次绑定后自动失效</text>
+      </view>
+    </view>
+
+    <view class="panel-card">
+      <view class="panel-header">
+        <view>
+          <text class="panel-title">生成绑定链接</text>
+          <text class="panel-desc">填写俱乐部 ID 后生成专属的一次性绑定路径，并跳转到专用转发页</text>
+        </view>
+      </view>
+
+      <view class="form-item">
+        <text class="label">俱乐部 ID</text>
+        <input
+          class="input"
+          placeholder="例如：dianfengxuexiao"
+          value="{{tenantId}}"
+          bindinput="onTenantIdInput"
+        />
+      </view>
+
+      <button class="primary-btn" bindtap="generateLink">生成绑定链接</button>
+    </view>
+
+    <view class="panel-card result-card" wx:if="{{bindLink}}">
+      <view class="panel-header">
+        <view>
+          <text class="panel-title">生成结果</text>
+          <text class="panel-desc">复制路径或直接从右上角转发</text>
+        </view>
+        <view class="status-pill">已生成</view>
+      </view>
+
+      <view class="link-box">
+        <text class="link-label">绑定路径</text>
+        <text class="link-text" selectable>{{bindLink}}</text>
+      </view>
+
+      <view class="tip-box">
+        <text class="tip-title">推荐操作</text>
+        <text class="tip-text">生成后会进入专用转发页，请在转发页点击分享按钮发送给对应负责人；对方完成绑定后此链接立即失效。</text>
+      </view>
+
+      <view class="action-buttons">
+        <button class="secondary-btn" bindtap="copyLink">复制路径</button>
+        <button class="light-btn" bindtap="clearLink">重新生成</button>
+      </view>
+    </view>
+
+    <view class="panel-card guide-card">
+      <view class="panel-header">
+        <view>
+          <text class="panel-title">操作流程</text>
+          <text class="panel-desc">建议按下面顺序执行，避免授权错人</text>
+        </view>
+      </view>
+
+      <view class="step-list">
+        <view class="step-item" wx:for="{{guideSteps}}" wx:key="index">
+          <view class="step-index">{{index + 1}}</view>
+          <text class="step-text">{{item}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

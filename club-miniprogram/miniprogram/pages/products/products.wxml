@@ -1,0 +1,63 @@
+<!--pages/products/products.wxml-->
+<view class="page-products">
+  <!-- 搜索栏 (简洁模式下隐藏) -->
+  <view class="search-section" wx:if="{{!simpleMode}}">
+    <view class="search-bar">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" 
+             placeholder="搜索产品" 
+             value="{{searchKeyword}}"
+             bindinput="onSearchInput"
+             bindconfirm="onSearch"/>
+      <text class="search-btn" bindtap="onSearch">搜索</text>
+    </view>
+  </view>
+
+  <!-- 分类标签 (简洁模式下隐藏) -->
+  <scroll-view class="category-scroll" scroll-x enable-flex wx:if="{{!simpleMode}}">
+    <view class="category-tabs">
+      <view class="category-tab {{activeCategory === item.id ? 'active' : ''}}" 
+            wx:for="{{categories}}" 
+            wx:key="id"
+            bindtap="switchCategory"
+            data-category="{{item.id}}">
+        {{item.name}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 产品列表 -->
+  <scroll-view class="product-list" scroll-y>
+    <view class="product-item card" 
+          wx:for="{{products}}" 
+          wx:key="id"
+          bindtap="navigateToDetail"
+          data-id="{{item.id}}">
+      <image class="product-image" src="{{item.image}}" mode="aspectFill"></image>
+      <view class="product-content">
+        <text class="product-title text-ellipsis-2">{{item.title}}</text>
+        <text class="product-excerpt text-ellipsis-2">{{item.excerpt}}</text>
+        <view class="product-footer">
+          <text class="product-action">查看详情 ›</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-wrap" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && products.length > 0}}">
+      <text>—— 没有更多了 ——</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && products.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无相关产品</text>
+    </view>
+  </scroll-view>
+</view>

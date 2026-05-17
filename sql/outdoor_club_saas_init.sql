@@ -289,6 +289,31 @@ OVERRIDING SYSTEM VALUE VALUES
 ('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'form',          'admin', NOW(), '操作日志菜单'),
 ('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'logininfor',    'admin', NOW(), '登录日志菜单');
 
+-- ----------------------------
+-- 户外运动俱乐部菜单
+-- ----------------------------
+INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark)
+OVERRIDING SYSTEM VALUE VALUES
+('2000', '户外管理', '0',   '4', 'outdoor',      '',                           '', '', 1, 0, 'M', '0', '0', '',                    'travel',      'admin', NOW(), '户外管理目录'),
+('2001', '俱乐部管理', '2000', '1', 'club',       '',                           '', '', 1, 0, 'M', '0', '0', '',                    'peoples',     'admin', NOW(), '俱乐部管理目录'),
+('2002', '俱乐部配置', '2001', '1', 'config/:clubId',    'outdoor/club/Config',        '', '', 1, 0, 'C', '0', '0', 'outdoor:club:edit',   'setting',     'admin', NOW(), '俱乐部配置'),
+('2010', '活动管理', '2000', '2', 'activity',    '',                           '', '', 1, 0, 'M', '0', '0', '',                    'activity',    'admin', NOW(), '活动管理目录'),
+('2011', '活动新增', '2010', '1', '',           '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:activity:add',    '#', 'admin', NOW(), ''),
+('2012', '活动编辑', '2010', '2', '',           '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:activity:edit',   '#', 'admin', NOW(), ''),
+('2013', '活动删除', '2010', '3', '',           '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:activity:remove', '#', 'admin', NOW(), ''),
+('2014', '活动查看', '2010', '4', '',           '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:activity:query',  '#', 'admin', NOW(), ''),
+('2015', '活动详情', '2010', '5', 'detail/:activityId',    'outdoor/activity/Detail',   '', '', 1, 0, 'C', '0', '0', 'outdoor:activity:query',  'view',       'admin', NOW(), '活动详情'),
+('2063', '活动编辑', '2010', '6', 'edit/:activityId',      'outdoor/activity/Edit',     '', '', 1, 0, 'C', '0', '0', 'outdoor:activity:edit',   'edit',       'admin', NOW(), '活动编辑'),
+('2020', '报名管理', '2000', '3', 'registration', 'outdoor/registration/List', '', '', 1, 0, 'C', '0', '0', 'outdoor:registration:list', 'list',      'admin', NOW(), '报名管理'),
+('2021', '报名审核', '2020', '1', '',          '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:registration:edit', '#', 'admin', NOW(), ''),
+('2030', '订单管理', '2000', '4', 'order',     'outdoor/order/List',         '', '', 1, 0, 'C', '0', '0', 'outdoor:order:list',      'order',      'admin', NOW(), '订单管理'),
+('2031', '订单退款', '2030', '1', '',          '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:order:edit',      '#', 'admin', NOW(), ''),
+('2040', '会员管理', '2000', '5', 'member',    'outdoor/member/List',       '', '', 1, 0, 'C', '0', '0', 'outdoor:member:list',     'user',       'admin', NOW(), '会员管理'),
+('2050', '免责条款', '2000', '6', 'disclaimer', 'outdoor/disclaimer/List',   '', '', 1, 0, 'C', '0', '0', 'outdoor:disclaimer:list', 'document',   'admin', NOW(), '免责条款'),
+('2051', '免责条款新增', '2050', '1', '',       '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:disclaimer:add',   '#', 'admin', NOW(), ''),
+('2052', '免责条款编辑', '2050', '2', '',       '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:disclaimer:edit',  '#', 'admin', NOW(), ''),
+('2053', '免责条款删除', '2050', '3', '',       '',                           '', '', 1, 0, 'F', '0', '0', 'outdoor:disclaimer:remove','#', 'admin', NOW(), '');
+
 -- 用户管理按钮
 INSERT INTO sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query, route_name, is_frame, is_cache, menu_type, visible, status, perms, icon, create_by, create_time, remark) 
 OVERRIDING SYSTEM VALUE VALUES
@@ -708,6 +733,24 @@ COMMENT ON COLUMN sys_notice.update_by IS '更新者';
 COMMENT ON COLUMN sys_notice.update_time IS '更新时间';
 COMMENT ON COLUMN sys_notice.remark IS '备注';
 
+-- ----------------------------
+-- 15、公告已读记录表
+-- ----------------------------
+DROP TABLE IF EXISTS sys_notice_read CASCADE;
+CREATE TABLE sys_notice_read (
+  read_id    BIGSERIAL        NOT NULL PRIMARY KEY,
+  notice_id  INTEGER          NOT NULL,
+  user_id    BIGINT           NOT NULL,
+  read_time  TIMESTAMP        NOT NULL,
+  CONSTRAINT uk_user_notice UNIQUE (user_id, notice_id)
+);
+
+COMMENT ON TABLE sys_notice_read IS '公告已读记录表';
+COMMENT ON COLUMN sys_notice_read.read_id IS '已读主键';
+COMMENT ON COLUMN sys_notice_read.notice_id IS '公告id';
+COMMENT ON COLUMN sys_notice_read.user_id IS '用户id';
+COMMENT ON COLUMN sys_notice_read.read_time IS '阅读时间';
+
 
 -- =============================================
 -- 业务表 - 户外运动俱乐部SaaS
@@ -942,7 +985,7 @@ COMMENT ON COLUMN reg_registration.create_time IS '创建时间';
 COMMENT ON COLUMN reg_registration.update_by IS '更新者';
 COMMENT ON COLUMN reg_registration.update_time IS '更新时间';
 
-CREATE INDEX idx_reg_reg_club ON reg_registration(club_id
+CREATE INDEX idx_reg_reg_club ON reg_registration(club_id)
 
 -- ----------------------------
 -- 21、订单表

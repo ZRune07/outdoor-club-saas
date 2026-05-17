@@ -1,0 +1,9 @@
+{
+  "name": "manageTenantMembership",
+  "version": "1.0.0",
+  "description": "Manage tenant membership status",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

@@ -48,7 +48,7 @@ export function changeActivityStatus(activityId, status) {
   return request({
     url: '/admin/outdoor/activity/changeStatus',
     method: 'put',
-    params: { activityId, status }
+    data: { activityId: activityId, status: status }
   })
 }
 

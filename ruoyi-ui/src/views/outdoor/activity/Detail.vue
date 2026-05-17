@@ -172,7 +172,7 @@ const route = useRoute()
 const router = useRouter()
 const { proxy } = getCurrentInstance()
 
-const activityId = route.params.id
+const activityId = route.params.activityId
 
 const activity = ref({})
 const registrations = ref([])

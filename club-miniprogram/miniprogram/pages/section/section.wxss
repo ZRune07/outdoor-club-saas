@@ -1,0 +1,161 @@
+.page-section {
+  padding: 20rpx 30rpx 40rpx;
+  background: var(--bg-color);
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.section-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.case-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-card {
+  width: 330rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  border-radius: 16rpx;
+  background: #fff;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+}
+
+.plan-card:nth-child(2n) {
+  margin-right: 0;
+}
+
+.plan-image-wrap {
+  width: 100%;
+  height: 200rpx;
+  position: relative;
+}
+
+.plan-image {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+
+.plan-info {
+  padding: 12rpx 12rpx 16rpx;
+}
+
+.plan-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+  white-space: normal;
+}
+
+.destination-card {
+  width: 320rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  border-radius: 12rpx;
+  display: inline-block;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.destination-image {
+  width: 100%;
+  height: 200rpx;
+  border-radius: 12rpx;
+}
+
+.topic-card {
+  width: 330rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  display: inline-block;
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: normal;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.05);
+}
+
+.topic-card:nth-child(2n) {
+  margin-right: 0;
+}
+
+.topic-card:active {
+  transform: scale(0.98);
+}
+
+.topic-image {
+  width: 100%;
+  height: 440rpx;
+  border-radius: 16rpx 16rpx 0 0;
+}
+
+.topic-info {
+  padding: 16rpx;
+}
+
+.topic-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8rpx;
+  line-height: 1.4;
+}
+
+.case-card {
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.case-image {
+  width: 100%;
+  height: 400rpx;
+}
+
+.card-title-wrap {
+  padding: 12rpx 12rpx 16rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60rpx 0;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  margin-top: 16rpx;
+  color: var(--text-light);
+  font-size: 24rpx;
+}

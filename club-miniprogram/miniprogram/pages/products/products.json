@@ -1,0 +1,7 @@
+{
+    "usingComponents": {},
+    "navigationBarTitleText": "精选产品",
+    "navigationBarBackgroundColor": "#F5F5F5",
+    "navigationBarTextStyle": "black",
+    "enablePullDownRefresh": true
+}

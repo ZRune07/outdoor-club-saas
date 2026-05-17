@@ -1,0 +1,98 @@
+<!--pages/about/about.wxml-->
+<view class="page-about-wrapper">
+  <!-- 自定义导航栏返回按钮 -->
+  <view class="custom-nav">
+    <view class="nav-back" bindtap="goBack">
+      <text class="back-icon">‹</text>
+    </view>
+  </view>
+
+  <scroll-view class="page-about" scroll-y="true">
+    <!-- 加载状态 -->
+    <view class="loading-wrap" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 顶部特色图片 -->
+    <view class="header-section" wx:if="{{!loading && featuredImage}}">
+      <image class="header-image" src="{{featuredImage}}" mode="aspectFill"></image>
+    </view>
+
+    <!-- 标题信息 -->
+    <view class="detail-info" wx:if="{{!loading && post}}">
+      <text class="detail-title">{{post.title}}</text>
+      <view class="detail-meta">
+        <text class="meta-date">{{post.date}}</text>
+      </view>
+    </view>
+
+    <!-- WordPress 页面内容 -->
+    <view class="content-section" wx:if="{{!loading}}">
+      <!-- 已拆分的富文本内容 -->
+      <block wx:for="{{pageContent}}" wx:key="index">
+        <!-- 视频 (Local MP4) -->
+        <view class="video-section" wx:if="{{item.type === 'video'}}">
+          <video 
+            src="{{item.src}}" 
+            poster="{{item.poster}}"
+            class="wp-video"
+            show-center-play-btn="{{true}}" 
+            enable-play-gesture="{{true}}"
+            picture-in-picture-mode="{{['push', 'pop', 'os']}}" 
+            show-mute-btn="{{true}}"
+          ></video>
+        </view>
+
+        <!-- 外部视频按钮 (External iframe) -->
+        <view class="external-video-section" wx:if="{{item.type === 'external-video'}}">
+          <view 
+            class="external-video-btn"
+            bindtap="openExternalVideo"
+            data-url="{{item.url}}"
+          >
+            <text class="video-icon">🎥</text>
+            <text class="video-text">点击观看精彩视频</text>
+            <text class="arrow-icon">></text>
+          </view>
+        </view>
+
+        <!-- HTML 文本内容 -->
+        <rich-text 
+          wx:if="{{item.type === 'html'}}" 
+          nodes="{{item.content}}" 
+          class="rich-content"
+        ></rich-text>
+      </block>
+    </view>
+
+    <!-- 版权信息 -->
+    <view class="copyright-section" wx:if="{{!loading}}">
+      <view class="copyright-line"></view>
+      <text class="copyright-text">{{brandName}}</text>
+      <view class="copyright-line"></view>
+    </view>
+
+  </scroll-view>
+
+  <!-- 底部固定导航条 -->
+<view class="bottom-nav-placeholder"></view>
+<view class="bottom-nav">
+  <!-- 左侧：专属顾问信息 -->
+  <view class="nav-consultant" bindtap="callConsultant">
+    <image class="nav-avatar" src="{{consultant.avatar || 'https://tuanjiansaas-1256002767.cos.ap-chengdu.myqcloud.com/wp-content/uploads/2026/01/touxiang.png'}}" mode="aspectFill"></image>
+    <view class="nav-consultant-info">
+      <text class="nav-consultant-name">{{consultant.name || '管理员'}}</text>
+      <text class="nav-consultant-title">{{consultant.title || '客服顾问'}}</text>
+    </view>
+  </view>
+  
+  <!-- 右侧：按钮区域 -->
+  <view class="nav-buttons">
+    <view class="nav-btn btn-call-green" bindtap="callConsultant">
+      <text class="emoji-icon">☏</text>
+      <text>电话咨询</text>
+    </view>
+  </view>
+</view>
+</view>

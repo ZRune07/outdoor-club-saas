@@ -1,0 +1,9 @@
+{
+  "name": "getActivityEnrollmentStats",
+  "version": "1.0.0",
+  "description": "获取活动报名统计",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}

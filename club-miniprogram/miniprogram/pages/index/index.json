@@ -1,0 +1,6 @@
+{
+    "usingComponents": {},
+    "navigationBarTitleText": "户外俱乐部",
+    "navigationStyle": "custom",
+    "enablePullDownRefresh": true
+}

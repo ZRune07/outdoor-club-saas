@@ -1,0 +1,9 @@
+{
+  "name": "bindTenantAdmin",
+  "version": "1.0.0",
+  "description": "Bind tenant administrator",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

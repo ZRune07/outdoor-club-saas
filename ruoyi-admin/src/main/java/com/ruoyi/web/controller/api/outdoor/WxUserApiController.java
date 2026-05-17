@@ -3,6 +3,7 @@ package com.ruoyi.web.controller.api.outdoor;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.outdoor.wxuser.domain.WxUser;
+import com.ruoyi.outdoor.wxuser.dto.WxLoginRequest;
 import com.ruoyi.outdoor.wxuser.service.IWxUserService;
 import com.ruoyi.outdoor.wxuser.service.IWxLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class WxUserApiController extends BaseController {
      */
     @GetMapping("/{userId}")
     public AjaxResult getInfo(@PathVariable Long userId) {
-        return success(wxUserService.selectWxUserByUserId(userId));
+        return success(wxUserService.selectWxUserByWxUserId(userId));
     }
 
     /**
@@ -44,7 +45,11 @@ public class WxUserApiController extends BaseController {
      */
     @PostMapping("/login")
     public AjaxResult wxLogin(@RequestBody WxUser wxUser) {
-        return wxLoginService.wxLogin(wxUser.getOpenid());
+        WxLoginRequest request = new WxLoginRequest();
+        request.setNickname(wxUser.getNickname());
+        request.setAvatar(wxUser.getAvatar());
+        request.setClubId(wxUser.getClubId());
+        return success(wxLoginService.login(request));
     }
 
     /**
@@ -60,6 +65,10 @@ public class WxUserApiController extends BaseController {
      */
     @PostMapping("/profile")
     public AjaxResult saveProfile(@RequestBody WxUser wxUser) {
-        return wxUserService.saveUserProfile(wxUser);
+        if (wxUser.getWxUserId() != null) {
+            return toAjax(wxUserService.updateWxUser(wxUser));
+        } else {
+            return toAjax(wxUserService.insertWxUser(wxUser));
+        }
     }
 }

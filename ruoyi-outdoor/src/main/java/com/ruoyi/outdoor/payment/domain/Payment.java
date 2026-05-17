@@ -29,6 +29,10 @@ public class Payment extends BaseEntity {
     @Excel(name = "报名ID")
     private Long registrationId;
 
+    /** 活动ID（通过报名关联） */
+    @Excel(name = "活动ID")
+    private Long activityId;
+
     /** 微信用户ID */
     @Excel(name = "微信用户ID")
     private Long wxUserId;
@@ -96,6 +100,14 @@ public class Payment extends BaseEntity {
 
     public void setRegistrationId(Long registrationId) {
         this.registrationId = registrationId;
+    }
+
+    public Long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
     }
 
     public Long getWxUserId() {

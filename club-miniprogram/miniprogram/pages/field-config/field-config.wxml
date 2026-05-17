@@ -1,0 +1,166 @@
+<!--pages/field-config/field-config.wxml-->
+<view class="field-config-page">
+  <view class="top-band">
+    <text class="eyebrow">配置中心</text>
+    <text class="hero-title">报名、协议与会员规则</text>
+    <text class="hero-subtitle">这里配置的是用户报名时看到什么、签什么，以及会员权益如何展示。</text>
+    <view class="tenant-pill">
+      <text class="tenant-label">当前俱乐部</text>
+      <text class="tenant-value">{{tenantId}}</text>
+    </view>
+  </view>
+
+  <view class="content">
+    <view class="metric-grid">
+      <view class="metric-card">
+        <text class="metric-label">字段</text>
+        <text class="metric-value">{{stats.total}}</text>
+        <text class="metric-desc">必填 {{stats.required}} · 选填 {{stats.optional}}</text>
+      </view>
+      <view class="metric-card">
+        <text class="metric-label">默认协议</text>
+        <text class="metric-value text-value">{{stats.hasAgreement}}</text>
+        <text class="metric-desc">未设置活动专属协议时使用</text>
+      </view>
+      <view class="metric-card">
+        <text class="metric-label">会员</text>
+        <text class="metric-value text-value">{{stats.membershipStatus}}</text>
+        <text class="metric-desc">控制“我的”页会员入口</text>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="panel-head">
+        <view>
+          <text class="panel-title">报名表单</text>
+          <text class="panel-desc">只保留真正用于联系和确认的信息。字段越少，报名完成率越高。</text>
+        </view>
+        <button class="primary-btn" bindtap="showAddModal">新增字段</button>
+      </view>
+
+      <view class="field-list" wx:if="{{fields.length > 0}}">
+        <view class="field-item" wx:for="{{fields}}" wx:key="key">
+          <view class="field-main">
+            <view class="field-title-row">
+              <text class="field-title">{{item.label}}</text>
+              <text class="required-tag" wx:if="{{item.required}}">必填</text>
+            </view>
+            <text class="field-desc">{{item.key}} · {{item.type}}</text>
+            <text class="field-desc" wx:if="{{item.placeholder}}">{{item.placeholder}}</text>
+          </view>
+          <view class="field-actions">
+            <button class="small-btn" bindtap="editField" data-index="{{index}}">编辑</button>
+            <button class="danger-btn" bindtap="deleteField" data-index="{{index}}">删除</button>
+          </view>
+        </view>
+      </view>
+      <view class="empty-inline" wx:else>还没有字段，建议先添加姓名、手机号、参与人数。</view>
+    </view>
+
+    <view class="panel">
+      <view class="panel-head">
+        <view>
+          <text class="panel-title">默认电子协议</text>
+          <text class="panel-desc">用于没有单独配置协议的活动。内容应清楚说明风险、责任、退款和联系方式。</text>
+        </view>
+        <button class="secondary-btn" bindtap="editAgreement">编辑协议</button>
+      </view>
+      <view class="preview-box">
+        <rich-text wx:if="{{agreementPreview}}" nodes="{{agreementPreview}}"></rich-text>
+        <view wx:else class="empty-inline">尚未配置默认协议。</view>
+      </view>
+    </view>
+
+    <view class="panel">
+      <view class="panel-head">
+        <view>
+          <text class="panel-title">会员规则</text>
+          <text class="panel-desc">开启后，用户可以在“我的”页开通会员，管理员可在工作台维护状态。</text>
+        </view>
+        <button class="secondary-btn" bindtap="saveMembershipConfig">保存会员</button>
+      </view>
+
+      <view class="form-line switch-line">
+        <text class="form-label">开放会员功能</text>
+        <switch checked="{{membershipConfig.enabled}}" color="#0f766e" bindchange="onMembershipEnabledChange" />
+      </view>
+      <view class="form-line">
+        <text class="form-label">会员名称</text>
+        <input class="form-input" value="{{membershipConfig.levelName}}" placeholder="例如：俱乐部年度会员" bindinput="onMembershipLevelInput" />
+      </view>
+      <view class="form-line">
+        <text class="form-label">会员说明</text>
+        <textarea class="form-textarea" value="{{membershipConfig.description}}" placeholder="说明会员获得的核心价值" bindinput="onMembershipDescriptionInput" />
+      </view>
+      <view class="form-line">
+        <text class="form-label">有效期（天）</text>
+        <input class="form-input" type="number" value="{{membershipConfig.validityDays}}" placeholder="例如：365" bindinput="onMembershipDaysInput" />
+      </view>
+      <view class="form-line">
+        <text class="form-label">会员权益</text>
+        <textarea class="form-textarea" value="{{membershipConfig.benefitsText}}" placeholder="每行一条，例如：活动优先通知" bindinput="onMembershipBenefitsInput" />
+        <text class="form-hint">建议 3-6 条，每行一条。</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showAgreementModal}}" catchtap="closeAgreementModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-head">
+        <text class="modal-title">编辑默认协议</text>
+        <text class="modal-close" bindtap="closeAgreementModal">×</text>
+      </view>
+      <view class="modal-body">
+        <textarea class="agreement-textarea" value="{{agreementContent}}" bindinput="onAgreementInput" placeholder="请输入协议内容，支持简单 HTML 标签" />
+        <view class="modal-actions">
+          <button class="secondary-btn flex-btn" bindtap="closeAgreementModal">取消</button>
+          <button class="primary-btn flex-btn" bindtap="saveAgreement">保存</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="modal-overlay" wx:if="{{showEditModal}}" catchtap="closeEditModal">
+    <view class="modal-content" catchtap="preventBubble">
+      <view class="modal-head">
+        <text class="modal-title">{{editingIndex !== null ? '编辑字段' : '新增字段'}}</text>
+        <text class="modal-close" bindtap="closeEditModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-line">
+          <text class="form-label">字段名称</text>
+          <input class="form-input" value="{{editForm.label}}" placeholder="例如：姓名" bindinput="onLabelInput" />
+        </view>
+        <view class="form-line">
+          <text class="form-label">字段键名</text>
+          <input class="form-input" value="{{editForm.key}}" placeholder="例如：name" bindinput="onKeyInput" disabled="{{editingIndex !== null}}" />
+          <text class="form-hint" wx:if="{{editingIndex !== null}}">键名创建后不可修改，避免影响历史数据。</text>
+        </view>
+        <view class="form-line">
+          <text class="form-label">字段类型</text>
+          <picker mode="selector" range="{{fieldTypes}}" range-key="label" value="{{editForm.typeIndex}}" bindchange="onTypeChange">
+            <view class="picker-input">{{editForm.typeLabel}}</view>
+          </picker>
+        </view>
+        <view class="form-line">
+          <text class="form-label">占位提示</text>
+          <input class="form-input" value="{{editForm.placeholder}}" placeholder="例如：请输入姓名" bindinput="onPlaceholderInput" />
+        </view>
+        <view class="form-line">
+          <text class="form-label">默认值</text>
+          <input class="form-input" value="{{editForm.defaultValue}}" placeholder="可选" bindinput="onDefaultValueInput" />
+        </view>
+        <view class="check-row" bindtap="toggleRequired">
+          <view class="checkbox {{editForm.required ? 'checked' : ''}}">
+            <text wx:if="{{editForm.required}}">✓</text>
+          </view>
+          <text>设为必填</text>
+        </view>
+        <view class="modal-actions">
+          <button class="secondary-btn flex-btn" bindtap="closeEditModal">取消</button>
+          <button class="primary-btn flex-btn" bindtap="saveField">保存</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

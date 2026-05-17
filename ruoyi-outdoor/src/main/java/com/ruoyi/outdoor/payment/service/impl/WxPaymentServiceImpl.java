@@ -6,6 +6,7 @@ import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayMpOrderResult;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.bean.result.WxPayOrderQueryResult;
+import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.DateUtils;
@@ -20,7 +21,6 @@ import com.ruoyi.outdoor.payment.mapper.PaymentMapper;
 import com.ruoyi.outdoor.payment.service.IWxPaymentService;
 import com.ruoyi.outdoor.registration.domain.Registration;
 import com.ruoyi.outdoor.registration.mapper.RegistrationMapper;
-import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,27 +64,27 @@ public class WxPaymentServiceImpl implements IWxPaymentService {
         }
 
         String orderNo = generateOrderNo();
-        BigDecimal totalFee = registration.getTotalFee();
+        BigDecimal totalFee = activity.getPrice();
         if (totalFee == null || totalFee.compareTo(BigDecimal.ZERO) <= 0) {
-            totalFee = activity.getFee() != null ? activity.getFee() : BigDecimal.ZERO;
+            totalFee = BigDecimal.ZERO;
         }
 
         Payment payment = new Payment();
-        payment.setPaymentId(IdUtils.fastSimpleUUID().substring(0, 32));
+        // orderId 由数据库自增生成
         payment.setOrderNo(orderNo);
         payment.setRegistrationId(registration.getRegistrationId());
         payment.setActivityId(activity.getActivityId());
         payment.setWxUserId(registration.getWxUserId());
         payment.setClubId(registration.getClubId());
         payment.setTotalAmount(totalFee);
-        payment.setStatus("0");
+        payment.setPayStatus("0");
         payment.setCreateTime(DateUtils.getNowDate());
         payment.setRemark(request.getDescription());
         paymentMapper.insertPayment(payment);
 
         try {
             WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
-            orderRequest.setBody(request.getDescription() != null ? request.getDescription() : activity.getActivityName());
+            orderRequest.setBody(request.getDescription() != null ? request.getDescription() : activity.getActivityTitle());
             orderRequest.setOutTradeNo(orderNo);
             orderRequest.setTotalFee(totalFee.multiply(new BigDecimal("100")).intValue());
             orderRequest.setSpbillCreateIp("127.0.0.1");
@@ -103,7 +103,7 @@ public class WxPaymentServiceImpl implements IWxPaymentService {
             response.setOrderNo(orderNo);
 
             return response;
-        } catch (WxErrorException e) {
+        } catch (Exception e) {
             throw new ServiceException("创建支付订单失败：" + e.getMessage());
         }
     }
@@ -120,11 +120,11 @@ public class WxPaymentServiceImpl implements IWxPaymentService {
                 throw new ServiceException("订单不存在");
             }
 
-            if ("1".equals(payment.getStatus())) {
+            if ("1".equals(payment.getPayStatus())) {
                 return;
             }
 
-            payment.setStatus("1");
+            payment.setPayStatus("1");
             payment.setPayTime(DateUtils.getNowDate());
             payment.setTransactionId(notifyResult.getTransactionId());
             paymentMapper.updatePayment(payment);
@@ -136,12 +136,12 @@ public class WxPaymentServiceImpl implements IWxPaymentService {
                 registrationMapper.updateRegistration(registration);
 
                 Activity activity = activityMapper.selectActivityByActivityId(registration.getActivityId());
-                if (activity != null && activity.getParticipantCount() != null) {
-                    activity.setParticipantCount(activity.getParticipantCount() + 1);
+                if (activity != null && activity.getCurrentParticipants() != null) {
+                    activity.setCurrentParticipants(activity.getCurrentParticipants() + 1);
                     activityMapper.updateActivity(activity);
                 }
             }
-        } catch (WxErrorException e) {
+        } catch (Exception e) {
             throw new ServiceException("处理支付回调失败：" + e.getMessage());
         }
     }
@@ -159,7 +159,7 @@ public class WxPaymentServiceImpl implements IWxPaymentService {
             } else {
                 return "FAILED";
             }
-        } catch (WxErrorException e) {
+        } catch (Exception e) {
             throw new ServiceException("查询支付状态失败：" + e.getMessage());
         }
     }

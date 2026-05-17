@@ -1,0 +1,176 @@
+.admin-invite-page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 180rpx, #f3f6fb 380rpx, #f8fafc 100%);
+  padding-bottom: 56rpx;
+}
+
+.hero {
+  padding: 48rpx 30rpx 40rpx;
+  color: #ffffff;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.18);
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 22rpx;
+  font-size: 44rpx;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+.hero-subtitle {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 25rpx;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.hero-tenant {
+  margin-top: 28rpx;
+  display: inline-flex;
+  flex-direction: column;
+  padding: 18rpx 22rpx;
+  border-radius: 24rpx;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hero-tenant-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.hero-tenant-value {
+  margin-top: 8rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.content {
+  padding: 0 24rpx;
+}
+
+.panel-card {
+  margin-top: 22rpx;
+  padding: 30rpx 24rpx;
+  border-radius: 30rpx;
+  background: #ffffff;
+  box-shadow: 0 18rpx 50rpx rgba(15, 23, 42, 0.08);
+}
+
+.section-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.section-desc {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #64748b;
+  line-height: 1.7;
+}
+
+.share-btn,
+.share-btn::after,
+.secondary-btn,
+.secondary-btn::after,
+.ghost-btn,
+.ghost-btn::after {
+  border: none;
+}
+
+.share-btn {
+  margin-top: 24rpx;
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #10b981 0%, #0ea5a4 100%);
+  color: #ffffff;
+  font-size: 28rpx;
+  font-weight: 700;
+}
+
+.link-box {
+  margin-top: 20rpx;
+  padding: 22rpx;
+  border-radius: 24rpx;
+  background: #f8fafc;
+}
+
+.link-text {
+  display: block;
+  font-size: 24rpx;
+  color: #0f172a;
+  line-height: 1.8;
+  word-break: break-all;
+}
+
+.action-row {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
+.secondary-btn,
+.ghost-btn {
+  flex: 1;
+  margin: 0;
+  height: 70rpx;
+  line-height: 70rpx;
+  border-radius: 999rpx;
+  font-size: 25rpx;
+  font-weight: 600;
+}
+
+.secondary-btn {
+  background: #eef7ff;
+  color: #1d4ed8;
+}
+
+.ghost-btn {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.tips-card {
+  padding-bottom: 14rpx;
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14rpx;
+  margin-top: 20rpx;
+}
+
+.tip-index {
+  width: 42rpx;
+  height: 42rpx;
+  line-height: 42rpx;
+  text-align: center;
+  border-radius: 50%;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 22rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 24rpx;
+  color: #334155;
+  line-height: 1.7;
+}

@@ -18,6 +18,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.outdoor.disclaimer.domain.Disclaimer;
+import com.ruoyi.outdoor.disclaimer.domain.SignRecord;
+import com.ruoyi.outdoor.disclaimer.mapper.SignRecordMapper;
 import com.ruoyi.outdoor.disclaimer.service.IDisclaimerService;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -28,11 +30,14 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/admin/disclaimer")
+@RequestMapping("/admin/outdoor/disclaimer")
 public class DisclaimerController extends BaseController
 {
     @Autowired
     private IDisclaimerService disclaimerService;
+
+    @Autowired(required = false)
+    private SignRecordMapper signRecordMapper;
 
     /**
      * 查询免责签署列表
@@ -94,6 +99,37 @@ public class DisclaimerController extends BaseController
     }
 
     /**
+     * 修改免责条款状态
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:disclaimer:edit')")
+    @Log(title = "免责签署", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(Long disclaimerId, String status)
+    {
+        Disclaimer disclaimer = new Disclaimer();
+        disclaimer.setDisclaimerId(disclaimerId);
+        disclaimer.setStatus(status);
+        disclaimer.setUpdateBy(getUsername());
+        return toAjax(disclaimerService.updateDisclaimer(disclaimer));
+    }
+
+    /**
+     * 查询免责条款签署记录
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:disclaimer:query')")
+    @GetMapping("/signRecords/{disclaimerId}")
+    public AjaxResult signRecords(@PathVariable("disclaimerId") Long disclaimerId)
+    {
+        if (signRecordMapper == null) {
+            return success(List.of());
+        }
+        SignRecord query = new SignRecord();
+        query.setDisclaimerId(disclaimerId);
+        List<SignRecord> list = signRecordMapper.selectSignRecordList(query);
+        return success(list);
+    }
+
+    /**
      * 删除免责签署
      */
     @PreAuthorize("@ss.hasPermi('outdoor:disclaimer:remove')")
@@ -101,6 +137,10 @@ public class DisclaimerController extends BaseController
 	@DeleteMapping("/{disclaimerIds}")
     public AjaxResult remove(@PathVariable Long[] disclaimerIds)
     {
-        return toAjax(disclaimerService.deleteDisclaimerByDisclaimerIds(disclaimerIds));
+        int result = 0;
+        for (Long id : disclaimerIds) {
+            result += disclaimerService.deleteDisclaimerByDisclaimerId(id);
+        }
+        return toAjax(result);
     }
 }

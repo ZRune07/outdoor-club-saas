@@ -28,7 +28,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
  * @author ruoyi
  */
 @RestController
-@RequestMapping("/admin/registration")
+@RequestMapping("/admin/outdoor/registration")
 public class RegistrationController extends BaseController
 {
     @Autowired
@@ -89,6 +89,38 @@ public class RegistrationController extends BaseController
     @PutMapping
     public AjaxResult edit(@Validated @RequestBody Registration registration)
     {
+        registration.setUpdateBy(getUsername());
+        return toAjax(registrationService.updateRegistration(registration));
+    }
+
+    /**
+     * 审核报名
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:registration:edit')")
+    @Log(title = "报名", businessType = BusinessType.UPDATE)
+    @PutMapping("/audit")
+    public AjaxResult audit(Long registrationId, String auditStatus, String auditRemark)
+    {
+        Registration registration = new Registration();
+        registration.setRegistrationId(registrationId);
+        registration.setStatus(auditStatus);
+        registration.setRemark(auditRemark);
+        registration.setUpdateBy(getUsername());
+        return toAjax(registrationService.updateRegistration(registration));
+    }
+
+    /**
+     * 取消报名
+     */
+    @PreAuthorize("@ss.hasPermi('outdoor:registration:edit')")
+    @Log(title = "报名", businessType = BusinessType.UPDATE)
+    @PutMapping("/cancel")
+    public AjaxResult cancel(Long registrationId, String cancelReason)
+    {
+        Registration registration = new Registration();
+        registration.setRegistrationId(registrationId);
+        registration.setStatus("canceled");
+        registration.setRemark(cancelReason);
         registration.setUpdateBy(getUsername());
         return toAjax(registrationService.updateRegistration(registration));
     }

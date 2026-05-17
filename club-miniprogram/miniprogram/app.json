@@ -1,0 +1,26 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/section/section",
+        "pages/products/products",
+        "pages/detail/detail",
+        "pages/about/about",
+        "pages/contact/contact",
+        "pages/mine/mine",
+        "pages/enrollments/enrollments",
+        "pages/webview/webview",
+        "pages/super-admin/super-admin",
+        "pages/tenant-admin/tenant-admin",
+        "pages/admin-invite/admin-invite",
+        "pages/field-config/field-config"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#FF6B00",
+        "navigationBarTitleText": "户外俱乐部",
+        "navigationBarTextStyle": "white"
+    },
+    "sitemapLocation": "sitemap.json",
+    "lazyCodeLoading": "requiredComponents",
+    "style": "v2"
+}

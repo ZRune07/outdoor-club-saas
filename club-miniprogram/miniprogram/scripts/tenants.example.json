@@ -1,0 +1,13 @@
+{
+  "tenants": [
+    {
+      "tenantId": "default",
+      "name": "默认租户"
+    },
+    {
+      "tenantId": "suzhi",
+      "name": "素质拓展"
+    }
+  ]
+}
+
