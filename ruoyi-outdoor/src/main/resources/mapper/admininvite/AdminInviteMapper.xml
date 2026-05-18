@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.admininvite.mapper.AdminInviteMapper">
+
+    <resultMap type="AdminInvite" id="AdminInviteResult">
+        <id     property="id"         column="id"          />
+        <result property="clubId"     column="club_id"     />
+        <result property="token"      column="token"       />
+        <result property="expireTime" column="expire_time" />
+        <result property="used"       column="used"        />
+        <result property="usedBy"     column="used_by"     />
+        <result property="delFlag"    column="del_flag"    />
+        <result property="createBy"   column="created_by"  />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <sql id="selectAdminInviteVo">
+        select id, club_id, token, expire_time, used, used_by, del_flag,
+               created_by, create_time
+        from outdoor_admin_invite
+    </sql>
+
+    <select id="selectByToken" resultMap="AdminInviteResult">
+        <include refid="selectAdminInviteVo"/>
+        where del_flag = '0' and token = #{token}
+        limit 1
+    </select>
+
+    <insert id="insertAdminInvite" parameterType="AdminInvite" useGeneratedKeys="true" keyProperty="id">
+        insert into outdoor_admin_invite
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">club_id,</if>
+            <if test="token != null and token != ''">token,</if>
+            <if test="expireTime != null">expire_time,</if>
+            <if test="used != null and used != ''">used,</if>
+            <if test="usedBy != null">used_by,</if>
+            <if test="createBy != null and createBy != ''">created_by,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">#{clubId},</if>
+            <if test="token != null and token != ''">#{token},</if>
+            <if test="expireTime != null">#{expireTime},</if>
+            <if test="used != null and used != ''">#{used},</if>
+            <if test="usedBy != null">#{usedBy},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            CURRENT_TIMESTAMP
+        </trim>
+    </insert>
+
+    <update id="markUsed">
+        update outdoor_admin_invite
+        set used = '1', used_by = #{usedBy}
+        where id = #{id}
+    </update>
+
+</mapper>

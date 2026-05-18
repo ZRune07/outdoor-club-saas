@@ -7,6 +7,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <resultMap type="Activity" id="ActivityResult">
         <id     property="activityId"               column="activity_id"               />
         <result property="clubId"                   column="club_id"                   />
+        <result property="categoryId"               column="category_id"               />
         <result property="activityTitle"            column="activity_title"            />
         <result property="activityType"             column="activity_type"             />
         <result property="coverImage"               column="cover_image"              />
@@ -33,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectActivityVo">
-        select activity_id, club_id, activity_title, activity_type, cover_image, images, 
+        select activity_id, club_id, category_id, activity_title, activity_type, cover_image, images,
                description, start_time, end_time, registration_deadline, location, 
                max_participants, current_participants, price, insurance_price, 
                status, leader_id, content, notices, del_flag, 
@@ -45,6 +46,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectActivityVo"/>
         <where>  
             <if test="clubId != null"> and club_id = #{clubId}</if>
+            <if test="categoryId != null"> and category_id = #{categoryId}</if>
             <if test="activityTitle != null and activityTitle != ''"> and activity_title like concat('%', #{activityTitle}, '%')</if>
             <if test="activityType != null and activityType != ''"> and activity_type = #{activityType}</if>
             <if test="status != null and status != ''"> and status = #{status}</if>
@@ -73,6 +75,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         insert into act_activity
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="clubId != null">club_id,</if>
+            <if test="categoryId != null">category_id,</if>
             <if test="activityTitle != null and activityTitle != ''">activity_title,</if>
             <if test="activityType != null">activity_type,</if>
             <if test="coverImage != null">cover_image,</if>
@@ -99,6 +102,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="clubId != null">#{clubId},</if>
+            <if test="categoryId != null">#{categoryId},</if>
             <if test="activityTitle != null and activityTitle != ''">#{activityTitle},</if>
             <if test="activityType != null">#{activityType},</if>
             <if test="coverImage != null">#{coverImage},</if>
@@ -129,6 +133,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update act_activity
         <trim prefix="SET" suffixOverrides=",">
             <if test="clubId != null">club_id = #{clubId},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
             <if test="activityTitle != null and activityTitle != ''">activity_title = #{activityTitle},</if>
             <if test="activityType != null">activity_type = #{activityType},</if>
             <if test="coverImage != null">cover_image = #{coverImage},</if>

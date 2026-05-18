@@ -1,5 +1,7 @@
 // pages/detail/detail.js
 const app = getApp();
+const config = require('../../config.js');
+const apiClient = require('../../utils/apiClient.js');
 
 Page({
     data: {
@@ -572,7 +574,7 @@ Page({
             return;
         }
 
-        if (!wx.cloud) {
+        if (!config.USE_JAVA_BACKEND && !wx.cloud) {
             wx.showToast({
                 title: '报名服务暂不可用',
                 icon: 'none'
@@ -625,27 +627,45 @@ Page({
         });
 
         try {
-            const res = await wx.cloud.callFunction({
-                name: 'addEnrollment',
-                data: enrollmentData
-            });
+            let savedId;
+            let savedCreatedAt;
+            let isUpdated;
 
-            if (!res.result || !res.result.success) {
-                throw new Error(res.result?.error || '报名提交失败');
+            if (config.USE_JAVA_BACKEND) {
+                // 走 Java 统一 REST 后端
+                const apiRes = await apiClient.post('/registration', enrollmentData);
+                if (!apiRes || apiRes.code !== 200) {
+                    throw new Error((apiRes && apiRes.msg) || '报名提交失败');
+                }
+                const apiData = apiRes.data || {};
+                savedId = apiData._id || apiData.id;
+                savedCreatedAt = apiData.createdAt || new Date();
+                isUpdated = !!apiData.isUpdated;
+            } else {
+                const res = await wx.cloud.callFunction({
+                    name: 'addEnrollment',
+                    data: enrollmentData
+                });
+
+                if (!res.result || !res.result.success) {
+                    throw new Error(res.result?.error || '报名提交失败');
+                }
+                savedId = res.result._id;
+                savedCreatedAt = res.result.createdAt || new Date();
+                isUpdated = !!res.result.isUpdated;
             }
 
             wx.hideLoading();
-            const isUpdated = !!res.result.isUpdated;
             wx.showToast({
                 title: isUpdated ? '报名已更新' : '报名成功',
                 icon: 'success'
             });
             this.closeEnrollmentModal();
-            
+
             const savedEnrollmentData = {
                 ...enrollmentData,
-                _id: res.result._id,
-                createdAt: res.result.createdAt || new Date()
+                _id: savedId,
+                createdAt: savedCreatedAt
             };
             this.setData({
                 enrollmentData: savedEnrollmentData

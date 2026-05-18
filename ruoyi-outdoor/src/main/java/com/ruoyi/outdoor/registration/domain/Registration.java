@@ -72,6 +72,22 @@ public class Registration extends BaseEntity
     @Excel(name = "备注")
     private String remark;
 
+    /** 报名人数 */
+    @Excel(name = "报名人数")
+    private Integer participantCount;
+
+    /** 报名留言 */
+    @Size(min = 0, max = 500, message = "报名留言长度不能超过500个字符")
+    @Excel(name = "报名留言")
+    private String message;
+
+    /** 关联员工ID（可空） */
+    @Excel(name = "员工ID")
+    private Long employeeId;
+
+    /** 动态表单字段值（JSON文本） */
+    private String extraFieldsJson;
+
     // ==================== 关联字段（非数据库字段）====================
     /** 活动标题 */
     private String activityTitle;
@@ -182,6 +198,46 @@ public class Registration extends BaseEntity
         return status;
     }
 
+    public void setParticipantCount(Integer participantCount)
+    {
+        this.participantCount = participantCount;
+    }
+
+    public Integer getParticipantCount()
+    {
+        return participantCount;
+    }
+
+    public void setMessage(String message)
+    {
+        this.message = message;
+    }
+
+    public String getMessage()
+    {
+        return message;
+    }
+
+    public void setEmployeeId(Long employeeId)
+    {
+        this.employeeId = employeeId;
+    }
+
+    public Long getEmployeeId()
+    {
+        return employeeId;
+    }
+
+    public void setExtraFieldsJson(String extraFieldsJson)
+    {
+        this.extraFieldsJson = extraFieldsJson;
+    }
+
+    public String getExtraFieldsJson()
+    {
+        return extraFieldsJson;
+    }
+
     public String getActivityTitle() {
         return activityTitle;
     }
@@ -219,6 +275,10 @@ public class Registration extends BaseEntity
             .append("emergencyContact", getEmergencyContact())
             .append("emergencyPhone", getEmergencyPhone())
             .append("status", getStatus())
+            .append("participantCount", getParticipantCount())
+            .append("message", getMessage())
+            .append("employeeId", getEmployeeId())
+            .append("extraFieldsJson", getExtraFieldsJson())
             .append("remark", getRemark())
             .append("createBy", getCreateBy())
             .append("createTime", getCreateTime())

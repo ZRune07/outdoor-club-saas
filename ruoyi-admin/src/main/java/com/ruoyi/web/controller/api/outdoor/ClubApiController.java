@@ -41,4 +41,13 @@ public class ClubApiController extends BaseController
     {
         return success(clubService.selectClubById(clubId));
     }
+
+    /**
+     * 获取指定租户的配置（复用俱乐部信息，即租户主体）
+     */
+    @GetMapping("/tenant/{tenantId}/config")
+    public AjaxResult getTenantConfig(@PathVariable Long tenantId)
+    {
+        return success(clubService.selectClubById(tenantId));
+    }
 }

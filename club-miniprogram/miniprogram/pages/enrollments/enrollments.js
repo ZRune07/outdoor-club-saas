@@ -1,4 +1,6 @@
 const app = getApp()
+const config = require('../../config.js')
+const apiClient = require('../../utils/apiClient.js')
 
 Page({
   data: {
@@ -69,7 +71,7 @@ Page({
   async loadEnrollments() {
     const tenantId = this.data.tenantId || app.getCurrentTenantId()
     this.setData({ loading: true })
-    if (!wx.cloud) {
+    if (!config.USE_JAVA_BACKEND && !wx.cloud) {
       this.setData({
         loading: false,
         enrollments: []
@@ -77,20 +79,35 @@ Page({
       return
     }
     try {
-      const result = await wx.cloud.callFunction({
-        name: 'getMyCenterData',
-        data: {
+      let enrollments
+      if (config.USE_JAVA_BACKEND) {
+        // 走 Java 统一 REST 后端
+        const apiRes = await apiClient.get('/registration/my', {
           tenantId,
           limit: 50
+        })
+        if (!apiRes || apiRes.code !== 200) {
+          throw new Error((apiRes && apiRes.msg) || '加载失败')
         }
-      })
-      const data = result.result || {}
-      if (!data.success) {
-        throw new Error(data.error || '加载失败')
+        const apiData = apiRes.data || {}
+        enrollments = apiData.enrollments || apiData.rows || apiData
+      } else {
+        const result = await wx.cloud.callFunction({
+          name: 'getMyCenterData',
+          data: {
+            tenantId,
+            limit: 50
+          }
+        })
+        const data = result.result || {}
+        if (!data.success) {
+          throw new Error(data.error || '加载失败')
+        }
+        enrollments = data.enrollments
       }
       this.setData({
         loading: false,
-        enrollments: this.normalizeEnrollments(data.enrollments)
+        enrollments: this.normalizeEnrollments(enrollments)
       })
     } catch (err) {
       console.error('加载报名记录失败:', err)

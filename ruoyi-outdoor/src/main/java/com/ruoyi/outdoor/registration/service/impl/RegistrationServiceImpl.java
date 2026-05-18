@@ -1,6 +1,7 @@
 package com.ruoyi.outdoor.registration.service.impl;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,8 +94,26 @@ public class RegistrationServiceImpl implements IRegistrationService
     }
 
     /**
+     * 查询当前用户在指定租户下的报名列表
+     */
+    @Override
+    public List<Registration> selectMyRegistrations(Long wxUserId, Long clubId)
+    {
+        return registrationMapper.selectMyRegistrations(wxUserId, clubId);
+    }
+
+    /**
+     * 按活动统计报名数（排除 cancelled/rejected），限当前租户
+     */
+    @Override
+    public List<Map<String, Object>> selectRegistrationStats(Long[] activityIds, Long clubId)
+    {
+        return registrationMapper.selectRegistrationStats(activityIds, clubId);
+    }
+
+    /**
      * 新增报名
-     * 
+     *
      * @param registration 报名
      * @return 结果
      */

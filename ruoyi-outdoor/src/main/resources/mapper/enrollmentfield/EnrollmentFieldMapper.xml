@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.enrollmentfield.mapper.EnrollmentFieldMapper">
+
+    <resultMap type="EnrollmentField" id="EnrollmentFieldResult">
+        <id     property="id"                 column="id"                  />
+        <result property="clubId"             column="club_id"             />
+        <result property="activityId"         column="activity_id"         />
+        <result property="fieldsJson"         column="fields_json"         />
+        <result property="agreementContent"   column="agreement_content"   />
+        <result property="enableEnrollment"   column="enable_enrollment"   />
+        <result property="enableAgreement"    column="enable_agreement"    />
+        <result property="membershipRequired" column="membership_required" />
+        <result property="status"             column="status"              />
+        <result property="delFlag"            column="del_flag"            />
+        <result property="createBy"           column="create_by"           />
+        <result property="createTime"         column="create_time"         />
+        <result property="updateBy"           column="update_by"           />
+        <result property="updateTime"         column="update_time"         />
+        <result property="remark"             column="remark"              />
+    </resultMap>
+
+    <sql id="selectEnrollmentFieldVo">
+        select id, club_id, activity_id, fields_json, agreement_content, enable_enrollment,
+               enable_agreement, membership_required, status, del_flag, create_by, create_time,
+               update_by, update_time, remark
+        from outdoor_enrollment_field
+    </sql>
+
+    <select id="selectEnrollmentField" resultMap="EnrollmentFieldResult">
+        <include refid="selectEnrollmentFieldVo"/>
+        where del_flag = '0'
+          and club_id = #{clubId}
+          and activity_id = #{activityId}
+        limit 1
+    </select>
+
+    <insert id="insertEnrollmentField" parameterType="EnrollmentField" useGeneratedKeys="true" keyProperty="id">
+        insert into outdoor_enrollment_field (
+            club_id,
+            activity_id,
+            <if test="fieldsJson != null">fields_json,</if>
+            <if test="agreementContent != null">agreement_content,</if>
+            <if test="enableEnrollment != null">enable_enrollment,</if>
+            <if test="enableAgreement != null">enable_agreement,</if>
+            <if test="membershipRequired != null">membership_required,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        )values(
+            #{clubId},
+            #{activityId},
+            <if test="fieldsJson != null">#{fieldsJson},</if>
+            <if test="agreementContent != null">#{agreementContent},</if>
+            <if test="enableEnrollment != null">#{enableEnrollment},</if>
+            <if test="enableAgreement != null">#{enableAgreement},</if>
+            <if test="membershipRequired != null">#{membershipRequired},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <update id="updateEnrollmentField" parameterType="EnrollmentField">
+        update outdoor_enrollment_field
+        <set>
+            <if test="fieldsJson != null">fields_json = #{fieldsJson},</if>
+            <if test="agreementContent != null">agreement_content = #{agreementContent},</if>
+            <if test="enableEnrollment != null">enable_enrollment = #{enableEnrollment},</if>
+            <if test="enableAgreement != null">enable_agreement = #{enableAgreement},</if>
+            <if test="membershipRequired != null">membership_required = #{membershipRequired},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        where id = #{id}
+    </update>
+
+</mapper>

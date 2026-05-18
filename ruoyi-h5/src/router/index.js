@@ -54,12 +54,59 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('@/views/Login.vue')
+  },
+  {
+    path: '/membership',
+    name: 'MyMembership',
+    component: () => import('@/views/membership/My.vue')
+  },
+  {
+    path: '/admin/field-config',
+    name: 'AdminFieldConfig',
+    component: () => import('@/views/admin/FieldConfig.vue'),
+    meta: { adminRoles: ['tenant_admin', 'super_admin'] }
+  },
+  {
+    path: '/admin/tenant',
+    name: 'AdminTenant',
+    component: () => import('@/views/admin/TenantAdmin.vue'),
+    meta: { adminRoles: ['tenant_admin', 'super_admin'] }
+  },
+  {
+    path: '/admin/super',
+    name: 'AdminSuper',
+    component: () => import('@/views/admin/SuperAdmin.vue'),
+    meta: { adminRoles: ['super_admin'] }
+  },
+  {
+    path: '/admin/invite',
+    name: 'AdminInvite',
+    component: () => import('@/views/admin/AdminInvite.vue')
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (to.path.startsWith('/admin') && to.meta.adminRoles) {
+    try {
+      const { getAdminRole } = await import('@/api/admin')
+      const res = await getAdminRole()
+      const role = res.result || res.data || null
+      if (role && to.meta.adminRoles.includes(role)) {
+        next()
+      } else {
+        next('/home')
+      }
+    } catch (e) {
+      next('/login')
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

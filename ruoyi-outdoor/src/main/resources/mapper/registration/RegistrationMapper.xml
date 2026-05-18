@@ -15,6 +15,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="emergencyContact" column="emergency_contact" />
         <result property="emergencyPhone"   column="emergency_phone"   />
         <result property="status"           column="status"            />
+        <result property="participantCount" column="participant_count" />
+        <result property="message"          column="message"           />
+        <result property="employeeId"       column="employee_id"       />
+        <result property="extraFieldsJson"  column="extra_fields_json" />
         <result property="createBy"         column="create_by"         />
         <result property="createTime"       column="create_time"       />
         <result property="updateBy"         column="update_by"         />
@@ -29,7 +33,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectRegistrationVo">
         select r.registration_id, r.club_id, r.activity_id, r.wx_user_id, r.real_name, 
                r.phone, r.id_card, r.emergency_contact, r.emergency_phone, 
-               r.status, r.create_by, r.create_time, r.update_by, r.update_time, r.remark,
+               r.status, r.participant_count, r.message, r.employee_id, r.extra_fields_json,
+               r.create_by, r.create_time, r.update_by, r.update_time, r.remark,
                a.activity_title, a.start_time as activity_start_time, a.location as activity_location
         from reg_registration r
         left join act_activity a on r.activity_id = a.activity_id
@@ -72,8 +77,29 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="countByActivityId" parameterType="Long" resultType="int">
-        select count(*) from reg_registration 
+        select count(*) from reg_registration
         where activity_id = #{activityId} and status != 'canceled'
+    </select>
+
+    <select id="selectMyRegistrations" resultMap="RegistrationResult">
+        <include refid="selectRegistrationVo"/>
+        where r.wx_user_id = #{wxUserId}
+        <if test="clubId != null"> and r.club_id = #{clubId}</if>
+        order by r.create_time desc
+    </select>
+
+    <select id="selectRegistrationStats" resultType="java.util.HashMap">
+        select r.activity_id as "activityId", count(*) as "count"
+        from reg_registration r
+        where r.status not in ('cancelled', 'canceled', 'rejected')
+        <if test="clubId != null"> and r.club_id = #{clubId}</if>
+        <if test="activityIds != null and activityIds.length > 0">
+            and r.activity_id in
+            <foreach item="aid" collection="activityIds" open="(" separator="," close=")">
+                #{aid}
+            </foreach>
+        </if>
+        group by r.activity_id
     </select>
 
     <insert id="insertRegistration" parameterType="Registration" useGeneratedKeys="true" keyProperty="registrationId">
@@ -88,6 +114,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emergencyContact != null">emergency_contact,</if>
             <if test="emergencyPhone != null">emergency_phone,</if>
             <if test="status != null">status,</if>
+            <if test="participantCount != null">participant_count,</if>
+            <if test="message != null">message,</if>
+            <if test="employeeId != null">employee_id,</if>
+            <if test="extraFieldsJson != null">extra_fields_json,</if>
             <if test="createBy != null">create_by,</if>
             <if test="createTime != null">create_time,</if>
             <if test="updateBy != null">update_by,</if>
@@ -104,6 +134,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emergencyContact != null">#{emergencyContact},</if>
             <if test="emergencyPhone != null">#{emergencyPhone},</if>
             <if test="status != null">#{status},</if>
+            <if test="participantCount != null">#{participantCount},</if>
+            <if test="message != null">#{message},</if>
+            <if test="employeeId != null">#{employeeId},</if>
+            <if test="extraFieldsJson != null">#{extraFieldsJson},</if>
             <if test="createBy != null">#{createBy},</if>
             <if test="createTime != null">#{createTime},</if>
             <if test="updateBy != null">#{updateBy},</if>
@@ -124,6 +158,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="emergencyContact != null">emergency_contact = #{emergencyContact},</if>
             <if test="emergencyPhone != null">emergency_phone = #{emergencyPhone},</if>
             <if test="status != null">status = #{status},</if>
+            <if test="participantCount != null">participant_count = #{participantCount},</if>
+            <if test="message != null">message = #{message},</if>
+            <if test="employeeId != null">employee_id = #{employeeId},</if>
+            <if test="extraFieldsJson != null">extra_fields_json = #{extraFieldsJson},</if>
             <if test="updateBy != null">update_by = #{updateBy},</if>
             <if test="updateTime != null">update_time = #{updateTime},</if>
             <if test="remark != null">remark = #{remark},</if>

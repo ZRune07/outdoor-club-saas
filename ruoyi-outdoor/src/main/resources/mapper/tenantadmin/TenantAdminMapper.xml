@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.tenantadmin.mapper.TenantAdminMapper">
+
+    <resultMap type="TenantAdmin" id="TenantAdminResult">
+        <id     property="id"         column="id"           />
+        <result property="wxUserId"   column="wx_user_id"   />
+        <result property="clubId"     column="club_id"      />
+        <result property="role"       column="role"         />
+        <result property="status"     column="status"       />
+        <result property="delFlag"    column="del_flag"     />
+        <result property="createBy"   column="create_by"    />
+        <result property="createTime" column="create_time"  />
+        <result property="updateBy"   column="update_by"    />
+        <result property="updateTime" column="update_time"  />
+        <result property="remark"     column="remark"       />
+    </resultMap>
+
+    <sql id="selectTenantAdminVo">
+        select id, wx_user_id, club_id, role, status, del_flag, create_by, create_time,
+               update_by, update_time, remark
+        from outdoor_tenant_admin
+    </sql>
+
+    <select id="selectByUserAndClub" resultMap="TenantAdminResult">
+        <include refid="selectTenantAdminVo"/>
+        where del_flag = '0' and status = '0'
+          and wx_user_id = #{wxUserId} and club_id = #{clubId}
+        limit 1
+    </select>
+
+    <select id="countSuperAdmin" resultType="int">
+        select count(1) from outdoor_tenant_admin
+        where del_flag = '0' and status = '0'
+          and wx_user_id = #{wxUserId} and role = 'super_admin'
+    </select>
+
+    <select id="selectTenantAdminById" parameterType="Long" resultMap="TenantAdminResult">
+        <include refid="selectTenantAdminVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectTenantAdminList" parameterType="TenantAdmin" resultMap="TenantAdminResult">
+        <include refid="selectTenantAdminVo"/>
+        <where>
+            del_flag = '0'
+            <if test="wxUserId != null">AND wx_user_id = #{wxUserId}</if>
+            <if test="clubId != null">AND club_id = #{clubId}</if>
+            <if test="role != null and role != ''">AND role = #{role}</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+        </where>
+    </select>
+
+    <insert id="insertTenantAdmin" parameterType="TenantAdmin" useGeneratedKeys="true" keyProperty="id">
+        insert into outdoor_tenant_admin (
+            wx_user_id, club_id,
+            <if test="role != null and role != ''">role,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null and createBy != ''">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        ) values (
+            #{wxUserId}, #{clubId},
+            <if test="role != null and role != ''">#{role},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null and createBy != ''">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <update id="updateTenantAdmin" parameterType="TenantAdmin">
+        update outdoor_tenant_admin
+        <set>
+            <if test="wxUserId != null">wx_user_id = #{wxUserId},</if>
+            <if test="clubId != null">club_id = #{clubId},</if>
+            <if test="role != null and role != ''">role = #{role},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="deleteTenantAdminById" parameterType="Long">
+        update outdoor_tenant_admin set del_flag = '2' where id = #{id}
+    </update>
+
+    <update id="deleteTenantAdminByIds" parameterType="Long">
+        update outdoor_tenant_admin set del_flag = '2' where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+</mapper>

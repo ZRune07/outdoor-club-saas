@@ -1225,5 +1225,41 @@ VALUES
 
 6. 本人同意活动组织方使用活动中的照片、视频等影像资料用于宣传。
 
-7. 本协议自签署之日起生效，最终解释权归活动组织方所有。', 
+7. 本协议自签署之日起生效，最终解释权归活动组织方所有。',
 '1.0', 'active', CURRENT_TIMESTAMP);
+
+
+-- ----------------------------
+-- 26、租户管理员表（多租户：club_id 即 tenant_id）
+-- ----------------------------
+DROP TABLE IF EXISTS outdoor_tenant_admin CASCADE;
+CREATE TABLE outdoor_tenant_admin (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  wx_user_id BIGINT NOT NULL,
+  club_id BIGINT NOT NULL,
+  role VARCHAR(20) NOT NULL DEFAULT 'tenant_admin',
+  status CHAR(1) DEFAULT '0',
+  del_flag CHAR(1) DEFAULT '0',
+  create_by VARCHAR(64) DEFAULT '',
+  create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  update_by VARCHAR(64) DEFAULT '',
+  update_time TIMESTAMP,
+  remark VARCHAR(500),
+  CONSTRAINT uk_tenant_admin_user_club UNIQUE (wx_user_id, club_id)
+);
+
+COMMENT ON TABLE outdoor_tenant_admin IS '租户管理员表';
+COMMENT ON COLUMN outdoor_tenant_admin.id IS '主键ID';
+COMMENT ON COLUMN outdoor_tenant_admin.wx_user_id IS '微信用户ID';
+COMMENT ON COLUMN outdoor_tenant_admin.club_id IS '租户(俱乐部)ID';
+COMMENT ON COLUMN outdoor_tenant_admin.role IS '角色（super_admin超管 tenant_admin租户管理员）';
+COMMENT ON COLUMN outdoor_tenant_admin.status IS '状态（0正常 1停用）';
+COMMENT ON COLUMN outdoor_tenant_admin.del_flag IS '删除标志（0存在 2删除）';
+COMMENT ON COLUMN outdoor_tenant_admin.create_by IS '创建者';
+COMMENT ON COLUMN outdoor_tenant_admin.create_time IS '创建时间';
+COMMENT ON COLUMN outdoor_tenant_admin.update_by IS '更新者';
+COMMENT ON COLUMN outdoor_tenant_admin.update_time IS '更新时间';
+COMMENT ON COLUMN outdoor_tenant_admin.remark IS '备注';
+
+CREATE INDEX idx_tenant_admin_club ON outdoor_tenant_admin(club_id);
+CREATE INDEX idx_tenant_admin_user ON outdoor_tenant_admin(wx_user_id);

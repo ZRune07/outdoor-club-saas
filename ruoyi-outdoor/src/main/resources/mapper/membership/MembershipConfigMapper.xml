@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.membership.mapper.MembershipConfigMapper">
+
+    <resultMap type="MembershipConfig" id="MembershipConfigResult">
+        <id     property="id"           column="id"            />
+        <result property="clubId"       column="club_id"       />
+        <result property="levelName"    column="level_name"    />
+        <result property="validityDays" column="validity_days" />
+        <result property="price"        column="price"         />
+        <result property="benefits"     column="benefits"      />
+        <result property="description"  column="description"   />
+        <result property="enabled"      column="enabled"       />
+        <result property="delFlag"      column="del_flag"      />
+        <result property="createBy"     column="create_by"     />
+        <result property="createTime"   column="create_time"   />
+        <result property="updateBy"     column="update_by"     />
+        <result property="updateTime"   column="update_time"   />
+        <result property="remark"       column="remark"        />
+    </resultMap>
+
+    <sql id="selectConfigVo">
+        select id, club_id, level_name, validity_days, price, benefits, description,
+               enabled, del_flag, create_by, create_time, update_by, update_time, remark
+        from outdoor_membership_config
+    </sql>
+
+    <select id="selectConfigByClubId" parameterType="Long" resultMap="MembershipConfigResult">
+        <include refid="selectConfigVo"/>
+        where del_flag = '0' and club_id = #{clubId}
+        order by id asc
+    </select>
+
+    <select id="selectConfigById" parameterType="Long" resultMap="MembershipConfigResult">
+        <include refid="selectConfigVo"/>
+        where del_flag = '0' and id = #{id}
+    </select>
+
+    <insert id="insertConfig" parameterType="MembershipConfig" useGeneratedKeys="true" keyProperty="id">
+        insert into outdoor_membership_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">club_id,</if>
+            <if test="levelName != null">level_name,</if>
+            <if test="validityDays != null">validity_days,</if>
+            <if test="price != null">price,</if>
+            <if test="benefits != null">benefits,</if>
+            <if test="description != null">description,</if>
+            <if test="enabled != null">enabled,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="clubId != null">#{clubId},</if>
+            <if test="levelName != null">#{levelName},</if>
+            <if test="validityDays != null">#{validityDays},</if>
+            <if test="price != null">#{price},</if>
+            <if test="benefits != null">#{benefits},</if>
+            <if test="description != null">#{description},</if>
+            <if test="enabled != null">#{enabled},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            CURRENT_TIMESTAMP
+        </trim>
+    </insert>
+
+    <update id="updateConfig" parameterType="MembershipConfig">
+        update outdoor_membership_config
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="levelName != null">level_name = #{levelName},</if>
+            <if test="validityDays != null">validity_days = #{validityDays},</if>
+            <if test="price != null">price = #{price},</if>
+            <if test="benefits != null">benefits = #{benefits},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = CURRENT_TIMESTAMP
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

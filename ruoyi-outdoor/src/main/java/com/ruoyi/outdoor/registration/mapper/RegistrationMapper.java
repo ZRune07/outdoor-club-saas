@@ -1,6 +1,7 @@
 package com.ruoyi.outdoor.registration.mapper;
 
 import java.util.List;
+import java.util.Map;
 import com.ruoyi.outdoor.registration.domain.Registration;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -61,6 +62,24 @@ public interface RegistrationMapper
      * @return 报名人数
      */
     public int countByActivityId(@Param("activityId") Long activityId);
+
+    /**
+     * 查询当前用户在指定租户下的报名列表
+     *
+     * @param wxUserId 微信用户ID
+     * @param clubId 俱乐部ID（租户，可空）
+     * @return 报名列表
+     */
+    public List<Registration> selectMyRegistrations(@Param("wxUserId") Long wxUserId, @Param("clubId") Long clubId);
+
+    /**
+     * 按活动统计报名数（排除 cancelled/rejected），限当前租户
+     *
+     * @param activityIds 活动ID数组
+     * @param clubId 俱乐部ID（租户，可空）
+     * @return 每个活动的报名数 [{activityId, count}]
+     */
+    public List<Map<String, Object>> selectRegistrationStats(@Param("activityIds") Long[] activityIds, @Param("clubId") Long clubId);
 
     /**
      * 新增报名

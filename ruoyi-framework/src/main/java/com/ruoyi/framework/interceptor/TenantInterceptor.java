@@ -1,7 +1,11 @@
 package com.ruoyi.framework.interceptor;
 
+import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.tenant.TenantContextHolder;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -9,28 +13,49 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * 多租户拦截器
+ * 多租户拦截器。
+ * 租户(clubId) 与角色(role) 均从已验签的微信登录 JWT 中解析，
+ * 不信任客户端自报的 header/参数，避免越权读取其他租户数据。
  */
 @Component
 public class TenantInterceptor implements HandlerInterceptor {
 
+    @Value("${token.header}")
+    private String header;
+
+    @Value("${token.secret}")
+    private String secret;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        // 从请求头获取 club_id
-        String clubIdHeader = request.getHeader("X-Club-Id");
-
-        // 如果没有，从 URL 参数获取
-        if (StringUtils.isBlank(clubIdHeader)) {
-            clubIdHeader = request.getParameter("club_id");
+        String token = request.getHeader(header);
+        if (StringUtils.isEmpty(token)) {
+            return true;
+        }
+        if (token.startsWith(Constants.TOKEN_PREFIX)) {
+            token = token.replace(Constants.TOKEN_PREFIX, "");
         }
 
-        // 设置到上下文中
-        if (StringUtils.isNotBlank(clubIdHeader)) {
-            try {
-                TenantContextHolder.setTenantId(Long.parseLong(clubIdHeader));
-            } catch (NumberFormatException e) {
-                // 如果解析失败，忽略
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            Object clubId = claims.get("clubId");
+            if (clubId != null) {
+                TenantContextHolder.setTenantId(Long.parseLong(String.valueOf(clubId)));
             }
+            Object userId = claims.get("userId");
+            if (userId != null) {
+                TenantContextHolder.setWxUserId(Long.parseLong(String.valueOf(userId)));
+            }
+            Object role = claims.get("role");
+            if (role != null) {
+                TenantContextHolder.setRole(String.valueOf(role));
+            }
+        } catch (Exception e) {
+            // 非微信令牌（如后台管理 RuoYi 令牌）或令牌无效：不设置租户上下文
         }
 
         return true;
@@ -38,7 +63,6 @@ public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        // 清除上下文
         TenantContextHolder.clear();
     }
 }

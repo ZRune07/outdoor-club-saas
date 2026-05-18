@@ -15,6 +15,7 @@ import com.ruoyi.outdoor.wxuser.dto.WxLoginRequest;
 import com.ruoyi.outdoor.wxuser.dto.WxLoginResponse;
 import com.ruoyi.outdoor.wxuser.mapper.WxUserMapper;
 import com.ruoyi.outdoor.wxuser.service.IWxLoginService;
+import com.ruoyi.outdoor.tenantadmin.service.ITenantAdminService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -37,6 +38,9 @@ public class WxLoginServiceImpl implements IWxLoginService {
 
     @Autowired
     private RedisCache redisCache;
+
+    @Autowired
+    private ITenantAdminService tenantAdminService;
 
     @Value("${token.header}")
     private String header;
@@ -61,7 +65,9 @@ public class WxLoginServiceImpl implements IWxLoginService {
 
             WxUser wxUser = findOrCreateUser(openid, unionid, request);
 
-            String token = generateToken(wxUser);
+            String role = tenantAdminService.resolveRole(wxUser.getWxUserId(), wxUser.getClubId());
+
+            String token = generateToken(wxUser, role);
 
             WxLoginResponse response = new WxLoginResponse();
             response.setToken(token);
@@ -71,6 +77,8 @@ public class WxLoginServiceImpl implements IWxLoginService {
             userInfo.setNickname(wxUser.getNickname());
             userInfo.setAvatar(wxUser.getAvatar());
             userInfo.setPhone(wxUser.getPhone());
+            userInfo.setClubId(wxUser.getClubId());
+            userInfo.setRole(role);
             response.setUserInfo(userInfo);
 
             return response;
@@ -114,13 +122,14 @@ public class WxLoginServiceImpl implements IWxLoginService {
         }
     }
 
-    private String generateToken(WxUser wxUser) {
+    private String generateToken(WxUser wxUser, String role) {
         String uuid = IdUtils.fastUUID();
         Map<String, Object> claims = new HashMap<>();
         claims.put(Constants.LOGIN_USER_KEY, uuid);
         claims.put("userId", wxUser.getWxUserId());
         claims.put("openid", wxUser.getOpenid());
         claims.put("clubId", wxUser.getClubId());
+        claims.put("role", role);
 
         String userKey = CacheConstants.LOGIN_TOKEN_KEY + uuid;
         Map<String, Object> userCache = new HashMap<>();
@@ -129,6 +138,7 @@ public class WxLoginServiceImpl implements IWxLoginService {
         userCache.put("nickname", wxUser.getNickname());
         userCache.put("avatar", wxUser.getAvatar());
         userCache.put("clubId", wxUser.getClubId());
+        userCache.put("role", role);
         userCache.put("loginTime", System.currentTimeMillis());
         userCache.put("expireTime", System.currentTimeMillis() + expireTime * MILLIS_MINUTE);
 

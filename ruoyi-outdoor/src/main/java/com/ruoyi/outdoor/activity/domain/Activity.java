@@ -34,6 +34,10 @@ public class Activity extends BaseEntity
     @Excel(name = "活动标题")
     private String activityTitle;
 
+    /** 活动分类ID */
+    @Excel(name = "活动分类ID")
+    private Long categoryId;
+
     /** 活动类型 */
     @Excel(name = "活动类型")
     private String activityType;
@@ -133,7 +137,17 @@ public class Activity extends BaseEntity
         return activityTitle;
     }
 
-    public void setActivityType(String activityType) 
+    public void setCategoryId(Long categoryId)
+    {
+        this.categoryId = categoryId;
+    }
+
+    public Long getCategoryId()
+    {
+        return categoryId;
+    }
+
+    public void setActivityType(String activityType)
     {
         this.activityType = activityType;
     }
@@ -308,6 +322,7 @@ public class Activity extends BaseEntity
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
             .append("activityId", getActivityId())
             .append("clubId", getClubId())
+            .append("categoryId", getCategoryId())
             .append("activityTitle", getActivityTitle())
             .append("activityType", getActivityType())
             .append("coverImage", getCoverImage())

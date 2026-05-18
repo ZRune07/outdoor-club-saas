@@ -25,6 +25,24 @@ public class WxLoginResponse {
         private String nickname;
         private String avatar;
         private String phone;
+        private Long clubId;
+        private String role;
+
+        public Long getClubId() {
+            return clubId;
+        }
+
+        public void setClubId(Long clubId) {
+            this.clubId = clubId;
+        }
+
+        public String getRole() {
+            return role;
+        }
+
+        public void setRole(String role) {
+            this.role = role;
+        }
 
         public Long getUserId() {
             return userId;

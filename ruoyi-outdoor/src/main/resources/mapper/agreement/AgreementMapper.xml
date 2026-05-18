@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.agreement.mapper.AgreementMapper">
+
+    <resultMap type="com.ruoyi.outdoor.agreement.domain.Agreement" id="AgreementResult">
+        <id property="id" column="id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="enrollmentId" column="enrollment_id"/>
+        <result property="activityId" column="activity_id"/>
+        <result property="content" column="content"/>
+        <result property="signature" column="signature"/>
+        <result property="signerName" column="signer_name"/>
+        <result property="signerPhone" column="signer_phone"/>
+        <result property="signedAt" column="signed_at"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectAgreementVo">
+        SELECT id, club_id, enrollment_id, activity_id, content, signature,
+               signer_name, signer_phone, signed_at, status, del_flag,
+               create_by, create_time, update_by, update_time
+        FROM outdoor_agreement
+    </sql>
+
+    <select id="selectAgreementById" parameterType="Long" resultMap="AgreementResult">
+        <include refid="selectAgreementVo"/>
+        WHERE id = #{id} AND del_flag = '0'
+    </select>
+
+    <select id="selectAgreementByEnrollmentId" resultMap="AgreementResult">
+        <include refid="selectAgreementVo"/>
+        WHERE club_id = #{clubId} AND enrollment_id = #{enrollmentId} AND del_flag = '0'
+        ORDER BY signed_at DESC NULLS LAST, id DESC
+        LIMIT 1
+    </select>
+
+    <select id="selectAgreementList" parameterType="com.ruoyi.outdoor.agreement.domain.Agreement" resultMap="AgreementResult">
+        <include refid="selectAgreementVo"/>
+        <where>
+            del_flag = '0'
+            <if test="clubId != null">AND club_id = #{clubId}</if>
+            <if test="enrollmentId != null">AND enrollment_id = #{enrollmentId}</if>
+            <if test="activityId != null">AND activity_id = #{activityId}</if>
+            <if test="signerName != null and signerName != ''">AND signer_name LIKE CONCAT('%', #{signerName}, '%')</if>
+            <if test="signerPhone != null and signerPhone != ''">AND signer_phone = #{signerPhone}</if>
+            <if test="status != null and status != ''">AND status = #{status}</if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="insertAgreement" parameterType="com.ruoyi.outdoor.agreement.domain.Agreement" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO outdoor_agreement (
+            <if test="clubId != null">club_id,</if>
+            <if test="enrollmentId != null">enrollment_id,</if>
+            <if test="activityId != null">activity_id,</if>
+            <if test="content != null">content,</if>
+            <if test="signature != null">signature,</if>
+            <if test="signerName != null">signer_name,</if>
+            <if test="signerPhone != null">signer_phone,</if>
+            <if test="signedAt != null">signed_at,</if>
+            <if test="status != null">status,</if>
+            <if test="createBy != null">create_by,</if>
+            create_time
+        ) VALUES (
+            <if test="clubId != null">#{clubId},</if>
+            <if test="enrollmentId != null">#{enrollmentId},</if>
+            <if test="activityId != null">#{activityId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="signature != null">#{signature},</if>
+            <if test="signerName != null">#{signerName},</if>
+            <if test="signerPhone != null">#{signerPhone},</if>
+            <if test="signedAt != null">#{signedAt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createBy != null">#{createBy},</if>
+            CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <update id="updateAgreement" parameterType="com.ruoyi.outdoor.agreement.domain.Agreement">
+        UPDATE outdoor_agreement
+        <set>
+            <if test="content != null">content = #{content},</if>
+            <if test="signature != null">signature = #{signature},</if>
+            <if test="signerName != null">signer_name = #{signerName},</if>
+            <if test="signerPhone != null">signer_phone = #{signerPhone},</if>
+            <if test="signedAt != null">signed_at = #{signedAt},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            update_time = CURRENT_TIMESTAMP
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteAgreementById" parameterType="Long">
+        UPDATE outdoor_agreement SET del_flag = '2' WHERE id = #{id}
+    </delete>
+</mapper>

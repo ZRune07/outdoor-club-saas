@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.api.outdoor;
 
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
+import com.ruoyi.framework.tenant.TenantContextHolder;
 import com.ruoyi.outdoor.registration.domain.Registration;
 import com.ruoyi.outdoor.registration.service.IRegistrationService;
 
@@ -22,6 +25,7 @@ import com.ruoyi.outdoor.registration.service.IRegistrationService;
  * 
  * @author ruoyi
  */
+@Anonymous
 @RestController
 @RequestMapping("/api/registration")
 public class RegistrationApiController extends BaseController
@@ -85,11 +89,44 @@ public class RegistrationApiController extends BaseController
     }
 
     /**
+     * 查询当前用户在当前租户下的报名列表
+     */
+    @GetMapping("/my")
+    public AjaxResult myRegistrations()
+    {
+        Long wxUserId = TenantContextHolder.getWxUserId();
+        Long tenantId = TenantContextHolder.getTenantId();
+        if (wxUserId == null)
+        {
+            return error("用户未登录");
+        }
+        List<Registration> list = registrationService.selectMyRegistrations(wxUserId, tenantId);
+        return success(list);
+    }
+
+    /**
+     * 按活动统计报名数（排除 cancelled/rejected），限当前租户
+     */
+    @GetMapping("/stats")
+    public AjaxResult stats(@RequestParam("activityIds") Long[] activityIds)
+    {
+        Long tenantId = TenantContextHolder.getTenantId();
+        List<Map<String, Object>> list = registrationService.selectRegistrationStats(activityIds, tenantId);
+        return success(list);
+    }
+
+    /**
      * 新增报名
      */
     @PostMapping
     public AjaxResult add(@Validated @RequestBody Registration registration)
     {
+        // club_id 用当前租户，若为空则回退请求体携带的值
+        Long tenantId = TenantContextHolder.getTenantId();
+        if (tenantId != null)
+        {
+            registration.setClubId(tenantId);
+        }
         // 设置初始状态为待支付
         registration.setStatus("pending");
         int result = registrationService.insertRegistration(registration);

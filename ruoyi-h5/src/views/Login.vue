@@ -37,8 +37,10 @@ import { useRouter } from 'vue-router'
 import { showToast } from 'vant'
 import { login } from '@/api/auth'
 import { setToken, setUser } from '@/utils/auth'
+import { useUserStore } from '@/store/user'
 
 const router = useRouter()
+const userStore = useUserStore()
 const loading = ref(false)
 const agreed = ref(false)
 
@@ -63,6 +65,13 @@ const handleWechatLogin = async () => {
       if (res.data.userInfo) {
         setUser(res.data.userInfo)
       }
+      // 登录响应含 clubId / role，写入用户 store
+      userStore.setToken(res.data.token)
+      userStore.setUserInfo({
+        ...(res.data.userInfo || {}),
+        clubId: res.data.clubId,
+        role: res.data.role
+      })
       router.replace('/home')
     }
   } catch (e) {

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.outdoor.membership.mapper.UserMembershipMapper">
+
+    <resultMap type="UserMembership" id="UserMembershipResult">
+        <id     property="id"          column="id"           />
+        <result property="wxUserId"    column="wx_user_id"   />
+        <result property="clubId"      column="club_id"      />
+        <result property="configId"    column="config_id"    />
+        <result property="activatedAt" column="activated_at" />
+        <result property="expireAt"    column="expire_at"    />
+        <result property="status"      column="status"       />
+        <result property="delFlag"     column="del_flag"     />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"  column="create_time"  />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"  column="update_time"  />
+        <result property="remark"      column="remark"       />
+    </resultMap>
+
+    <sql id="selectUserMembershipVo">
+        select id, wx_user_id, club_id, config_id, activated_at, expire_at, status,
+               del_flag, create_by, create_time, update_by, update_time, remark
+        from outdoor_user_membership
+    </sql>
+
+    <select id="selectByUserAndClub" resultMap="UserMembershipResult">
+        <include refid="selectUserMembershipVo"/>
+        where del_flag = '0' and wx_user_id = #{wxUserId} and club_id = #{clubId}
+        order by id desc
+        limit 1
+    </select>
+
+    <insert id="insertUserMembership" parameterType="UserMembership" useGeneratedKeys="true" keyProperty="id">
+        insert into outdoor_user_membership
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="wxUserId != null">wx_user_id,</if>
+            <if test="clubId != null">club_id,</if>
+            <if test="configId != null">config_id,</if>
+            <if test="activatedAt != null">activated_at,</if>
+            <if test="expireAt != null">expire_at,</if>
+            <if test="status != null">status,</if>
+            <if test="delFlag != null">del_flag,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="remark != null">remark,</if>
+            create_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="wxUserId != null">#{wxUserId},</if>
+            <if test="clubId != null">#{clubId},</if>
+            <if test="configId != null">#{configId},</if>
+            <if test="activatedAt != null">#{activatedAt},</if>
+            <if test="expireAt != null">#{expireAt},</if>
+            <if test="status != null">#{status},</if>
+            <if test="delFlag != null">#{delFlag},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="remark != null">#{remark},</if>
+            CURRENT_TIMESTAMP
+        </trim>
+    </insert>
+
+    <update id="updateUserMembership" parameterType="UserMembership">
+        update outdoor_user_membership
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="configId != null">config_id = #{configId},</if>
+            <if test="activatedAt != null">activated_at = #{activatedAt},</if>
+            <if test="expireAt != null">expire_at = #{expireAt},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            update_time = CURRENT_TIMESTAMP
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>
